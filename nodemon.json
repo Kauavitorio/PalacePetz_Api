@@ -1,0 +1,12 @@
+{
+    "env" : {
+        "MYSQL_USER" : "root",
+        "MYSQL_PASSWORD" : "kaua2004",
+        "MYSQL_DATABASE" : "db_palacepetz",
+        "MYSQL_HOST" : "localhost",
+        "MYSQL_PORT" : 3306,
+
+        "JWT_KEY" : "secretcfckeypalacepetzapiprotectedbysystemstrenght",
+        "URL_API" : "http://localhost:3000/"
+    }
+}
