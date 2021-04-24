@@ -3,11 +3,11 @@ const app = express();
 const morgan = require('morgan');
 const bodyParser = require('body-parser')
 
-const userRoute = require('./routes/users.js')
+const userRoute = require('./routes/users')
 
 app.use(morgan('dev'));
 app.use('/uploads', express.static('uploads'))
-app.use(bodyParser.urlencoded({extended: false})); // Apenas dados simples
+app.use(bodyParser.urlencoded({extended: false})); // APenas dados simples
 app.use(bodyParser.json()); // json de entrada no body
 
 app.use((req, res, next) => {
@@ -29,7 +29,7 @@ app.get('/', async (request, response) => {
 });
 
 //  User Route
-app.get('/user', userRoute);
+app.use('/user', userRoute);
 
 //  When rote not found, joing here:
 app.use((req, res, next) => {
@@ -45,6 +45,6 @@ app.use((error, req, res, next) => {
             mensagem: error.message
         }
     });
-});
+}); //  End ""HERE"
 
 module.exports = app;
