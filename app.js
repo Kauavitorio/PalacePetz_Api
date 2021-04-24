@@ -5,11 +5,13 @@ const bodyParser = require('body-parser')
 
 const userRoute = require('./routes/users')
 
+//  Configuring APP
 app.use(morgan('dev'));
 app.use('/uploads', express.static('uploads'))
-app.use(bodyParser.urlencoded({extended: false})); // APenas dados simples
-app.use(bodyParser.json()); // json de entrada no body
+app.use(bodyParser.urlencoded({extended: false})); // ONLY simple data
+app.use(bodyParser.json()); // body entry json
 
+//  Configuring request
 app.use((req, res, next) => {
     res.header('Access-Control-Allow-Origin', '*');
     res.header(
