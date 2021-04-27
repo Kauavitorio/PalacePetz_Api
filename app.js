@@ -4,6 +4,7 @@ const morgan = require('morgan');
 const bodyParser = require('body-parser')
 
 const userRoute = require('./routes/users')
+const testRoute = require('./tests/routes/tests')
 
 //  Configuring APP
 app.use(morgan('dev'));
@@ -32,6 +33,9 @@ app.get('/', async (request, response) => {
 
 //  User Route
 app.use('/user', userRoute);
+
+//  Router for Test
+app.use('/test', testRoute)
 
 //  When rote not found, joing here:
 app.use((req, res, next) => {
