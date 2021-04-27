@@ -3,13 +3,15 @@ const app = express();
 const morgan = require('morgan');
 const bodyParser = require('body-parser')
 
-const userRoute = require('./routes/users.js')
+const userRoute = require('./routes/users')
 
+//  Configuring APP
 app.use(morgan('dev'));
 app.use('/uploads', express.static('uploads'))
-app.use(bodyParser.urlencoded({extended: false})); // Apenas dados simples
-app.use(bodyParser.json()); // json de entrada no body
+app.use(bodyParser.urlencoded({extended: false})); // ONLY simple data
+app.use(bodyParser.json()); // body entry json
 
+//  Configuring request
 app.use((req, res, next) => {
     res.header('Access-Control-Allow-Origin', '*');
     res.header(
@@ -29,7 +31,7 @@ app.get('/', async (request, response) => {
 });
 
 //  User Route
-app.get('/user', userRoute);
+app.use('/user', userRoute);
 
 //  When rote not found, joing here:
 app.use((req, res, next) => {
@@ -45,6 +47,6 @@ app.use((error, req, res, next) => {
             mensagem: error.message
         }
     });
-});
+}); //  End ""HERE"
 
 module.exports = app;

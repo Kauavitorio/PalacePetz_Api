@@ -4,4 +4,6 @@ const multer = require('multer');
 const UsersController = require('../controllers/userController')
 
 //  Register User
-router.post('/register', UsersController.RegisterUser);
+router.post('/register', UsersController.RegisterUsers);
+
+module.exports = router;
