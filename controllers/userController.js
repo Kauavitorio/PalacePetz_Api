@@ -10,7 +10,7 @@ exports.RegisterUsers = async (req, res, next) => {
         if(result_Validuser.length > 0){
             return res.status(409).send({ message: 'User already registered' })
         }else{
-            const hash = await bcrypt.hashSync(req.body.password, 10);
+            const hash = await bcrypt.hashSync(req.body.password, 12);
             query = 'INSERT INTO tbl_account (nm_user, email, password, type_user, img_user) VALUES (?,?,?,?)';
             var results = await mysql.execute(query, [res.body.nm_user, res.body.email, hash, res.body.type_user, IMG_USER])
 
