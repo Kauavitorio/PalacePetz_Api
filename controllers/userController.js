@@ -57,6 +57,7 @@ exports.RegisterUsers = async (req, res, next) => {
     }
 }
 
+// Method for Register Address
 exports.UpdateAddress = async (req, res, next) => {
     try {
         var query = `UPDATE tbl_account SET address_user = ?,
