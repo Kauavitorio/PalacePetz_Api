@@ -60,10 +60,16 @@ exports.RegisterUsers = async (req, res, next) => {
 // Method for Register Address
 exports.UpdateAddress = async (req, res, next) => {
     try {
-        var query = `UPDATE tbl_account SET address_user = ?,
-        complement = ?, zipcode = ? WHERE id_user = ?`
-        await mysql.execute(query, [ EncryptDep.Encrypto(req.body.address_user), EncryptDep.Encrypto(req.body.complement), EncryptDep.Encrypto(req.body.zipcode), req.body.id_user ])
-        return res.status(202).send({ message: 'Address updated successfully !!'})
+        var queryUser = `SELECT * FROM tbl_account where id_user = ?`
+        var result  = await mysql.execute(queryUser, [req.body.id_user])
+        if(result.length > 0){
+            var query = `UPDATE tbl_account SET address_user = ?,
+            complement = ?, zipcode = ? WHERE id_user = ?`
+            await mysql.execute(query, [ EncryptDep.Encrypto(req.body.address_user), EncryptDep.Encrypto(req.body.complement), EncryptDep.Encrypto(req.body.zipcode), req.body.id_user ])
+            return res.status(202).send({ message: 'Address updated successfully !!'})
+        }else{
+            return res.status(404).send({ message: 'User not registered' })
+        }
     } catch (error) {
         return res.status(500).send( { error: error } )
     }
