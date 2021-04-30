@@ -6,7 +6,7 @@
         "MYSQL_HOST" : "localhost",
         "MYSQL_PORT" : 3306,
 
-        "JWT_KEY" : "secretcfckeyapipalacepetz",
+        "JWT_KEY" : "secretpalace564789keyapipalacepetz",
         "URL_API" : "http://localhost:3000/"
     }
 }

@@ -17,15 +17,16 @@ use db_palacepetz;
 /**************************************************/
 
 --	Table for Account
+drop table tbl_account;
 create table tbl_account(
     id_user int primary key auto_increment,
-    name_user varchar(100) not null,
+    name_user varchar(356) not null,
     email varchar(256) not null,
-    cpf_user char(14) not null,
-    address_user varchar(300),
-    complement varchar(100),
-    zipcode varchar(9),
-    phone_user char(15),
+    cpf_user varchar(600) not null,
+    address_user varchar(600) default "null",
+    complement varchar(600) default "null",
+    zipcode varchar(600) default "null",
+    phone_user varchar(600) default "null",
     user_type int default 0,
     img_user varchar(300),
     password varchar(356) not null
