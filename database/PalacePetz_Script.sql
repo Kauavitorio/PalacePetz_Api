@@ -6,9 +6,10 @@
 -- Author: SystemStrength
 
 /****** Commands below should only be used in direct connection to the api  ******/
--- drop database ;
+-- drop database heroku_7b1399765cd2afd;
 
--- create database ``  DEFAULT CHARACTER SET utf8  DEFAULT COLLATE utf8_general_ci ;
+-- create database `heroku_7b1399765cd2afd`  DEFAULT CHARACTER SET utf8  DEFAULT COLLATE utf8_general_ci ;
+use heroku_7b1399765cd2afd;
 
 /******	To test local use the commands below ******/
 drop database `db_palacepetz`;
