@@ -1,12 +1,13 @@
 const mysql = require('../mysql')
 const bcrypt = require('bcrypt');
 const EncryptDep = require('../controllers/encryption')
+const ServerError = require('../ServerError') 
 const IMG_USER = 'https://www.kauavitorio.com/host-itens/Default_Profile_Image_palacepetz.png';
 
 //  Method for login user
 exports.Login = async (req, res, next) => {
     try{
-        var query = `SELECT * FROM tbl_account WHERE email = ?`;
+       var query = `SELECT * FROM tbl_account WHERE email = ?`;
         var results = await mysql.execute(query, req.body.email);
         if(results.length > 0){
             const response = {
@@ -26,6 +27,7 @@ exports.Login = async (req, res, next) => {
             return res.status(404).send({ message: 'User not registered' })
         }
     }catch (error){
+        ServerError.RegisterServerError("Login User", error.toString());
         return res.status(500).send({ error: error})
     }
 }
@@ -53,6 +55,7 @@ exports.RegisterUsers = async (req, res, next) => {
             return res.status(201).send(response);
         }
     } catch (error) {
+        ServerError.RegisterServerError("Register User", error.toString());
         return res.status(500).send( { error: error } )
     }
 }
@@ -71,6 +74,7 @@ exports.UpdateAddress = async (req, res, next) => {
             return res.status(404).send({ message: 'User not registered' })
         }
     } catch (error) {
+        ServerError.RegisterServerError("Update Address", error.toString());
         return res.status(500).send( { error: error } )
     }
 }

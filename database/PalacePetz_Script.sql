@@ -32,5 +32,14 @@ create table tbl_account(
     password varchar(356) not null
 )DEFAULT CHARACTER SET utf8  DEFAULT COLLATE utf8_general_ci;
 
+/*	Table for Server Details  */
+create table tbl_serverDetails(
+    id_details int PRIMARY KEY auto_increment,
+    Local varchar(50) not null,
+    date varchar(10) not null,
+    time varchar(5) not null
+)DEFAULT CHARACTER SET utf8  DEFAULT COLLATE utf8_general_ci;
+
 -- Selects
 select * from tbl_account;
+select * from tbl_serverDetails;
