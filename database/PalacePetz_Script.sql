@@ -37,7 +37,8 @@ create table tbl_serverDetails(
     id_details int PRIMARY KEY auto_increment,
     Local varchar(50) not null,
     date varchar(10) not null,
-    time varchar(5) not null
+    time varchar(5) not null,
+    Description varchar(500)
 )DEFAULT CHARACTER SET utf8  DEFAULT COLLATE utf8_general_ci;
 
 -- Selects
