@@ -1,11 +1,12 @@
 {
-    "env": {
-        "MYSQL_USER": "b3538b71baa909",
-        "MYSQL_PASSWORD": "75a5bd03",
-        "MYSQL_DATABASE": "heroku_7b1399765cd2afd",
-        "MYSQL_HOST": "us-cdbr-east-03.cleardb.com",
-        "MYSQL_PORT": 3306,
+    "env" : {
+        "MYSQL_USER" : "root",
+        "MYSQL_PASSWORD" : "kaua2004",
+        "MYSQL_DATABASE" : "db_palacepetz",
+        "MYSQL_HOST" : "localhost",
+        "MYSQL_PORT" : 3306,
 
-        "JWT_KEY": "45systempa9lacepetzapi51secretkeyx"
+        "JWT_KEY" : "secretpalace564789keyapipalacepetz",
+        "URL_API" : "http://localhost:3000/"
     }
 }
