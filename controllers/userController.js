@@ -11,7 +11,7 @@ exports.Login = async (req, res, next) => {
         if(resultList.length > 0){
             for(var i = 0 ; i < resultList.length; i++){
                 var email = EncryptDep.Decrypt(resultList[i].email);
-                if(email == req.body.email ){
+                if(email == req.params.email ){
                     console.log('Email found')
                         const response = {
                             id_user: resultList[i].id_user,

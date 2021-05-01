@@ -7,7 +7,7 @@ const UsersController = require('../controllers/userController')
 router.post('/register', UsersController.RegisterUsers);
 
 // Login User
-router.post('/login', UsersController.Login);
+router.post('/login/:email', UsersController.Login);
 
 // Update Address
 router.patch('/update/address', UsersController.UpdateAddress)
