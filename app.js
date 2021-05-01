@@ -28,6 +28,7 @@ app.use((req, res, next) => {
 
 //  Default Routes
 app.get('/', async (request, response) => {
+    //  Base Url
     response.redirect('https://www.kauavitorio.com/systemstrength/api/')
 });
 
