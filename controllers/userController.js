@@ -2,6 +2,7 @@ const mysql = require('../mysql')
 const bcrypt = require('bcrypt');
 const EncryptDep = require('../controllers/encryption')
 const ServerDetails = require('../ServerError') 
+const BadWords = require('../controllers/badWords') 
 const IMG_USER = 'https://www.kauavitorio.com/host-itens/Default_Profile_Image_palacepetz.png';
 
 //  Method for login user
@@ -42,15 +43,18 @@ exports.Login = async (req, res, next) => {
 //  Method for register new user
 exports.RegisterUsers = async (req, res, next) => {
     try {
-        var Emailcollection = [];
-        const resultList = await mysql.execute('SELECT * FROM tbl_account;')
-        if(resultList.length > 0){
-            for(var i = 0 ; i < resultList.length; i++){
+        if(BadWords.VerifyUsername(req.body.name_user)){
+            return res.status(406).send({ error: "Username not allowed"})
+        }else{
+            var Emailcollection = [];
+            const resultList = await mysql.execute('SELECT * FROM tbl_account;')
+            if(resultList.length > 0){
+                for(var i = 0 ; i < resultList.length; i++){
                 var email = EncryptDep.Decrypt(resultList[i].email);
-                if(email == req.body.email ){
-                    Emailcollection.push(i)
+                    if(email == req.body.email ){
+                        Emailcollection.push(i)
+                    }
                 }
-            }
             if(Emailcollection.length > 0){
                 return res.status(409).send({ message: 'User already registered' })
             }else{
@@ -82,6 +86,7 @@ exports.RegisterUsers = async (req, res, next) => {
                     }
                 }
                     return res.status(201).send(response);
+        }
         }
     } catch (error) {
         ServerDetails.RegisterServerError("Register User", error.toString());
