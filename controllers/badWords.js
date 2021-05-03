@@ -1,3 +1,4 @@
+//Method for Verify BadWords on User Name
 exports.VerifyUsername = (Username) => {
     var FullName = Username.toLowerCase().split(" ");
     var NameList = [];
