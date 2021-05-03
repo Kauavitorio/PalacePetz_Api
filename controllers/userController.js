@@ -23,6 +23,7 @@ exports.Login = async (req, res, next) => {
                             complement: EncryptDep.Decrypt(resultList[i].complement),
                             zipcode: EncryptDep.Decrypt(resultList[i].zipcode),
                             phone_user: EncryptDep.Decrypt(resultList[i].phone_user),
+                            birth_date: EncryptDep.Decrypt(resultList[i].birth_date),
                             user_type: resultList[i].user_type,
                             img_user: EncryptDep.Decrypt(resultList[i].img_user)
                         }
