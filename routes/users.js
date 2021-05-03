@@ -12,4 +12,4 @@ router.post('/login', UsersController.Login);
 // Update Address
 router.patch('/update/address', UsersController.UpdateAddress)
 
-module.exports = router;
+module.exports = router

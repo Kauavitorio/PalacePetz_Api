@@ -18,7 +18,7 @@ use db_palacepetz;
 /**************************************************/
 
 --	Table for Account
-drop table tbl_account;
+-- drop table tbl_account;
 create table tbl_account(
     id_user int primary key auto_increment,
     name_user varchar(356) not null,
@@ -28,6 +28,7 @@ create table tbl_account(
     complement varchar(600) default "null",
     zipcode varchar(600) default "null",
     phone_user varchar(600) default "null",
+    birth_date varchar(200) default "null",
     user_type int default 0,
     img_user varchar(300),
     password varchar(356) not null
