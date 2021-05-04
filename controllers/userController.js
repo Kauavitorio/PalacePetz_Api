@@ -106,7 +106,7 @@ exports.UpdateAddress = async (req, res, next) => {
             await mysql.execute(query, [ EncryptDep.Encrypto(req.body.address_user), EncryptDep.Encrypto(req.body.complement), EncryptDep.Encrypto(req.body.zipcode), req.body.id_user ])
             return res.status(202).send({ message: 'Address updated successfully !!'})
         }else{
-            return res.status(404).send({ message: 'User not registered' })
+            return res.status(404).send({ message: 'User not registered update Address' })
         }
     } catch (error) {
         ServerDetails.RegisterServerError("Update Address", error.toString());
