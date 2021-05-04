@@ -99,14 +99,14 @@ exports.RegisterUsers = async (req, res, next) => {
 exports.UpdateAddress = async (req, res, next) => {
     try {
         var queryUser = `SELECT * FROM tbl_account where id_user = ?`
-        var result  = await mysql.execute(queryUser, [req.params.id_user])
+        var result  = await mysql.execute(queryUser, [req.body.id_user])
         if(result.length > 0){
             var query = `UPDATE tbl_account SET address_user = ?,
             complement = ?, zipcode = ? WHERE id_user = ?`
             await mysql.execute(query, [ EncryptDep.Encrypto(req.body.address_user), EncryptDep.Encrypto(req.body.complement), EncryptDep.Encrypto(req.body.zipcode), req.body.id_user ])
             return res.status(202).send({ message: 'Address updated successfully !!'})
         }else{
-            return res.status(404).send({ message: 'User not registered update Address' })
+            return res.status(400).send({ message: 'User not registered update Address' })
         }
     } catch (error) {
         ServerDetails.RegisterServerError("Update Address", error.toString());
