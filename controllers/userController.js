@@ -99,7 +99,7 @@ exports.RegisterUsers = async (req, res, next) => {
 exports.UpdateAddress = async (req, res, next) => {
     try {
         var queryUser = `SELECT * FROM tbl_account where id_user = ?`
-        var result  = await mysql.execute(queryUser, [req.body.id_user])
+        var result  = await mysql.execute(queryUser, [req.params.id_user])
         if(result.length > 0){
             var query = `UPDATE tbl_account SET address_user = ?,
             complement = ?, zipcode = ? WHERE id_user = ?`

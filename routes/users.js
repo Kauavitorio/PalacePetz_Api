@@ -10,7 +10,7 @@ router.post('/register', UsersController.RegisterUsers);
 router.post('/login', UsersController.Login);
 
 // Update Address
-router.patch('/update/address', UsersController.UpdateAddress)
+router.patch('/update/address/:id_user', UsersController.UpdateAddress)
 
 // Update Profile Image
 router.patch('/update/profile/image/', UsersController.UpdateProfileImage)
