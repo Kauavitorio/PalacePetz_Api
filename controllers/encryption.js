@@ -3,13 +3,18 @@ const CRYPTKEY = process.env.JWT_KEY;
 
 // Decrypt
 exports.Decrypt = (EncryText) => {
-    var bytes  = CryptoJS.AES.decrypt(EncryText, CRYPTKEY);
-    var originalText = bytes.toString(CryptoJS.enc.Utf8);
-return originalText;
+    if(EncryText == null || EncryText == "" || EncryText == " "){
+        return null;
+    }else{
+        let decData = CryptoJS.enc.Base64.parse(EncryText).toString(CryptoJS.enc.Utf8)
+        let bytes = CryptoJS.AES.decrypt(decData, CRYPTKEY).toString(CryptoJS.enc.Utf8)
+        return JSON.parse(bytes)
+    }
 }
 
 // Encrypto
 exports.Encrypto = (OriginalText) => {
-    var encrypText = CryptoJS.AES.encrypt(OriginalText, CRYPTKEY).toString()
-return encrypText;
+    let encJson = CryptoJS.AES.encrypt(JSON.stringify(OriginalText), CRYPTKEY).toString()
+    let encData = CryptoJS.enc.Base64.stringify(CryptoJS.enc.Utf8.parse(encJson))
+    return encData
 }
