@@ -142,14 +142,14 @@ exports.UpdateProfileImage = async (req, res, next) => {
 exports.UpdateProfile = async (req, res, next) => {
     try{
         console.log("Updating user info\n")
-        var query = `SELECT * FROM tbl_account WHERE id_user = ?;`
-        var result = await mysql.execute(query, req.body.id_user)
+        var queryUser = `SELECT * FROM tbl_account WHERE id_user = ?;`
+        var result = await mysql.execute(queryUser, req.body.id_user)
         console.log("ID: " + req.body.id_user + "\n")
         if(result.length > 0){
             if(BadWords.VerifyUsername(req.body.name_user)){
                 return res.status(406).send({ error: "Username not allowed"})                
             }else{
-                query = `UPDATE tbl_account SET 
+                var query = `UPDATE tbl_account SET 
                 name_user = ?,
                 cpf_user = ?,
                 address_user = ?, 
