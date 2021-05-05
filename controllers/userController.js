@@ -155,8 +155,7 @@ exports.UpdateProfile = async (req, res, next) => {
                 complement = ?, 
                 zipcode = ?, 
                 phone_user = ?, 
-                birth_date = ?, 
-                img_user = ? 
+                birth_date = ?
                     WHERE id_user = ?`
                 await mysql.execute(query, [EncryptDep.Encrypto(req.body.name_user), EncryptDep.Encrypto(req.body.cpf_user), EncryptDep.Encrypto(req.body.address_user), EncryptDep.Encrypto(req.body.complement), EncryptDep.Encrypto(req.body.zipcode), EncryptDep.Encrypto(req.body.phone_user), EncryptDep.Encrypto(req.body.birth_date), EncryptDep.Encrypto(req.body.img_user), ID_USER])
                 return res.status(200).send( { message: 'User information successfully update'} )
