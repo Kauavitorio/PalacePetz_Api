@@ -21,17 +21,17 @@ use db_palacepetz;
 -- drop table tbl_account;
 create table tbl_account(
     id_user int primary key auto_increment,
-    name_user varchar(356) not null,
-    email varchar(256) not null,
+    name_user varchar(600) not null,
+    email varchar(600) not null,
     cpf_user varchar(600) not null,
-    address_user varchar(200),
+    address_user varchar(600),
     complement varchar(600),
     zipcode varchar(600),
-    phone_user varchar(200),
-    birth_date varchar(200),
+    phone_user varchar(600),
+    birth_date varchar(600),
     user_type int default 0,
-    img_user varchar(300),
-    password varchar(356) not null
+    img_user varchar(600),
+    password varchar(600) not null
 )DEFAULT CHARACTER SET utf8  DEFAULT COLLATE utf8_general_ci;
 
 --  Table for Products
