@@ -4,6 +4,8 @@ const morgan = require('morgan');
 const bodyParser = require('body-parser')
 
 const userRoute = require('./routes/users')
+const productRoute = require('./routes/products')
+const categoryRoute = require('./routes/category')
 const testRoute = require('./tests/routes/tests')
 
 //  Configuring APP
@@ -35,8 +37,14 @@ app.get('/', async (request, response) => {
 //  User Route
 app.use('/user', userRoute);
 
+// Products Route
+app.use('/products', productRoute);
+
+// Category Route
+app.use('/category', categoryRoute);
+
 //  Router for Test
-app.use('/test', testRoute)
+app.use('/test', testRoute); 
 
 //  When rote not found, joing here:
 app.use((req, res, next) => {
@@ -52,6 +60,6 @@ app.use((error, req, res, next) => {
             mensagem: error.message
         }
     });
-}); //  End ""HERE"
+}); //  End "HERE"
 
 module.exports = app;

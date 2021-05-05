@@ -8,7 +8,7 @@ exports.Decrypt = (EncryText) => {
     }else{
         let decData = CryptoJS.enc.Base64.parse(EncryText).toString(CryptoJS.enc.Utf8)
         let bytes = CryptoJS.AES.decrypt(decData, CRYPTKEY).toString(CryptoJS.enc.Utf8)
-        return JSON.parse(bytes)
+        return JSON.parse(JSON.parse(JSON.stringify(bytes)))
     }
 }
 
