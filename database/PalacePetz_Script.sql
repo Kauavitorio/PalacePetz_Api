@@ -70,7 +70,6 @@ create table tbl_serverDetails(
     Description varchar(500)
 )DEFAULT CHARACTER SET utf8  DEFAULT COLLATE utf8_general_ci;
 
-
 -- Selects
 select * from tbl_account;
 select * from tbl_products;

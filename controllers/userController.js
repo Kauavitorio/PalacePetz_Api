@@ -4,10 +4,12 @@ const EncryptDep = require('../controllers/encryption')
 const ServerDetails = require('../ServerError') 
 const BadWords = require('../controllers/badWords') 
 const IMG_USER = 'https://www.kauavitorio.com/host-itens/Default_Profile_Image_palacepetz.png';
+var requestId = 0;
 
 //  Method for login user
 exports.Login = async (req, res, next) => {
     try{
+        showRequestId()
         const resultList = await mysql.execute('SELECT * FROM tbl_account;')
         if(resultList.length > 0){
             for(var i = 0 ; i < resultList.length; i++){
@@ -44,6 +46,7 @@ exports.Login = async (req, res, next) => {
 //  Method for register new user
 exports.RegisterUsers = async (req, res, next) => {
     try {
+        showRequestId()
         if(BadWords.VerifyUsername(req.body.name_user)){
             return res.status(406).send({ error: "Username not allowed"})
         }else{
@@ -98,6 +101,7 @@ exports.RegisterUsers = async (req, res, next) => {
 // Method for Register Address
 exports.UpdateAddress = async (req, res, next) => {
     try {
+        showRequestId()
         var queryUser = `SELECT * FROM tbl_account where id_user = ?`
         var result  = await mysql.execute(queryUser, [req.body.id_user])
         if(result.length > 0){
@@ -117,6 +121,7 @@ exports.UpdateAddress = async (req, res, next) => {
 //Method for Update Profile Image
 exports.UpdateProfileImage = async (req, res, next) => {
     try{
+        showRequestId()
         var query;
         var URL_ProfileImage = EncryptDep.Encrypto(req.body.img_user)
         var ID_User = req.body.id_user
@@ -141,6 +146,7 @@ exports.UpdateProfileImage = async (req, res, next) => {
 //Method for Update Profile
 exports.UpdateProfile = async (req, res, next) => {
     try{
+        showRequestId()
         var queryUser = `SELECT * FROM tbl_account WHERE id_user = ?;`
         var result = await mysql.execute(queryUser, req.body.id_user)
         if(result.length > 0){
@@ -166,4 +172,9 @@ exports.UpdateProfile = async (req, res, next) => {
         ServerDetails.RegisterServerError("Update Profile", error.toString());
         return res.status(500).send( { error: error } )
     }
+}
+
+function showRequestId(){
+    requestId++;
+    console.log("---------------------\n-- Request Id: " + requestId + "\n---------------------")
 }
