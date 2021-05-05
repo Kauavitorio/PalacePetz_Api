@@ -35,10 +35,11 @@ create table tbl_account(
 )DEFAULT CHARACTER SET utf8  DEFAULT COLLATE utf8_general_ci;
 
 --  Table for Products
+drop table tbl_products;
 CREATE TABLE tbl_products(
     cd_prod int PRIMARY KEY AUTO_INCREMENT,
     cd_category int not null, FOREIGN KEY (cd_category) REFERENCES tbl_category (cd_category),
-    cd_stock int not null,  FOREIGN KEY (cd_stock) REFERENCES tbl_stock (cd_stock),
+    cd_stock int,
     nm_product VARCHAR(200) not null,
     product_price DECIMAL(10, 2) not null,
     description VARCHAR(200) not null,
@@ -56,10 +57,11 @@ create table tbl_category(
 --  Table for Stock
 create table tbl_stock(
     cd_stock int primary key auto_increment,
-    cd_prod int not null, 
-    amount int
+    cd_prod int not null, FOREIGN KEY (cd_prod) REFERENCES tbl_products (cd_prod), 
+    amount_stock int
 )DEFAULT CHARACTER SET utf8  DEFAULT COLLATE utf8_general_ci;
-alter table tbl_stock add FOREIGN KEY (cd_prod) REFERENCES tbl_products (cd_prod);
+
+drop table tbl_stock;
 
 /*	Table for Server Details  */
 create table tbl_serverDetails(
@@ -73,5 +75,6 @@ create table tbl_serverDetails(
 -- Selects
 select * from tbl_account;
 select * from tbl_products;
+select * from tbl_stock;
 select * from tbl_category;
 select * from tbl_serverDetails;
