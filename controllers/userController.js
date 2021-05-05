@@ -141,9 +141,10 @@ exports.UpdateProfileImage = async (req, res, next) => {
 //Method for Update Profile
 exports.UpdateProfile = async (req, res, next) => {
     try{
-        var ID_USER = req.body.id_user
-        var query = `SELECT * FROM tbl_account WHERE id_user = ? `
-        var result = await mysql.execute(query, ID_USER)
+        console.log("Updating user info\n")
+        var query = `SELECT * FROM tbl_account WHERE id_user = ?;`
+        var result = await mysql.execute(query, req.body.id_user)
+        console.log("ID: " + req.body.id_user + "\n")
         if(result.length > 0){
             if(BadWords.VerifyUsername(req.body.name_user)){
                 return res.status(406).send({ error: "Username not allowed"})                
@@ -157,7 +158,8 @@ exports.UpdateProfile = async (req, res, next) => {
                 phone_user = ?, 
                 birth_date = ?
                     WHERE id_user = ?`
-                await mysql.execute(query, [EncryptDep.Encrypto(req.body.name_user), EncryptDep.Encrypto(req.body.cpf_user), EncryptDep.Encrypto(req.body.address_user), EncryptDep.Encrypto(req.body.complement), EncryptDep.Encrypto(req.body.zipcode), EncryptDep.Encrypto(req.body.phone_user), EncryptDep.Encrypto(req.body.birth_date), EncryptDep.Encrypto(req.body.img_user), ID_USER])
+                await mysql.execute(query, [EncryptDep.Encrypto(req.body.name_user), EncryptDep.Encrypto(req.body.cpf_user), EncryptDep.Encrypto(req.body.address_user), EncryptDep.Encrypto(req.body.complement), EncryptDep.Encrypto(req.body.zipcode), EncryptDep.Encrypto(req.body.phone_user), EncryptDep.Encrypto(req.body.birth_date), EncryptDep.Encrypto(req.body.img_user), req.body.id_user])
+                console.log("Phone: " + req.body.phone_user)
                 return res.status(200).send( { message: 'User information successfully update'} )
             }
         }else{
