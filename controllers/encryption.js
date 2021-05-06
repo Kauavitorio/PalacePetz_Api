@@ -8,7 +8,6 @@ exports.Decrypt = (EncryText) => {
     }else{
         let decData = CryptoJS.enc.Base64.parse(EncryText).toString(CryptoJS.enc.Utf8)
         let bytes = CryptoJS.AES.decrypt(decData, CRYPTKEY).toString(CryptoJS.enc.Utf8)
-        console.log("\nAssim: "+JSON.parse(bytes))
         return JSON.parse(bytes)
     }
 }
@@ -17,6 +16,5 @@ exports.Decrypt = (EncryText) => {
 exports.Encrypto = (OriginalText) => {
     let encJson = CryptoJS.AES.encrypt(JSON.stringify(OriginalText), CRYPTKEY).toString()
     let encData = CryptoJS.enc.Base64.stringify(CryptoJS.enc.Utf8.parse(encJson))
-    console.log("Chego: "+  OriginalText + "\n" + "SAiu: " + encData)
     return encData
 }

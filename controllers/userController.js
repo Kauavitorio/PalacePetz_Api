@@ -10,7 +10,6 @@ var requestId = 0;
 exports.Login = async (req, res, next) => {
     try{
         showRequestId()
-        console.log("\n" + "Email: " + req.body.email + "\n")
         const resultList = await mysql.execute('SELECT * FROM tbl_account;')
         if(resultList.length > 0){
             for(var i = 0 ; i < resultList.length; i++){
@@ -48,7 +47,6 @@ exports.Login = async (req, res, next) => {
 exports.RegisterUsers = async (req, res, next) => {
     try {
         showRequestId()
-        console.log("Nome: " + req.body.name_user + "\n"+ "Email: " + req.body.email + "\n" + "Cpf: " + req.body.cpf_user + "\n" + "Senha: " + req.body.password)
         if(BadWords.VerifyUsername(req.body.name_user)){
             return res.status(406).send({ error: "Username not allowed"})
         }else{
