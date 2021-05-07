@@ -2,7 +2,7 @@ const mysql = require('../mysql')
 const bcrypt = require('bcrypt');
 const EncryptDep = require('../controllers/encryption')
 const ServerDetails = require('../ServerError') 
-const BadWords = require('../controllers/badWords') 
+const BadWords = require('../controllers/badWords')
 const IMG_USER = 'https://www.kauavitorio.com/host-itens/Default_Profile_Image_palacepetz.png';
 var requestId = 0;
 
@@ -51,7 +51,7 @@ exports.RegisterUsers = async (req, res, next) => {
             return res.status(406).send({ error: "Username not allowed"})
         }else{
             var Emailcollection = [];
-            const resultList = await mysql.execute('SELECT * FROM tbl_account;')
+            const resultList = await mysql.execute('SELECT email FROM tbl_account;')
             if(resultList.length > 0){
                 for(var i = 0 ; i < resultList.length; i++){
                 var email = EncryptDep.Decrypt(resultList[i].email);
@@ -118,7 +118,7 @@ exports.UpdateAddress = async (req, res, next) => {
     }
 }
 
-//Method for Update Profile Image
+//  Method for Update Profile Image
 exports.UpdateProfileImage = async (req, res, next) => {
     try{
         showRequestId()
@@ -143,7 +143,7 @@ exports.UpdateProfileImage = async (req, res, next) => {
     }
 }
 
-//Method for Update Profile
+//  Method for Update Profile
 exports.UpdateProfile = async (req, res, next) => {
     try{
         showRequestId()
@@ -170,6 +170,62 @@ exports.UpdateProfile = async (req, res, next) => {
         }
     }catch(error){
         ServerDetails.RegisterServerError("Update Profile", error.toString());
+        return res.status(500).send( { error: error } )
+    }
+}
+
+//  Method for register new card
+exports.RegisterNewCard = async (req, res, next) => {
+    var nmUser_card = req.body.nmUser_card;
+    var id_user = req.body.id_user;
+    try {
+        showRequestId()
+        var queryUser = `SELECT * FROM tbl_account WHERE id_user = ?;`
+        var resultUser = await mysql.execute(queryUser, id_user)
+        if(resultUser.length > 0){
+            var queryCardVerify = `SELECT number_card FROM tbl_cards WHERE id_user = ?;`
+            var resultCardVerify = await mysql.execute(queryCardVerify, id_user)
+            if(resultCardVerify.length > 0){
+                var NumberCardList = [];
+                for(var i = 0 ; i < resultCardVerify.length; i++){
+                    var number_card = EncryptDep.Decrypt(resultCardVerify[i].number_card);
+                        if(number_card == req.body.number_card ){
+                            NumberCardList.push(i)
+                        }
+                    }
+            if(NumberCardList.length > 0){
+                return res.status(409).send({ message: 'Card already registered' })
+            }else{
+                if(BadWords.VerifyUsername(nmUser_card)){
+                    return res.status(406).send({ error: "Card name not allowed"})                
+                }else{
+                    const query = `INSERT INTO tbl_cards (id_user, flag_card, number_card, shelflife_card, cvv_card, nmUser_card) VALUES (?,?,?,?,?,?)`
+                    var result  = await mysql.execute(query, [ id_user, EncryptDep.Encrypto(req.body.flag_card), EncryptDep.Encrypto(req.body.number_card), EncryptDep.Encrypto(req.body.shelflife_card), EncryptDep.Encrypto(req.body.cvv_card), EncryptDep.Encrypto(nmUser_card) ] )
+                    const response = {
+                        message: "User created successfully",
+                        cd_card: result.insertId
+                    }
+                    return res.status(201).send(response);
+                }
+            }
+            }else{
+                if(BadWords.VerifyUsername(nmUser_card)){
+                    return res.status(406).send({ error: "Card name not allowed"})                
+                }else{
+                    const query = `INSERT INTO tbl_cards (id_user, flag_card, number_card, shelflife_card, cvv_card, nmUser_card) VALUES (?,?,?,?,?,?)`
+                    var result  = await mysql.execute(query, [ id_user, EncryptDep.Encrypto(req.body.flag_card), EncryptDep.Encrypto(req.body.number_card), EncryptDep.Encrypto(req.body.shelflife_card), EncryptDep.Encrypto(req.body.cvv_card), EncryptDep.Encrypto(nmUser_card) ] )
+                    const response = {
+                        message: "User created successfully",
+                        cd_card: result.insertId
+                    }
+                    return res.status(201).send(response);
+                }
+            }
+        }else{
+            return res.status(404).send( { message: 'User not registered' } )
+        }
+    } catch (error) {
+        ServerDetails.RegisterServerError("Register New Card", error.toString());
         return res.status(500).send( { error: error } )
     }
 }

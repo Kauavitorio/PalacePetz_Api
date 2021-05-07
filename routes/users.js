@@ -18,4 +18,7 @@ router.patch('/update/profile/image/', UsersController.UpdateProfileImage)
 // Update Profile
 router.patch('/update/profile', UsersController.UpdateProfile)
 
+// Register new Card
+router.post('/register/card', UsersController.RegisterNewCard)
+
 module.exports = router
