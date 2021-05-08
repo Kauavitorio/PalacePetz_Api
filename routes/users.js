@@ -21,4 +21,7 @@ router.patch('/update/profile', UsersController.UpdateProfile)
 // Register new Card
 router.post('/register/card', UsersController.RegisterNewCard)
 
+//  Confirm E-mail
+router.get('/confirm/email/:verify_id/:id_user', UsersController.ConfirmEmail)
+
 module.exports = router

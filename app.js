@@ -34,6 +34,11 @@ app.get('/', async (request, response) => {
     response.redirect('https://www.kauavitorio.com/systemstrength/api/')
 });
 
+app.get('/emailconfirmed', async (request, response) => {
+    //  Base Url
+    response.redirect('https://www.kauavitorio.com')
+});
+
 //  User Route
 app.use('/user', userRoute);
 
