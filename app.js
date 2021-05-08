@@ -35,8 +35,7 @@ app.get('/', async (request, response) => {
 });
 
 app.get('/emailconfirmed', async (request, response) => {
-    //  Base Url
-    response.redirect('https://www.kauavitorio.com')
+    response.redirect('https://www.kauavitorio.com/palacepetz/email/verifiedemail')
 });
 
 //  User Route

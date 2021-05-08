@@ -18,7 +18,7 @@ use db_palacepetz;
 /**************************************************/
 
 --	Table for Account
--- drop table tbl_account;
+ drop table tbl_account;
 create table tbl_account(
     id_user int primary key auto_increment,
     name_user varchar(600) not null,
@@ -31,11 +31,13 @@ create table tbl_account(
     birth_date varchar(600),
     user_type int default 0,
     img_user varchar(600),
-    password varchar(600) not null
+    password varchar(600) not null,
+    verify_id varchar(200) not null,
+    verify int default 0
 )DEFAULT CHARACTER SET utf8  DEFAULT COLLATE utf8_general_ci;
 
 --  Table for Products
-drop table tbl_products;
+-- drop table tbl_products;
 CREATE TABLE tbl_products(
     cd_prod int PRIMARY KEY AUTO_INCREMENT,
     cd_category int not null, FOREIGN KEY (cd_category) REFERENCES tbl_category (cd_category),
