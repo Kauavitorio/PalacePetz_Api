@@ -61,7 +61,17 @@ create table tbl_stock(
     amount_stock int
 )DEFAULT CHARACTER SET utf8  DEFAULT COLLATE utf8_general_ci;
 
-drop table tbl_stock;
+--	Table for Cards
+-- drop table tbl_cards;
+create table tbl_cards(
+    cd_card int primary key auto_increment,
+    id_user int not null, FOREIGN KEY (id_user) REFERENCES tbl_account (id_user), 
+    flag_card varchar(500) not null,
+    number_card varchar(500) not null,
+    shelflife_card varchar(500) not null,
+    cvv_card varchar(500) not null,
+    nmUser_card varchar(500) not null
+)DEFAULT CHARACTER SET utf8  DEFAULT COLLATE utf8_general_ci;
 
 /*	Table for Server Details  */
 create table tbl_serverDetails(
@@ -77,4 +87,5 @@ select * from tbl_account;
 select * from tbl_products;
 select * from tbl_stock;
 select * from tbl_category;
+select * from tbl_cards;
 select * from tbl_serverDetails;

@@ -2,7 +2,11 @@ const mysql = require('../mysql')
 const bcrypt = require('bcrypt');
 const EncryptDep = require('../controllers/encryption')
 const ServerDetails = require('../ServerError') 
-const BadWords = require('../controllers/badWords') 
+const BadWords = require('../controllers/badWords')
+var nodemailer = require('nodemailer')
+var handlebars = require('handlebars');
+var fs = require('fs');
+var EmailTemplate = require('email-templates').EmailTemplate
 const IMG_USER = 'https://www.kauavitorio.com/host-itens/Default_Profile_Image_palacepetz.png';
 var requestId = 0;
 
@@ -51,7 +55,7 @@ exports.RegisterUsers = async (req, res, next) => {
             return res.status(406).send({ error: "Username not allowed"})
         }else{
             var Emailcollection = [];
-            const resultList = await mysql.execute('SELECT * FROM tbl_account;')
+            const resultList = await mysql.execute('SELECT email FROM tbl_account;')
             if(resultList.length > 0){
                 for(var i = 0 ; i < resultList.length; i++){
                 var email = EncryptDep.Decrypt(resultList[i].email);
@@ -62,10 +66,14 @@ exports.RegisterUsers = async (req, res, next) => {
             if(Emailcollection.length > 0){
                 return res.status(409).send({ message: 'User already registered' })
             }else{
+                var idVerifyEMail = makeidForUser(2) + "-Pala"+ makeidForUser(1) +"cePetz-" + "a" + makeidForUser(1) + "l"+ makeidForUser(3) + "a"+ makeidForUser(1) + "c"+ makeidForUser(1) + "e"+ makeidForUser(1) + makeidForUser(9) + "-Pala"+ makeidForUser(1) +"cePetz-" + makeidForUser(2)
                 const hash = await bcrypt.hashSync(req.body.password, 12);
-                query = 'INSERT INTO tbl_account (name_user, email, cpf_user, password, img_user) VALUES (?,?,?,?,?)';
+                query = 'INSERT INTO tbl_account (name_user, email, cpf_user, password, img_user, verify_id) VALUES (?,?,?,?,?,?)';
                 var results = await mysql.execute(query, [ EncryptDep.Encrypto(req.body.name_user), EncryptDep.Encrypto(req.body.email),
-                    EncryptDep.Encrypto(req.body.cpf_user), hash, EncryptDep.Encrypto(IMG_USER)])
+                    EncryptDep.Encrypto(req.body.cpf_user), hash, EncryptDep.Encrypto(IMG_USER), idVerifyEMail])
+
+                //  Sending email for new user
+                var resultEmail = Accountconfirmationemail(req.body.email, req.body.name_user, process.env.URL_API + "user/confirm/email/" + idVerifyEMail + "/" + results.insertId)
                 //  Creating resposto to return
                 const response = {
                     message: 'User created successfully',
@@ -74,13 +82,21 @@ exports.RegisterUsers = async (req, res, next) => {
                         name_user: req.body.name_user
                     }
                 }
+                if(resultEmail == "Sent"){
                     return res.status(201).send(response);
+                }else{
+                    return res.status(201).send(response);
+                }
             }
         }else{
-            const hash = await bcrypt.hashSync(req.body.password, 12);
-                query = 'INSERT INTO tbl_account (name_user, email, cpf_user, password, img_user) VALUES (?,?,?,?,?)';
+                var idVerifyEMail = makeidForUser(2) + "-Pala"+ makeidForUser(1) +"cePetz-" + "a" + makeidForUser(1) + "l"+ makeidForUser(3) + "a"+ makeidForUser(1) + "c"+ makeidForUser(1) + "e"+ makeidForUser(1) + makeidForUser(9) + "-Pala"+ makeidForUser(1) +"cePetz-" + makeidForUser(2)
+                const hash = await bcrypt.hashSync(req.body.password, 12);
+                query = 'INSERT INTO tbl_account (name_user, email, cpf_user, password, img_user, verify_id) VALUES (?,?,?,?,?,?)';
                 var results = await mysql.execute(query, [ EncryptDep.Encrypto(req.body.name_user), EncryptDep.Encrypto(req.body.email),
-                    EncryptDep.Encrypto(req.body.cpf_user), hash, EncryptDep.Encrypto(IMG_USER)])
+                    EncryptDep.Encrypto(req.body.cpf_user), hash, EncryptDep.Encrypto(IMG_USER), idVerifyEMail])
+
+                //  Sending email for new user
+                var resultEmail = Accountconfirmationemail(req.body.email, req.body.name_user, process.env.URL_API + "user/confirm/email/" + idVerifyEMail + "/" + results.insertId)
                 //  Creating resposto to return
                 const response = {
                     message: 'User created successfully',
@@ -89,7 +105,11 @@ exports.RegisterUsers = async (req, res, next) => {
                         name_user: req.body.name_user
                     }
                 }
+                if(resultEmail == "Sent"){
                     return res.status(201).send(response);
+                }else{
+                    return res.status(201).send(response);
+                }
         }
         }
     } catch (error) {
@@ -118,7 +138,7 @@ exports.UpdateAddress = async (req, res, next) => {
     }
 }
 
-//Method for Update Profile Image
+//  Method for Update Profile Image
 exports.UpdateProfileImage = async (req, res, next) => {
     try{
         showRequestId()
@@ -143,7 +163,7 @@ exports.UpdateProfileImage = async (req, res, next) => {
     }
 }
 
-//Method for Update Profile
+//  Method for Update Profile
 exports.UpdateProfile = async (req, res, next) => {
     try{
         showRequestId()
@@ -174,7 +194,149 @@ exports.UpdateProfile = async (req, res, next) => {
     }
 }
 
+//  Method for register new card
+exports.RegisterNewCard = async (req, res, next) => {
+    var nmUser_card = req.body.nmUser_card;
+    var id_user = req.body.id_user;
+    try {
+        showRequestId()
+        var queryUser = `SELECT * FROM tbl_account WHERE id_user = ?;`
+        var resultUser = await mysql.execute(queryUser, id_user)
+        if(resultUser.length > 0){
+            var queryCardVerify = `SELECT number_card FROM tbl_cards WHERE id_user = ?;`
+            var resultCardVerify = await mysql.execute(queryCardVerify, id_user)
+            if(resultCardVerify.length > 0){
+                var NumberCardList = [];
+                for(var i = 0 ; i < resultCardVerify.length; i++){
+                    var number_card = EncryptDep.Decrypt(resultCardVerify[i].number_card);
+                        if(number_card == req.body.number_card ){
+                            NumberCardList.push(i)
+                        }
+                    }
+            if(NumberCardList.length > 0){
+                return res.status(409).send({ message: 'Card already registered' })
+            }else{
+                if(BadWords.VerifyUsername(nmUser_card)){
+                    return res.status(406).send({ error: "Card name not allowed"})                
+                }else{
+                    const query = `INSERT INTO tbl_cards (id_user, flag_card, number_card, shelflife_card, cvv_card, nmUser_card) VALUES (?,?,?,?,?,?)`
+                    var result  = await mysql.execute(query, [ id_user, EncryptDep.Encrypto(req.body.flag_card), EncryptDep.Encrypto(req.body.number_card), EncryptDep.Encrypto(req.body.shelflife_card), EncryptDep.Encrypto(req.body.cvv_card), EncryptDep.Encrypto(nmUser_card) ] )
+                    const response = {
+                        message: "User created successfully",
+                        cd_card: result.insertId
+                    }
+                    return res.status(201).send(response);
+                }
+            }
+            }else{
+                if(BadWords.VerifyUsername(nmUser_card)){
+                    return res.status(406).send({ error: "Card name not allowed"})                
+                }else{
+                    const query = `INSERT INTO tbl_cards (id_user, flag_card, number_card, shelflife_card, cvv_card, nmUser_card) VALUES (?,?,?,?,?,?)`
+                    var result  = await mysql.execute(query, [ id_user, EncryptDep.Encrypto(req.body.flag_card), EncryptDep.Encrypto(req.body.number_card), EncryptDep.Encrypto(req.body.shelflife_card), EncryptDep.Encrypto(req.body.cvv_card), EncryptDep.Encrypto(nmUser_card) ] )
+                    const response = {
+                        message: "User created successfully",
+                        cd_card: result.insertId
+                    }
+                    return res.status(201).send(response);
+                }
+            }
+        }else{
+            return res.status(404).send( { message: 'User not registered' } )
+        }
+    } catch (error) {
+        ServerDetails.RegisterServerError("Register New Card", error.toString());
+        return res.status(500).send( { error: error } )
+    }
+}
+
+exports.ConfirmEmail = async (req, res, next) => {
+    var verify_id = req.params.verify_id
+    var id_user = req.params.id_user
+    if(verify_id == null || verify_id == " " || verify_id == "" || id_user == null || id_user == " " || id_user == ""){
+        res.status(500).send({ message: 'Erro ao receber suas informações, tente novamente mais tarde.' })
+    }else{
+        const resultList = await mysql.execute('SELECT verify_id FROM tbl_account WHERE id_user = ?;', id_user)
+        if(resultList.length > 0){
+            console.log(resultList[0].verify_id)
+            if(resultList[0].verify_id == verify_id){
+                const queryUpdate = `UPDATE tbl_account set verify_id = "Confirmed", verify = 1 WHERE id_user = ?`
+                await mysql.execute(queryUpdate, id_user);
+                res.writeHead(302, { 'Location': process.env.URL_API + 'emailconfirmed' });
+                res.end();
+            }else{
+                return res.status(409).send({ message: 'Email já verificado!!' })
+            }
+        }else{
+            return res.status(404).send( { message: 'User not registered' } )
+        }
+    }
+}
+
 function showRequestId(){
     requestId++;
     console.log("---------------------\n-- Request Id: " + requestId + "\n---------------------")
+}
+
+function makeidForUser(length) {
+    var result           = [];
+    var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvw-+*xyz0123456789';
+    var charactersLength = characters.length;
+    for ( var i = 0; i < length; i++ ) {
+      result.push(characters.charAt(Math.floor(Math.random() * 
+ charactersLength)));
+   }
+   var charset = result.join('');
+   var id = charset + Math.floor(Math.random() * 256);
+   return id;
+
+}
+
+function Accountconfirmationemail($recipient, $username, $url_toConfirm){
+    var transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+            user: 'palacepetz.shop@gmail.com',
+            pass: '@palacepetzshopsystem'
+        }
+    });
+
+    //  Create HTML reader
+    var readHTMLFile = function(path, callback) {
+        fs.readFile(path, {encoding: 'utf-8'}, function (err, html) {
+            if (err) {
+                throw err;
+                callback(err);
+            }
+            else {
+                callback(null, html);
+            }
+        });
+    };
+    readHTMLFile(__dirname + '/templates/confirmEmail.html', function(err, html) {
+        var template = handlebars.compile(html);
+        var replacements = {
+            username: $username,
+            url_confirm: $url_toConfirm
+        };
+
+        //  Set email template
+        var htmlToSend = template(replacements);
+        //  Create email formart
+        var mailOptions = {
+        from: '"Palace Petz 🐶" <palacepetz.shop@gmail.com>',
+        to: $recipient,
+        subject: 'Confirmação de e-mail!',
+        html : htmlToSend
+    };
+    transporter.sendMail(mailOptions, function(error, info){
+        if (error) {
+            console.log(error);
+            return "Error";
+        } else {
+            console.log('Email sent: ' + info.response);
+            return "Sent";
+        }
+    });
+    });
 }
