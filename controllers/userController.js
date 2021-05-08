@@ -19,21 +19,25 @@ exports.Login = async (req, res, next) => {
             for(var i = 0 ; i < resultList.length; i++){
                 var email = EncryptDep.Decrypt(resultList[i].email);
                 if(email == req.body.email ){
-                    console.log('\nEmail found\n')
-                        const response = {
-                            id_user: resultList[i].id_user,
-                            name_user: EncryptDep.Decrypt(resultList[i].name_user),
-                            email: EncryptDep.Decrypt(resultList[i].email),
-                            cpf_user: EncryptDep.Decrypt(resultList[i].cpf_user),
-                            address_user: EncryptDep.Decrypt(resultList[i].address_user),
-                            complement: EncryptDep.Decrypt(resultList[i].complement),
-                            zipcode: EncryptDep.Decrypt(resultList[i].zipcode),
-                            phone_user: EncryptDep.Decrypt(resultList[i].phone_user),
-                            birth_date: EncryptDep.Decrypt(resultList[i].birth_date),
-                            user_type: resultList[i].user_type,
-                            img_user: EncryptDep.Decrypt(resultList[i].img_user)
-                        }
-                        return res.status(200).send(response);
+                    if(resultList[i].verify_id == "Confirmed" || resultList[i].verify == 1){
+                        console.log('\nEmail found\n')
+                            const response = {
+                                id_user: resultList[i].id_user,
+                                name_user: EncryptDep.Decrypt(resultList[i].name_user),
+                                email: EncryptDep.Decrypt(resultList[i].email),
+                                cpf_user: EncryptDep.Decrypt(resultList[i].cpf_user),
+                                address_user: EncryptDep.Decrypt(resultList[i].address_user),
+                                complement: EncryptDep.Decrypt(resultList[i].complement),
+                                zipcode: EncryptDep.Decrypt(resultList[i].zipcode),
+                                phone_user: EncryptDep.Decrypt(resultList[i].phone_user),
+                                birth_date: EncryptDep.Decrypt(resultList[i].birth_date),
+                                user_type: resultList[i].user_type,
+                                img_user: EncryptDep.Decrypt(resultList[i].img_user)
+                            }
+                            return res.status(200).send(response);
+                    }else{
+                        return res.status(405).send( {message: 'Email is not verified !!'} );
+                    }
                 }
             }
         }else{
