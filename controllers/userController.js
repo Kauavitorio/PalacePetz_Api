@@ -11,42 +11,62 @@ var requestId = 0;
 exports.Login = async (req, res, next) => {
     try{
         showRequestId()
+        var Userlist = []
+        var email = req.body.email
+        var password = req.body.password
+        var id_user = 0;
         const resultList = await mysql.execute('SELECT * FROM tbl_account;')
         if(resultList.length > 0){
             for(var i = 0 ; i < resultList.length; i++){
-                var email = EncryptDep.Decrypt(resultList[i].email);
-                if(email == req.body.email ){
-                    if(resultList[i].verify_id == "Confirmed" || resultList[i].verify == 1){
-                        console.log('\nEmail found\n')
-                            const response = {
-                                id_user: resultList[i].id_user,
-                                name_user: EncryptDep.Decrypt(resultList[i].name_user),
-                                email: EncryptDep.Decrypt(resultList[i].email),
-                                cpf_user: EncryptDep.Decrypt(resultList[i].cpf_user),
-                                address_user: EncryptDep.Decrypt(resultList[i].address_user),
-                                complement: EncryptDep.Decrypt(resultList[i].complement),
-                                zipcode: EncryptDep.Decrypt(resultList[i].zipcode),
-                                phone_user: EncryptDep.Decrypt(resultList[i].phone_user),
-                                birth_date: EncryptDep.Decrypt(resultList[i].birth_date),
-                                user_type: resultList[i].user_type,
-                                img_user: EncryptDep.Decrypt(resultList[i].img_user)
-                            }
-                            return res.status(200).send(response);
-                    }else{
-                        return res.status(405).send( {message: 'Email is not verified !!'} );
-                    }
+                var emailGet = EncryptDep.Decrypt(resultList[i].email);
+                if(emailGet == email){
+                    id_user = resultList[i].id_user
+                    Userlist.push(id_user)
                 }
             }
+            if(Userlist.length > 0){
+                const result = await mysql.execute('SELECT * FROM tbl_account WHERE id_user = ?', id_user)
+                if(result.length > 0){
+                const match = await bcrypt.compareSync(password, result[0].password);
+                if(match){
+                    var verify_id = result[0].verify_id
+                    var verify = result[0].verify
+                    const response = {
+                        id_user: result[0].id_user,
+                        name_user: EncryptDep.Decrypt(result[0].name_user),
+                        email: EncryptDep.Decrypt(result[0].email),
+                        cpf_user: EncryptDep.Decrypt(result[0].cpf_user),
+                        address_user: EncryptDep.Decrypt(result[0].address_user),
+                        complement: EncryptDep.Decrypt(result[0].complement),
+                        zipcode: EncryptDep.Decrypt(result[0].zipcode),
+                        phone_user: EncryptDep.Decrypt(result[0].phone_user),
+                        birth_date: EncryptDep.Decrypt(result[0].birth_date),
+                        user_type: result[0].user_type,
+                        img_user: EncryptDep.Decrypt(result[0].img_user)
+                    }
+                if(verify_id == "Confirmed" || verify == 1){
+                    return res.status(200).send(response);
+                }else{
+                    return res.status(405).send( {message: 'Email is not verified !!'} );
+                }
+                }else{
+                    return res.status(401).send({ message: "Password or email invalid" });
+                }
+                }
+            }else{
+                return res.status(401).send({ message: "Password or email invalid" });
+            }
         }else{
-            ServerDetails.RegisterServerError("Search for user email", "No email on database");
             console.log('No email on database')
             return res.status(500).send({ error: "No email on database"})
         }
     }catch (error){
         ServerDetails.RegisterServerError("Login User", error.toString());
-        return res.status(500).send({ error: error})
+        return res.status(500).send({ error: error.toString()})
     }
 }
+
+
 
 //  Method for register new user
 exports.RegisterUsers = async (req, res, next) => {
