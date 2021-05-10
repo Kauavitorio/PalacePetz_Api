@@ -24,4 +24,7 @@ router.post('/register/card', UsersController.RegisterNewCard)
 //  Confirm E-mail
 router.get('/confirm/email/:verify_id/:id_user', UsersController.ConfirmEmail)
 
+//  Reset Password request
+router.post('/request/password/', UsersController.RequestPasswordReset)
+
 module.exports = router

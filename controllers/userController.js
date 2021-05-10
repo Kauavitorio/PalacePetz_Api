@@ -3,10 +3,7 @@ const bcrypt = require('bcrypt');
 const EncryptDep = require('../controllers/encryption')
 const ServerDetails = require('../ServerError') 
 const BadWords = require('../controllers/badWords')
-var nodemailer = require('nodemailer')
-var handlebars = require('handlebars');
-var fs = require('fs');
-var EmailTemplate = require('email-templates').EmailTemplate
+const Emails = require('./email')
 const IMG_USER = 'https://www.kauavitorio.com/host-itens/Default_Profile_Image_palacepetz.png';
 var requestId = 0;
 
@@ -77,7 +74,7 @@ exports.RegisterUsers = async (req, res, next) => {
                     EncryptDep.Encrypto(req.body.cpf_user), hash, EncryptDep.Encrypto(IMG_USER), idVerifyEMail])
 
                 //  Sending email for new user
-                var resultEmail = Accountconfirmationemail(req.body.email, req.body.name_user, process.env.URL_API + "user/confirm/email/" + idVerifyEMail + "/" + results.insertId)
+                var resultEmail = Emails.SendEmailConfirmation(req.body.email, req.body.name_user, process.env.URL_API + "user/confirm/email/" + idVerifyEMail + "/" + results.insertId)
                 //  Creating resposto to return
                 const response = {
                     message: 'User created successfully',
@@ -100,7 +97,7 @@ exports.RegisterUsers = async (req, res, next) => {
                     EncryptDep.Encrypto(req.body.cpf_user), hash, EncryptDep.Encrypto(IMG_USER), idVerifyEMail])
 
                 //  Sending email for new user
-                var resultEmail = Accountconfirmationemail(req.body.email, req.body.name_user, process.env.URL_API + "user/confirm/email/" + idVerifyEMail + "/" + results.insertId)
+                var resultEmail = Emails.SendEmailConfirmation(req.body.email, req.body.name_user, process.env.URL_API + "user/confirm/email/" + idVerifyEMail + "/" + results.insertId)
                 //  Creating resposto to return
                 const response = {
                     message: 'User created successfully',
@@ -255,6 +252,7 @@ exports.RegisterNewCard = async (req, res, next) => {
 }
 
 exports.ConfirmEmail = async (req, res, next) => {
+    try {
     var verify_id = req.params.verify_id
     var id_user = req.params.id_user
     if(verify_id == null || verify_id == " " || verify_id == "" || id_user == null || id_user == " " || id_user == ""){
@@ -275,11 +273,75 @@ exports.ConfirmEmail = async (req, res, next) => {
             return res.status(404).send( { message: 'User not registered' } )
         }
     }
+    } catch (error) {
+        ServerDetails.RegisterServerError("Confirm Email", error.toString());
+        return res.status(500).send( { error: error } )
+    }
+}
+
+//  Method for Request Password Reset
+exports.RequestPasswordReset = async (req, res, next) => {
+    try {
+    showRequestId()
+    var emailUser = req.body.email
+    const query = `SELECT * FROM tbl_account;`
+    const result = await mysql.execute(query, emailUser)
+    if(result.length > 0){
+        for(var i = 0 ; i < result.length; i++){
+            var email = EncryptDep.Decrypt(result[i].email);
+            if(email == emailUser ){
+            var email_user = email
+            var id_user = result[i].id_user
+            var idPasswordReset = "pswd"+ makeidForUser(9) + "PalacePetz-" + "sys" + makeidForUser(1) + "tem"+ makeidForUser(3) + "a"+ makeidForUser(2) + "c"+ makeidForUser(3) + "e"+ makeidForUser(1) + "key" + makeidForUser(4) + "-Pala"+ makeidForUser(5) +"cePetz-pswd" + makeidForUser(8) + 'p0'
+            const queryUpdate = `UPDATE tbl_account SET verify_id = ? WHERE id_user = ?`
+            await mysql.execute(queryUpdate, [idPasswordReset, id_user])
+            var resultEmail = Emails.SendPasswordReset(email_user, 'https://palacepetz.azurewebsites.net/' + "novasenha/" + idPasswordReset + "/" + id_user)
+            if(resultEmail == "Sent"){
+                return res.status(200).send({ message: 'Password reset email sent' })
+            }else{
+                return res.status(200).send({ message: 'Password reset email sent' })
+            }
+            }
+        }
+    }else{
+        return res.status(404).send( { message: 'User not registered' } )
+    }
+    } catch (error) {
+        ServerDetails.RegisterServerError("Confirm Email", error);
+        return res.status(500).send( { error: error.toString() } )
+    }
+}
+
+//  Method to change user password
+exports.ChangePassword = async (req, res, next) => {
+    var verify_id = req.body.verify_id
+    var id_user = req.body.id_user
+    var newpassword = req.body.newpassword
+    var last2 = verify_id.slice(-2);
+    if(verify_id.substr(0, 4) === "pswd" || last2 == 'p0') {
+        var query = `SELECT verify_id, verify WHERE id_user = ?`
+        var result = await mysql.execute(query, id_user)
+        if(result.length > 0){
+            if(result[0].verify_id == verify_id){
+                if(result[0].verify == 1){
+                    const hash = await bcrypt.hashSync(newpassword, 12);
+                    var queryUpdate = `UPDATE tbl_account SET password = ?, verify_id = "Confirmed" WHERE id_user = ?`
+                    await mysql.execute(queryUpdate, [ hash, id_user ])
+                    return res.status(200).send({ message: 'Password updated' })
+                }else
+                return res.status(401).send({ message: 'User does not contain verified email' })
+            }else
+            return res.status(405).send({ message: 'ID does not correspond to a password change' })
+        }else
+        return res.status(405).send({ message: 'User not registered' })
+    }else{
+        return res.status(405).send({ message: 'ID does not correspond to a password change' })
+    }
 }
 
 function showRequestId(){
     requestId++;
-    console.log("---------------------\n-- Request Id: " + requestId + "\n---------------------")
+    console.log("---------------------\n-- ✅ Request Id: " + requestId + "\n---------------------")
 }
 
 function makeidForUser(length) {
@@ -288,59 +350,9 @@ function makeidForUser(length) {
     var charactersLength = characters.length;
     for ( var i = 0; i < length; i++ ) {
       result.push(characters.charAt(Math.floor(Math.random() * 
- charactersLength)));
-   }
-   var charset = result.join('');
+    charactersLength)));
+    }
+    var charset = result.join('');
    var id = charset + Math.floor(Math.random() * 256);
-   return id;
-
-}
-
-function Accountconfirmationemail($recipient, $username, $url_toConfirm){
-    var transporter = nodemailer.createTransport({
-        service: 'gmail',
-        auth: {
-            user: 'palacepetz.shop@gmail.com',
-            pass: '@palacepetzshopsystem'
-        }
-    });
-
-    //  Create HTML reader
-    var readHTMLFile = function(path, callback) {
-        fs.readFile(path, {encoding: 'utf-8'}, function (err, html) {
-            if (err) {
-                throw err;
-                callback(err);
-            }
-            else {
-                callback(null, html);
-            }
-        });
-    };
-    readHTMLFile(__dirname + '/templates/confirmEmail.html', function(err, html) {
-        var template = handlebars.compile(html);
-        var replacements = {
-            username: $username,
-            url_confirm: $url_toConfirm
-        };
-
-        //  Set email template
-        var htmlToSend = template(replacements);
-        //  Create email formart
-        var mailOptions = {
-        from: '"Palace Petz 🐶" <palacepetz.shop@gmail.com>',
-        to: $recipient,
-        subject: 'Confirmação de e-mail!',
-        html : htmlToSend
-    };
-    transporter.sendMail(mailOptions, function(error, info){
-        if (error) {
-            console.log(error);
-            return "Error";
-        } else {
-            console.log('Email sent: ' + info.response);
-            return "Sent";
-        }
-    });
-    });
+    return id;
 }
