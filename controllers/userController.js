@@ -14,6 +14,7 @@ exports.Login = async (req, res, next) => {
         var Userlist = []
         var email = req.body.email
         var password = req.body.password
+        console.log("Email: " + email + "\nSenha: " + password )
         var id_user = 0;
         const resultList = await mysql.execute('SELECT * FROM tbl_account;')
         if(resultList.length > 0){
