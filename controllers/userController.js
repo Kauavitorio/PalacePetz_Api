@@ -319,16 +319,13 @@ exports.ChangePassword = async (req, res, next) => {
     var newpassword = req.body.newpassword
     var last2 = verify_id.slice(-2);
     if(verify_id.substr(0, 4) === "pswd" || last2 == 'p0') {
-        var query = `SELECT verify_id, verify WHERE id_user = ?`
-        console.log("Chegou no primeiro select = " + verify_id + "\n" + id_user + "\n" + newpassword)
+        var query = `SELECT verify_id, verify FROM tbl_account WHERE id_user = ?`
         var result = await mysql.execute(query, id_user)
         if(result.length > 0){
-            console.log("Result 01 = " + result.toString())
             if(result[0].verify_id == verify_id){
                 if(result[0].verify == 1){
                     const hash = await bcrypt.hashSync(newpassword, 12);
                     var queryUpdate = `UPDATE tbl_account SET password = ?, verify_id = "Confirmed" WHERE id_user = ?`
-                    console.log("Chegou no segundo select = " + hash)
                     await mysql.execute(queryUpdate, [ hash, id_user ])
                     return res.status(200).send({ message: 'Password updated' })
                 }else
