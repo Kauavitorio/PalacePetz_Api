@@ -28,6 +28,7 @@ exports.Login = async (req, res, next) => {
             if(Userlist.length > 0){
                 const result = await mysql.execute('SELECT * FROM tbl_account WHERE id_user = ?', id_user)
                 if(result.length > 0){
+                    console.log("Senha BD: " + result[0].password)
                 const match = await bcrypt.compareSync(password, result[0].password);
                 if(match){
                     var verify_id = result[0].verify_id
