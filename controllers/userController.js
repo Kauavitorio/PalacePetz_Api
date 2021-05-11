@@ -14,7 +14,6 @@ exports.Login = async (req, res, next) => {
         var Userlist = []
         var email = req.body.email
         var password = req.body.password
-        console.log("Email: " + email + "\nSenha: " + password )
         var id_user = 0;
         const resultList = await mysql.execute('SELECT * FROM tbl_account;')
         if(resultList.length > 0){
@@ -28,7 +27,6 @@ exports.Login = async (req, res, next) => {
             if(Userlist.length > 0){
                 const result = await mysql.execute('SELECT * FROM tbl_account WHERE id_user = ?', id_user)
                 if(result.length > 0){
-                    console.log("Senha BD: " + result[0].password)
                 const match = await bcrypt.compareSync(password, result[0].password);
                 if(match){
                     var verify_id = result[0].verify_id
@@ -307,7 +305,7 @@ exports.RequestPasswordReset = async (req, res, next) => {
     showRequestId()
     var emailUser = req.body.email
     const query = `SELECT * FROM tbl_account;`
-    const result = await mysql.execute(query, emailUser)
+    const result = await mysql.execute(query)
     if(result.length > 0){
         for(var i = 0 ; i < result.length; i++){
             var email = EncryptDep.Decrypt(result[i].email);
