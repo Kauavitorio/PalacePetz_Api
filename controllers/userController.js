@@ -305,11 +305,9 @@ exports.RequestPasswordReset = async (req, res, next) => {
     showRequestId()
     var emailUser = req.body.email
     const query = `SELECT * FROM tbl_account;`
-    console.log( "Email: " + emailUser)
     const result = await mysql.execute(query)
     if(result.length > 0){
         for(var i = 0 ; i < result.length; i++){
-            console.log(result)
             var email = EncryptDep.Decrypt(result[i].email);
             if(email == emailUser ){
             var email_user = email
