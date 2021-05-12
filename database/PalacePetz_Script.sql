@@ -41,26 +41,22 @@ create table tbl_account(
 CREATE TABLE tbl_products(
     cd_prod int PRIMARY KEY AUTO_INCREMENT,
     cd_category int not null, FOREIGN KEY (cd_category) REFERENCES tbl_category (cd_category),
-    cd_stock int,
     nm_product VARCHAR(200) not null,
+    amount int not null,
+    species VARCHAR(100),
     product_price DECIMAL(10, 2) not null,
     description VARCHAR(200) not null,
-    image_prod VARCHAR(300) not null,
-    amount int
+    date_prod VARCHAR(200) not null,
+    shelf_life VARCHAR(10) not null,
+    image_prod VARCHAR(300) not null
 )DEFAULT CHARACTER SET utf8  DEFAULT COLLATE utf8_general_ci;
+alter table tbl_products auto_increment=149;
 
 --  Table for Categorys
 create table tbl_category(
     cd_category int primary key auto_increment,
     nm_category varchar(50) not null,
     img_category varchar(50)
-)DEFAULT CHARACTER SET utf8  DEFAULT COLLATE utf8_general_ci;
-
---  Table for Stock
-create table tbl_stock(
-    cd_stock int primary key auto_increment,
-    cd_prod int not null, FOREIGN KEY (cd_prod) REFERENCES tbl_products (cd_prod), 
-    amount_stock int
 )DEFAULT CHARACTER SET utf8  DEFAULT COLLATE utf8_general_ci;
 
 --	Table for Cards
