@@ -26,3 +26,27 @@ exports.RegisterCategory = async (req, res, next) => {
         return res.status(500).send( { error: error } )
     }
 }
+
+// Method for List Category
+exports.ListCategory = async(req, res, next) => {
+    try {
+        var result = await mysql.execute(`SELECT * FROM tbl_category`);
+        if(result.length > 0){
+            const response = {
+                Search: result.map(category => {
+                    return {
+                        cd_category: category.cd_category,
+                        nm_category: category.nm_category,
+                        img_category: category.img_category
+                    }
+                })
+            }
+            return res.status(200).send(response);
+        } else{
+            return res.status(204).send("No category registred")
+        }
+    } catch (error) {
+        ServerDetails.RegisterServerError("List Category", error.toString())
+        return res.status(500).send( { error: error } )
+    }
+}
