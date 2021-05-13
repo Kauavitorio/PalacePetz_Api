@@ -20,6 +20,6 @@ router.get('/list/filter/lowestprice', ProductsController.ListProductsByLowestPr
 router.get('/list/filter/category/:cd_category', ProductsController.ListProductsByCategory)
 
 // List Products with species filter
-router.get('/list/filter/species/:species', ProductsController.ListProductsByCategory)
+router.get('/list/filter/species/:species', ProductsController.ListProductsBySpecies)
 
 module.exports = router
