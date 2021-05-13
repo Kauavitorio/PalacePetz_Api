@@ -8,4 +8,7 @@ router.post('/register', ProductsController.RegisterNewProduct)
 // List Products
 router.get('/list', ProductsController.ListAllProducts)
 
+// List Products with category filter
+router.get('/list/category/:cd_category', ProductsController.ListProductsByCategory)
+
 module.exports = router
