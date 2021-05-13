@@ -8,7 +8,7 @@ router.post('/register', ProductsController.RegisterNewProduct)
 // List Products
 router.get('/list', ProductsController.ListAllProducts)
 
-router.get('list/filter/popular', ProductsController.ListAllPopularProducts)
+router.get('/list/filter/popular', ProductsController.ListAllPopularProducts)
 
 // List Products by biggest price
 router.get('/list/filter/biggestprice', ProductsController.ListProductsByBiggestPrice)
