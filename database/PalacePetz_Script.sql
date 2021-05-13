@@ -48,7 +48,8 @@ CREATE TABLE tbl_products(
     description VARCHAR(200) not null,
     date_prod VARCHAR(200) not null,
     shelf_life VARCHAR(10) not null,
-    image_prod VARCHAR(300) not null
+    image_prod VARCHAR(300) not null,
+    popular int not null default 0
 )DEFAULT CHARACTER SET utf8  DEFAULT COLLATE utf8_general_ci;
 alter table tbl_products auto_increment=149;
 
@@ -56,7 +57,7 @@ alter table tbl_products auto_increment=149;
 create table tbl_category(
     cd_category int primary key auto_increment,
     nm_category varchar(50) not null,
-    img_category varchar(50)
+    img_category varchar(250)
 )DEFAULT CHARACTER SET utf8  DEFAULT COLLATE utf8_general_ci;
 
 --	Table for Cards
@@ -83,7 +84,6 @@ create table tbl_serverDetails(
 -- Selects
 select * from tbl_account;
 select * from tbl_products;
-select * from tbl_stock;
 select * from tbl_category;
 select * from tbl_cards;
 select * from tbl_serverDetails;
