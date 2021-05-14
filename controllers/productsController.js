@@ -1,7 +1,6 @@
 const mysql = require('../mysql')
-const ServerDetails = require('../ServerError') 
+const ServerDetails = require('../ServerInfo') 
 const BadWords = require('../controllers/badWords')
-var requestId = 0;
 
 //  Method for Register new product
 exports.RegisterNewProduct = async (req, res, next) => {
@@ -13,7 +12,7 @@ exports.RegisterNewProduct = async (req, res, next) => {
     var shelf_life = req.body.shelf_life
     var description = req.body.description
     var image_prod = req.body.image_prod
-    showRequestId()
+    ServerDetails.showRequestId()
     try {
 
         /* Get current date */
@@ -64,6 +63,7 @@ exports.RegisterNewProduct = async (req, res, next) => {
 //  List Products
 exports.ListAllProducts = async (req, res, next) => {
     try{
+        ServerDetails.showRequestId()
         const results = await mysql.execute(`select 
 		prod.cd_prod,
 		prod.cd_category,
@@ -112,6 +112,7 @@ exports.ListAllProducts = async (req, res, next) => {
 //  List all popular Products
 exports.ListAllPopularProducts = async (req, res, next) => {
     try{
+        ServerDetails.showRequestId()
         const results = await mysql.execute(`select 
 		prod.cd_prod,
 		prod.cd_category,
@@ -160,6 +161,7 @@ exports.ListAllPopularProducts = async (req, res, next) => {
 //  List Products by cd_category
 exports.ListProductsByCategory = async (req, res, next) => {
     try{
+        ServerDetails.showRequestId()
         const results = await mysql.execute(`select 
 		prod.cd_prod,
 		prod.cd_category,
@@ -208,6 +210,7 @@ exports.ListProductsByCategory = async (req, res, next) => {
 //  List Products by species
 exports.ListProductsBySpecies = async (req, res, next) => {
     try{
+        ServerDetails.showRequestId()
         const results = await mysql.execute(`select 
 		prod.cd_prod,
 		prod.cd_category,
@@ -256,6 +259,7 @@ exports.ListProductsBySpecies = async (req, res, next) => {
 //  List Products by biggest price
 exports.ListProductsByBiggestPrice = async (req, res, next) => {
     try{
+        ServerDetails.showRequestId()
         const results = await mysql.execute(`select 
 		prod.cd_prod,
 		prod.cd_category,
@@ -304,6 +308,7 @@ exports.ListProductsByBiggestPrice = async (req, res, next) => {
 //  List Products by lowest price
 exports.ListProductsByLowestPrice = async (req, res, next) => {
     try{
+        ServerDetails.showRequestId()
         const results = await mysql.execute(`select 
 		prod.cd_prod,
 		prod.cd_category,
@@ -347,9 +352,4 @@ exports.ListProductsByLowestPrice = async (req, res, next) => {
         ServerDetails.RegisterServerError("List All Products", error.toString())
         return res.status(500).send({error: error})
     }
-}
-
-function showRequestId(){
-    requestId++;
-    console.log("---------------------\n-- ✅ Request Id: " + requestId + "\n---------------------")
 }

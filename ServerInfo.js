@@ -40,3 +40,9 @@ function GetTime(){
     min = (min < 10 ? "0" : "") + min;
     return hour + ":" + min;
 }
+
+var requestId = 0;
+exports.showRequestId = () => {
+    requestId++;
+    console.log("---------------------\n-- ✅ Request Id: " + requestId + "\n---------------------")
+}

@@ -84,6 +84,7 @@ create table tbl_serverDetails(
 -- Selects
 select * from tbl_account;
 select * from tbl_products;
+update tbl_products set amount = 0 where cd_prod = 154;
 select * from tbl_category;
 select * from tbl_cards;
 select * from tbl_serverDetails;
