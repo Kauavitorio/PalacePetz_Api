@@ -1,16 +1,15 @@
 const mysql = require('../mysql')
 const bcrypt = require('bcrypt');
 const EncryptDep = require('../controllers/encryption')
-const ServerDetails = require('../ServerError') 
+const ServerDetails = require('../ServerInfo') 
 const BadWords = require('../controllers/badWords')
 const Emails = require('./email')
 const IMG_USER = 'https://www.kauavitorio.com/host-itens/Default_Profile_Image_palacepetz.png';
-var requestId = 0;
 
 //  Method for login user
 exports.Login = async (req, res, next) => {
     try{
-        showRequestId()
+        ServerDetails.showRequestId()
         var Userlist = []
         var email = req.body.email
         var password = req.body.password
@@ -66,12 +65,10 @@ exports.Login = async (req, res, next) => {
     }
 }
 
-
-
 //  Method for register new user
 exports.RegisterUsers = async (req, res, next) => {
     try {
-        showRequestId()
+        ServerDetails.showRequestId()
         if(BadWords.VerifyUsername(req.body.name_user)){
             return res.status(406).send({ error: "Username not allowed"})
         }else{
@@ -142,7 +139,7 @@ exports.RegisterUsers = async (req, res, next) => {
 // Method for Register Address
 exports.UpdateAddress = async (req, res, next) => {
     try {
-        showRequestId()
+        ServerDetails.showRequestId()
         var queryUser = `SELECT * FROM tbl_account where id_user = ?`
         var result  = await mysql.execute(queryUser, [req.body.id_user])
         if(result.length > 0){
@@ -162,7 +159,7 @@ exports.UpdateAddress = async (req, res, next) => {
 //  Method for Update Profile Image
 exports.UpdateProfileImage = async (req, res, next) => {
     try{
-        showRequestId()
+        ServerDetails.showRequestId()
         var query;
         var URL_ProfileImage = EncryptDep.Encrypto(req.body.img_user)
         var ID_User = req.body.id_user
@@ -187,7 +184,7 @@ exports.UpdateProfileImage = async (req, res, next) => {
 //  Method for Update Profile
 exports.UpdateProfile = async (req, res, next) => {
     try{
-        showRequestId()
+        ServerDetails.showRequestId()
         var queryUser = `SELECT * FROM tbl_account WHERE id_user = ?;`
         var result = await mysql.execute(queryUser, req.body.id_user)
         if(result.length > 0){
@@ -215,94 +212,40 @@ exports.UpdateProfile = async (req, res, next) => {
     }
 }
 
-//  Method for register new card
-exports.RegisterNewCard = async (req, res, next) => {
-    var nmUser_card = req.body.nmUser_card;
-    var id_user = req.body.id_user;
-    try {
-        showRequestId()
-        var queryUser = `SELECT * FROM tbl_account WHERE id_user = ?;`
-        var resultUser = await mysql.execute(queryUser, id_user)
-        if(resultUser.length > 0){
-            var queryCardVerify = `SELECT number_card FROM tbl_cards WHERE id_user = ?;`
-            var resultCardVerify = await mysql.execute(queryCardVerify, id_user)
-            if(resultCardVerify.length > 0){
-                var NumberCardList = [];
-                for(var i = 0 ; i < resultCardVerify.length; i++){
-                    var number_card = EncryptDep.Decrypt(resultCardVerify[i].number_card);
-                        if(number_card == req.body.number_card ){
-                            NumberCardList.push(i)
-                        }
-                    }
-            if(NumberCardList.length > 0){
-                return res.status(409).send({ message: 'Card already registered' })
-            }else{
-                if(BadWords.VerifyUsername(nmUser_card)){
-                    return res.status(406).send({ error: "Card name not allowed"})                
-                }else{
-                    const query = `INSERT INTO tbl_cards (id_user, flag_card, number_card, shelflife_card, cvv_card, nmUser_card) VALUES (?,?,?,?,?,?)`
-                    var result  = await mysql.execute(query, [ id_user, EncryptDep.Encrypto(req.body.flag_card), EncryptDep.Encrypto(req.body.number_card), EncryptDep.Encrypto(req.body.shelflife_card), EncryptDep.Encrypto(req.body.cvv_card), EncryptDep.Encrypto(nmUser_card) ] )
-                    const response = {
-                        message: "User created successfully",
-                        cd_card: result.insertId
-                    }
-                    return res.status(201).send(response);
-                }
-            }
-            }else{
-                if(BadWords.VerifyUsername(nmUser_card)){
-                    return res.status(406).send({ error: "Card name not allowed"})                
-                }else{
-                    const query = `INSERT INTO tbl_cards (id_user, flag_card, number_card, shelflife_card, cvv_card, nmUser_card) VALUES (?,?,?,?,?,?)`
-                    var result  = await mysql.execute(query, [ id_user, EncryptDep.Encrypto(req.body.flag_card), EncryptDep.Encrypto(req.body.number_card), EncryptDep.Encrypto(req.body.shelflife_card), EncryptDep.Encrypto(req.body.cvv_card), EncryptDep.Encrypto(nmUser_card) ] )
-                    const response = {
-                        message: "User created successfully",
-                        cd_card: result.insertId
-                    }
-                    return res.status(201).send(response);
-                }
-            }
-        }else{
-            return res.status(404).send( { message: 'User not registered' } )
-        }
-    } catch (error) {
-        ServerDetails.RegisterServerError("Register New Card", error.toString());
-        return res.status(500).send( { error: error } )
-    }
-}
-
 exports.ConfirmEmail = async (req, res, next) => {
     try {
-    var verify_id = req.params.verify_id
-    var id_user = req.params.id_user
-    if(verify_id == null || verify_id == " " || verify_id == "" || id_user == null || id_user == " " || id_user == ""){
-        res.status(500).send({ message: 'Erro ao receber suas informações, tente novamente mais tarde.' })
-    }else{
-        const resultList = await mysql.execute('SELECT verify_id FROM tbl_account WHERE id_user = ?;', id_user)
-        if(resultList.length > 0){
-            console.log(resultList[0].verify_id)
-            if(resultList[0].verify_id == verify_id){
-                const queryUpdate = `UPDATE tbl_account set verify_id = "Confirmed", verify = 1 WHERE id_user = ?`
-                await mysql.execute(queryUpdate, id_user);
-                res.writeHead(302, { 'Location': process.env.URL_API + 'emailconfirmed' });
-                res.end();
-            }else{
-                return res.status(409).send({ message: 'Email já verificado!!' })
-            }
+        
+        ServerDetails.showRequestId()
+        var verify_id = req.params.verify_id
+        var id_user = req.params.id_user
+        if(verify_id == null || verify_id == " " || verify_id == "" || id_user == null || id_user == " " || id_user == ""){
+            res.status(500).send({ message: 'Erro ao receber suas informações, tente novamente mais tarde.' })
         }else{
-            return res.status(404).send( { message: 'User not registered' } )
+            const resultList = await mysql.execute('SELECT verify_id FROM tbl_account WHERE id_user = ?;', id_user)
+            if(resultList.length > 0){
+                console.log(resultList[0].verify_id)
+                if(resultList[0].verify_id == verify_id){
+                    const queryUpdate = `UPDATE tbl_account set verify_id = "Confirmed", verify = 1 WHERE id_user = ?`
+                    await mysql.execute(queryUpdate, id_user);
+                    res.writeHead(302, { 'Location': process.env.URL_API + 'emailconfirmed' });
+                    res.end();
+                }else{
+                    return res.status(409).send({ message: 'Email já verificado!!' })
+                }
+            }else{
+                return res.status(404).send( { message: 'User not registered' } )
+            }
         }
-    }
-    } catch (error) {
-        ServerDetails.RegisterServerError("Confirm Email", error.toString());
-        return res.status(500).send( { error: error } )
-    }
+        } catch (error) {
+            ServerDetails.RegisterServerError("Confirm Email", error.toString());
+            return res.status(500).send( { error: error } )
+        }
 }
 
 //  Method for Request Password Reset
 exports.RequestPasswordReset = async (req, res, next) => {
     try {
-    showRequestId()
+        ServerDetails.showRequestId()
     var emailUser = req.body.email
     const query = `SELECT * FROM tbl_account;`
     const result = await mysql.execute(query)
@@ -334,34 +277,35 @@ exports.RequestPasswordReset = async (req, res, next) => {
 
 //  Method to change user password
 exports.ChangePassword = async (req, res, next) => {
-    var verify_id = req.body.verify_id
-    var id_user = req.body.id_user
-    var newpassword = req.body.newpassword
-    var last2 = verify_id.slice(-2);
-    if(verify_id.substr(0, 4) === "pswd" || last2 == 'p0') {
-        var query = `SELECT verify_id, verify FROM tbl_account WHERE id_user = ?`
-        var result = await mysql.execute(query, id_user)
-        if(result.length > 0){
-            if(result[0].verify_id == verify_id){
-                if(result[0].verify == 1){
-                    const hash = await bcrypt.hashSync(newpassword, 12);
-                    var queryUpdate = `UPDATE tbl_account SET password = ?, verify_id = "Confirmed" WHERE id_user = ?`
-                    await mysql.execute(queryUpdate, [ hash, id_user ])
-                    return res.status(200).send({ message: 'Password updated' })
+    try {
+        ServerDetails.showRequestId()
+        var verify_id = req.body.verify_id
+        var id_user = req.body.id_user
+        var newpassword = req.body.newpassword
+        var last2 = verify_id.slice(-2);
+        if(verify_id.substr(0, 4) === "pswd" || last2 == 'p0') {
+            var query = `SELECT verify_id, verify FROM tbl_account WHERE id_user = ?`
+            var result = await mysql.execute(query, id_user)
+            if(result.length > 0){
+                if(result[0].verify_id == verify_id){
+                    if(result[0].verify == 1){
+                        const hash = await bcrypt.hashSync(newpassword, 12);
+                        var queryUpdate = `UPDATE tbl_account SET password = ?, verify_id = "Confirmed" WHERE id_user = ?`
+                        await mysql.execute(queryUpdate, [ hash, id_user ])
+                        return res.status(200).send({ message: 'Password updated' })
+                    }else
+                    return res.status(401).send({ message: 'User does not contain verified email' })
                 }else
-                return res.status(401).send({ message: 'User does not contain verified email' })
+                return res.status(405).send({ message: 'ID does not correspond to a password change' })
             }else
+            return res.status(405).send({ message: 'User not registered' })
+        }else{
             return res.status(405).send({ message: 'ID does not correspond to a password change' })
-        }else
-        return res.status(405).send({ message: 'User not registered' })
-    }else{
-        return res.status(405).send({ message: 'ID does not correspond to a password change' })
+        }
+    } catch (error) {
+        ServerDetails.RegisterServerError("Change Password", error);
+        return res.status(500).send( { error: error } )
     }
-}
-
-function showRequestId(){
-    requestId++;
-    console.log("---------------------\n-- ✅ Request Id: " + requestId + "\n---------------------")
 }
 
 function makeidForUser(length) {

@@ -1,5 +1,5 @@
 const mysql = require('../mysql')
-const ServerDetails = require('../ServerError') 
+const ServerDetails = require('../ServerInfo') 
 
 //  Method for Register new Category
 exports.RegisterCategory = async (req, res, next) => {
