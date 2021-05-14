@@ -1,7 +1,7 @@
 const mysql = require('../mysql')
 const ServerDetails = require('../ServerInfo') 
 const EncryptDep = require('../controllers/encryption')
-const BadWords = require('./badWords')
+const BadWords = require('badWords')
 
 //  Method for register new card
 exports.RegisterNewCard = async (req, res, next) => {
