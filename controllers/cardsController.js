@@ -63,18 +63,18 @@ exports.RegisterNewCard = async (req, res, next) => {
 exports.GetUserCards = async (req, res, next) => {
     try {
         ServerDetails.showRequestId()
-        var result = await mysql.execute(`SELECT * from tbl_cards WHERE id_user = ?;`,  req.params.id_user)
+        var result = await mysql.execute(`SELECT * FROM tbl_cards WHERE id_user = ?`,  [req.params.id_user] )
         if(result.length > 0){
             const responsecard = {
-                length: resultcard.length,
-                Search: resultcard.map(cards => {
+                length: result.length,
+                Search: result.map(cards => {
                     return {
-                        cd_card: parseInt(cards.cd_card),
-                        flag_card: cards.flag_card,
-                        number_card: cards.number_card,
-                        shelflife_card: cards.shelflife_card,
-                        cvv_card: cards.cvv_card,
-                        nmUser_card: cards.nmUser_card
+                        cd_card: cards.cd_card,
+                        flag_card: EncryptDep.Decrypt(cards.flag_card),
+                        number_card: EncryptDep.Decrypt(cards.number_card),
+                        shelflife_card: EncryptDep.Decrypt(cards.shelflife_card),
+                        cvv_card: EncryptDep.Decrypt(cards.cvv_card),
+                        nmUser_card: EncryptDep.Decrypt(cards.nmUser_card)
                     }
             })
         }
