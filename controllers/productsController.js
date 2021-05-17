@@ -86,18 +86,18 @@ exports.ListAllProducts = async (req, res, next) => {
             const response = {
                 Search: results.map(products => {
                     return {
-                        cd_prod: products.cd_prod,
-                        cd_category: products.cd_category,
+                        cd_prod: parseInt(products.cd_prod),
+                        cd_category: parseInt(products.cd_category),
                         nm_category: products.nm_category,
                         nm_product: products.nm_product,
-                        amount: products.amount,
+                        amount: parseInt(products.amount),
                         species: products.species,
                         product_price: parseFloat(products.product_price),
                         description: products.description,
                         date_prod: products.date_prod,
                         shelf_life: products.shelf_life,
                         image_prod: products.image_prod,
-                        popular: products.popular
+                        popular: parseInt(products.popular)
                     }
                 })
                 }
@@ -135,18 +135,18 @@ exports.ListAllPopularProducts = async (req, res, next) => {
             const response = {
                 Search: results.map(products => {
                     return {
-                        cd_prod: products.cd_prod,
-                        cd_category: products.cd_category,
+                        cd_prod: parseInt(products.cd_prod),
+                        cd_category: parseInt(products.cd_category),
                         nm_category: products.nm_category,
                         nm_product: products.nm_product,
-                        amount: products.amount,
+                        amount: parseInt(products.amount),
                         species: products.species,
                         product_price: parseFloat(products.product_price),
                         description: products.description,
                         date_prod: products.date_prod,
                         shelf_life: products.shelf_life,
                         image_prod: products.image_prod,
-                        popular: products.popular
+                        popular: parseInt(products.popular)
                     }
                 })
                 }
@@ -184,18 +184,18 @@ exports.ListProductsByCategory = async (req, res, next) => {
             const response = {
                 Search: results.map(products => {
                     return {
-                        cd_prod: products.cd_prod,
-                        cd_category: products.cd_category,
+                        cd_prod: parseInt(products.cd_prod),
+                        cd_category: parseInt(products.cd_category),
                         nm_category: products.nm_category,
                         nm_product: products.nm_product,
-                        amount: products.amount,
+                        amount: parseInt(products.amount),
                         species: products.species,
                         product_price: parseFloat(products.product_price),
                         description: products.description,
                         date_prod: products.date_prod,
                         shelf_life: products.shelf_life,
                         image_prod: products.image_prod,
-                        popular: products.popular
+                        popular: parseInt(products.popular)
                     }
                 })
                 }
@@ -233,18 +233,18 @@ exports.ListProductsBySpecies = async (req, res, next) => {
             const response = {
                 Search: results.map(products => {
                     return {
-                        cd_prod: products.cd_prod,
-                        cd_category: products.cd_category,
+                        cd_prod: parseInt(products.cd_prod),
+                        cd_category: parseInt(products.cd_category),
                         nm_category: products.nm_category,
                         nm_product: products.nm_product,
-                        amount: products.amount,
+                        amount: parseInt(products.amount),
                         species: products.species,
                         product_price: parseFloat(products.product_price),
                         description: products.description,
                         date_prod: products.date_prod,
                         shelf_life: products.shelf_life,
                         image_prod: products.image_prod,
-                        popular: products.popular
+                        popular: parseInt(products.popular)
                     }
                 })
                 }
@@ -282,18 +282,18 @@ exports.ListProductsByBiggestPrice = async (req, res, next) => {
             const response = {
                 Search: results.map(products => {
                     return {
-                        cd_prod: products.cd_prod,
-                        cd_category: products.cd_category,
+                        cd_prod: parseInt(products.cd_prod),
+                        cd_category: parseInt(products.cd_category),
                         nm_category: products.nm_category,
                         nm_product: products.nm_product,
-                        amount: products.amount,
+                        amount: parseInt(products.amount),
                         species: products.species,
                         product_price: parseFloat(products.product_price),
                         description: products.description,
                         date_prod: products.date_prod,
                         shelf_life: products.shelf_life,
                         image_prod: products.image_prod,
-                        popular: products.popular
+                        popular: parseInt(products.popular)
                     }
                 })
                 }
@@ -331,18 +331,18 @@ exports.ListProductsByLowestPrice = async (req, res, next) => {
             const response = {
                 Search: results.map(products => {
                     return {
-                        cd_prod: products.cd_prod,
-                        cd_category: products.cd_category,
+                        cd_prod: parseInt(products.cd_prod),
+                        cd_category: parseInt(products.cd_category),
                         nm_category: products.nm_category,
                         nm_product: products.nm_product,
-                        amount: products.amount,
+                        amount: parseInt(products.amount),
                         species: products.species,
                         product_price: parseFloat(products.product_price),
                         description: products.description,
                         date_prod: products.date_prod,
                         shelf_life: products.shelf_life,
                         image_prod: products.image_prod,
-                        popular: products.popular
+                        popular: parseInt(products.popular)
                     }
                 })
                 }
