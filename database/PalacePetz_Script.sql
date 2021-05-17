@@ -61,7 +61,8 @@ create table tbl_category(
 )DEFAULT CHARACTER SET utf8  DEFAULT COLLATE utf8_general_ci;
 
 --	Table for Cards
--- drop table tbl_cards;
+ drop table tbl_cards;
+SELECT * FROM tbl_cards WHERE id_user = ?;
 create table tbl_cards(
     cd_card int primary key auto_increment,
     id_user int not null, FOREIGN KEY (id_user) REFERENCES tbl_account (id_user), 
@@ -80,6 +81,15 @@ create table tbl_serverDetails(
     time varchar(5) not null,
     Description varchar(500)
 )DEFAULT CHARACTER SET utf8  DEFAULT COLLATE utf8_general_ci;
+
+/* Table for be used in mobile */
+create table tbl_versionMobile(
+	cd_version int primary key auto_increment,
+    versionName varchar(10) not null,
+    versionCode int not null
+)DEFAULT CHARACTER SET utf8  DEFAULT COLLATE utf8_general_ci;
+update tbl_versionMobile set versionName = "1.2", versionCode = 3 where cd_version = 4;
+select * from tbl_versionMobile;
 
 -- Selects
 select * from tbl_account;

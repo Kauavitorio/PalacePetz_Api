@@ -36,4 +36,7 @@ router.post('/register/card', CardController.RegisterNewCard)
 //  Change Password
 router.get('/cards/list/:id_user', CardController.GetUserCards)
 
+//  Delete User Card
+router.delete('/card/remove/:id_user/:cd_card', CardController.RemoveUserCard)
+
 module.exports = router

@@ -6,6 +6,7 @@ const bodyParser = require('body-parser')
 const userRoute = require('./routes/users')
 const productRoute = require('./routes/products')
 const categoryRoute = require('./routes/category')
+const mobileRoute = require('./routes/mobile')
 const testRoute = require('./tests/routes/tests')
 
 //  Configuring APP
@@ -46,6 +47,9 @@ app.use('/products', productRoute);
 
 // Category Route
 app.use('/category', categoryRoute);
+
+// Category Route
+app.use('/mobile', mobileRoute);
 
 //  Router for Test
 app.use('/test', testRoute); 
