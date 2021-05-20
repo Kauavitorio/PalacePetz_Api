@@ -73,6 +73,17 @@ create table tbl_cards(
     nmUser_card varchar(500) not null
 )DEFAULT CHARACTER SET utf8  DEFAULT COLLATE utf8_general_ci;
 
+/* Table for Shopping Cart */
+create table tbl_shoppingCart(
+    cd_cart int primary key auto_increment,
+    cd_prod int not null, FOREIGN KEY (cd_prod) REFERENCES tbl_products (cd_prod), 
+    id_user int not null, FOREIGN KEY (id_user) REFERENCES tbl_account (id_user), 
+    product_price varchar(500) not null,
+    totalPrice varchar(500) not null,
+    product_amount int not null,
+    sub_total varchar(500) not null
+)DEFAULT CHARACTER SET utf8  DEFAULT COLLATE utf8_general_ci;
+
 /*	Table for Server Details  */
 create table tbl_serverDetails(
     id_details int PRIMARY KEY auto_increment,
@@ -88,13 +99,15 @@ create table tbl_versionMobile(
     versionName varchar(10) not null,
     versionCode int not null
 )DEFAULT CHARACTER SET utf8  DEFAULT COLLATE utf8_general_ci;
-update tbl_versionMobile set versionName = "1.2", versionCode = 3 where cd_version = 4;
+update tbl_versionMobile set versionName = "1.3.1", versionCode = 5 where cd_version = 4;
 select * from tbl_versionMobile;
 
 -- Selects
 select * from tbl_account;
 select * from tbl_products;
-update tbl_products set amount = 0 where cd_prod = 154;
+select * from tbl_shoppingCart;
+update tbl_products set species = "Fish" where cd_prod = 224;
+select * from tbl_products;
 select * from tbl_category;
 select * from tbl_cards;
 select * from tbl_serverDetails;
