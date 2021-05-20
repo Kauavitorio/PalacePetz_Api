@@ -62,7 +62,7 @@ exports.RegisterNewProduct = async (req, res, next) => {
 
 exports.GetProductDetails = async (req, res, next) => {
     try {
-        const results = await mysql.execute(`select 
+        const products = await mysql.execute(`select 
 		prod.cd_prod,
 		prod.cd_category,
 		cat.nm_category,
@@ -82,22 +82,18 @@ exports.GetProductDetails = async (req, res, next) => {
             return res.status(204).send({ message: 'No Products registerd' })
         }else{
             const response = {
-                Search: results.map(products => {
-                    return {
-                        cd_prod: parseInt(products.cd_prod),
-                        cd_category: parseInt(products.cd_category),
-                        nm_category: products.nm_category,
-                        nm_product: products.nm_product,
-                        amount: parseInt(products.amount),
-                        species: products.species,
-                        product_price: parseFloat(products.product_price),
-                        description: products.description,
-                        date_prod: products.date_prod,
-                        shelf_life: products.shelf_life,
-                        image_prod: products.image_prod,
-                        popular: parseInt(products.popular)
-                    }
-                })
+                    cd_prod: parseInt(products[0].cd_prod),
+                    cd_category: parseInt(products[0].cd_category),
+                    nm_category: products[0].nm_category,
+                    nm_product: products[0].nm_product,
+                    amount: parseInt(products[0].amount),
+                    species: products[0].species,
+                    product_price: parseFloat(products[0].product_price),
+                    description: products[0].description,
+                    date_prod: products[0].date_prod,
+                    shelf_life: products[0].shelf_life,
+                    image_prod: products[0].image_prod,
+                    popular: parseInt(products[0].popular)
                 }
             return res.status(200).send(response)
             }

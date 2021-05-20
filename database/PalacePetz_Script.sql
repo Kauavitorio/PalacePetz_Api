@@ -74,6 +74,7 @@ create table tbl_cards(
 )DEFAULT CHARACTER SET utf8  DEFAULT COLLATE utf8_general_ci;
 
 /* Table for Shopping Cart */
+drop table tbl_shoppingCart;
 create table tbl_shoppingCart(
     cd_cart int primary key auto_increment,
     cd_prod int not null, FOREIGN KEY (cd_prod) REFERENCES tbl_products (cd_prod), 
