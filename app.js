@@ -7,6 +7,7 @@ const userRoute = require('./routes/users')
 const productRoute = require('./routes/products')
 const categoryRoute = require('./routes/category')
 const mobileRoute = require('./routes/mobile')
+const shoppingCart = require('./routes/shoppingcart')
 const testRoute = require('./tests/routes/tests')
 
 //  Configuring APP
@@ -44,6 +45,9 @@ app.use('/user', userRoute);
 
 // Products Route
 app.use('/products', productRoute);
+
+// ShoppingCart Route
+app.use('/shoppingcart', shoppingCart);
 
 // Category Route
 app.use('/category', categoryRoute);
