@@ -78,7 +78,7 @@ exports.GetProductDetails = async (req, res, next) => {
 		prod.popular
         from tbl_products  as prod inner join tbl_category as cat
         on prod.cd_category = cat.cd_category WHERE prod.cd_prod = ?;`, req.params.cd_prod);
-        if (results.length <= 0) {
+        if (products.length <= 0) {
             return res.status(204).send({ message: 'No Products registerd' })
         }else{
             const response = {
