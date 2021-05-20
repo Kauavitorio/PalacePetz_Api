@@ -88,13 +88,14 @@ create table tbl_versionMobile(
     versionName varchar(10) not null,
     versionCode int not null
 )DEFAULT CHARACTER SET utf8  DEFAULT COLLATE utf8_general_ci;
-update tbl_versionMobile set versionName = "1.2", versionCode = 3 where cd_version = 4;
+update tbl_versionMobile set versionName = "1.3.1", versionCode = 5 where cd_version = 4;
 select * from tbl_versionMobile;
 
 -- Selects
 select * from tbl_account;
 select * from tbl_products;
-update tbl_products set amount = 0 where cd_prod = 154;
+update tbl_products set species = "Fish" where cd_prod = 224;
+select * from tbl_products;
 select * from tbl_category;
 select * from tbl_cards;
 select * from tbl_serverDetails;

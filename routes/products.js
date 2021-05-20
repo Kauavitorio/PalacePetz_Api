@@ -10,6 +10,8 @@ router.get('/list', ProductsController.ListAllProducts)
 
 router.get('/list/filter/popular', ProductsController.ListAllPopularProducts)
 
+router.get('/details/:cd_prod', ProductsController.GetProductDetails)
+
 // List Products by biggest price
 router.get('/list/filter/biggestprice', ProductsController.ListProductsByBiggestPrice)
 
