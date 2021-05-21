@@ -57,10 +57,10 @@ exports.GetCartUser = async (req, res, next) => {
                             nm_product: cart.nm_product,
                             image_prod: cart.image_prod,
                             id_user: parseInt(cart.id_user),
-                            product_price: parseFloat(cart.product_price),
-                            totalPrice: parseFloat(cart.totalPrice),
-                            product_amount: parseInt(cart.product_amount),
-                            sub_total: parseFloat(cart.sub_total)
+                            product_price: cart.product_price,
+                            totalPrice: cart.totalPrice,
+                            product_amount: cart.product_amount,
+                            sub_total: cart.sub_total
                         }
                     })
                     }
