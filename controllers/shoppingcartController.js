@@ -117,3 +117,23 @@ exports.UpdateCartToNewAmount = async (req, res, next) => {
         return res.status(500).send({ error: error.toString()})
     }
 }
+
+exports.RemoveItemFromCart = async (req, res, next) => {
+    try {
+        //  Verify if have same product on user cart
+        const queryHave = 'SELECT * FROM tbl_shoppingCart WHERE id_user = ? and cd_prod = ?;'
+        const resultHaveOnCart = await mysql.execute(queryHave, [req.params.id_user, req.params.cd_prod])
+        if(resultHaveOnCart.length > 0){
+            const query = `delete from tbl_shoppingcart where id_user = ? and cd_prod = ?;`
+        await mysql.execute(query, [  req.params.id_user, req.params.cd_prod ])
+        const response = {
+            mensagem: 'Product successfully removed!!'}
+        return res.status(200).send(response);
+        }else{
+            return res.status(417).send({warning: 'User don`t have this product on cart'})
+        }
+    } catch (error) {
+        ServerDetails.RegisterServerError("Remove Item From Cart", error.toString());
+        return res.status(500).send({ error: error.toString()})
+    }
+}
