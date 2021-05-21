@@ -2,7 +2,7 @@ const mysql = require('../mysql')
 const EncryptDep = require('../controllers/encryption')
 const ServerDetails = require('../ServerInfo')
 
-exports.    InsertUserCart = async (req, res, next) => {
+exports.InsertUserCart = async (req, res, next) => {
     try {
         var id_user = req.body.id_user
         var cd_prod = req.body.cd_prod
@@ -87,6 +87,33 @@ exports.GetCartSize = async (req, res, next) => {
             return res.status(404).send( { message: 'User not registered' } )
     } catch (error) {
         ServerDetails.RegisterServerError("Get Cart User", error.toString());
+        return res.status(500).send({ error: error.toString()})
+    }
+}
+
+exports.UpdateCartToNewAmount = async (req, res, next) => {
+    try {
+        //  Verify if have same product on user cart
+        const queryHave = 'SELECT * FROM tbl_shoppingCart WHERE id_user = ? and cd_prod = ?;'
+        const resultHaveOnCart = await mysql.execute(queryHave, [req.params.id_user, req.params.cd_prod])
+        if(resultHaveOnCart.length > 0){
+            const query = `UPDATE tbl_shoppingCart SET product_amount = ?, totalPrice = ?, sub_total = ?
+                                                                WHERE id_user = ? and cd_prod = ? `
+        await mysql.execute(query, [  req.params.product_amount, req.params.totalPrice, req.params.sub_total, req.params.id_user, req.params.cd_prod ])
+        const response = {
+            mensagem: 'Cart updated successfully !!',
+            productsUpdated: {
+                email_user: req.params.email_user,
+                cd_prod: req.params.cd_prod,
+                full_price_prod: req.params.full_price_prod,
+            }
+        }
+        return res.status(202).send(response);
+        }else{
+            return res.status(417).send({warning: 'User don`t have this product on cart'})
+        }
+    } catch (error) {
+        ServerDetails.RegisterServerError("Update Cart", error.toString());
         return res.status(500).send({ error: error.toString()})
     }
 }

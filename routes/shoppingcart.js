@@ -8,4 +8,6 @@ router.get('/size/:id_user', Controller.GetCartSize)
 
 router.post('/insert', Controller.InsertUserCart)
 
+router.patch('/update/amount/:cd_prod/:product_amount/:totalPrice/:sub_total/:id_user', Controller.UpdateCartToNewAmount)
+
 module.exports = router
