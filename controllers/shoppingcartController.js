@@ -2,7 +2,7 @@ const mysql = require('../mysql')
 const EncryptDep = require('../controllers/encryption')
 const ServerDetails = require('../ServerInfo')
 
-exports.InsertUserCart = async (req, res, next) => {
+exports.    InsertUserCart = async (req, res, next) => {
     try {
         var id_user = req.body.id_user
         var cd_prod = req.body.cd_prod
@@ -36,15 +36,28 @@ exports.GetCartUser = async (req, res, next) => {
         var id_user = req.params.id_user
         var result_USER = await mysql.execute('SELECT * FROM tbl_account WHERE id_user = ?', id_user)
         if(result_USER.length > 0){
-            var results = await mysql.execute('SELECT * FROM tbl_shoppingCart WHERE id_user = ?', id_user)
+            var results = await mysql.execute(`select 
+            cart.cd_cart,
+            cart.cd_prod,
+            prod.nm_product,
+            prod.image_prod,
+            cart.id_user,
+            cart.product_price,
+            cart.totalPrice,
+            cart.product_amount,
+            cart.sub_total
+            from tbl_shoppingCart as cart inner join tbl_products as prod
+            on cart.cd_prod = prod.cd_prod where id_user = ?;`, id_user)
             if(results.length > 0){
                 const response = {
                     Search: results.map(cart => {
                         return {
                             cd_cart: parseInt(cart.cd_cart),
                             cd_prod: parseInt(cart.cd_prod),
+                            nm_product: cart.nm_product,
+                            image_prod: cart.image_prod,
                             id_user: parseInt(cart.id_user),
-                            product_price: cart.product_price,
+                            product_price: parseFloat(cart.product_price),
                             totalPrice: cart.totalPrice,
                             product_amount: parseInt(cart.product_amount),
                             sub_total: cart.sub_total
