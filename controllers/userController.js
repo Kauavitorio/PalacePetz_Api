@@ -264,6 +264,8 @@ exports.RequestPasswordReset = async (req, res, next) => {
             }else{
                 return res.status(200).send({ message: 'Password reset email sent' })
             }
+            }else{
+                return res.status(404).send( { message: 'User not registered' } )
             }
         }
     }else{
