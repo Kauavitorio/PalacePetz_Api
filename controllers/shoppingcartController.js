@@ -67,8 +67,21 @@ exports.GetCartUser = async (req, res, next) => {
                     })
                     }
                 return res.status(200).send(response)
-            }else
-            return res.status(204).send( { message: 'Nothing on user cart' } )
+            }else{
+                const response = {
+                            cd_cart: 0,
+                            cd_prod: 0,
+                            nm_product: "Nenhum Produto em sue carrinho",
+                            image_prod: "https://media.discordapp.net/attachments/707671310104526863/846488817367384144/unnamed-removebg-preview.png?width=467&height=467",
+                            amount: 0,
+                            id_user: 0,
+                            product_price: 0,
+                            totalPrice: 0,
+                            product_amount: 0,
+                            sub_total: 0
+                }
+                return res.status(206).send(response)
+            }
         }else
             return res.status(404).send( { message: 'User not registered' } )
     } catch (error) {

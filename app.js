@@ -9,6 +9,7 @@ const categoryRoute = require('./routes/category')
 const mobileRoute = require('./routes/mobile')
 const shoppingCart = require('./routes/shoppingcart')
 const testRoute = require('./tests/routes/tests')
+const discountsRoute = require('./routes/discounts')
 
 //  Configuring APP
 app.use(morgan('dev'));
@@ -51,6 +52,9 @@ app.use('/shoppingcart', shoppingCart);
 
 // Category Route
 app.use('/category', categoryRoute);
+
+// Discounts Route
+app.use('/discounts', discountsRoute);
 
 // Category Route
 app.use('/mobile', mobileRoute);
