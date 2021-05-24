@@ -69,6 +69,8 @@ exports.GetCartUser = async (req, res, next) => {
                 return res.status(200).send(response)
             }else{
                 const response = {
+                    Search: results.map(cart => {
+                        return {
                             cd_cart: 0,
                             cd_prod: 0,
                             nm_product: "Nenhum Produto em sue carrinho",
@@ -79,7 +81,9 @@ exports.GetCartUser = async (req, res, next) => {
                             totalPrice: 0,
                             product_amount: 0,
                             sub_total: 0
-                }
+                        }
+                    })
+                    }
                 return res.status(206).send(response)
             }
         }else
