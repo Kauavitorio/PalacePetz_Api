@@ -5,4 +5,7 @@ const OrderController = require('../controllers/orderController')
 //  Router to create order from user request
 router.post('/finish-order', OrderController.FinishOrder);
 
+//  Get user Orders
+router.post('/:id_user', OrderController.GetAllOrders);
+
 module.exports = router

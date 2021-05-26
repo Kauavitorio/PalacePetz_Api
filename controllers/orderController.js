@@ -33,7 +33,6 @@ exports.GetAllOrders = async (req, res, next) => {
                         sub_total: EncryptDep.Decrypt(orders.sub_total),
                         totalPrice: EncryptDep.Decrypt(orders.totalPrice),
                         product_amount: parseInt(orders.product_amount),
-                        id_user: parseInt(orders.id_user),
                         date_order: EncryptDep.Decrypt(orders.date_order),
                         cd_card: parseInt(orders.cd_card),
                         status: EncryptDep.Decrypt(orders.status),
