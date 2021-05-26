@@ -16,6 +16,7 @@ exports.GetAllOrders = async (req, res, next) => {
 		order_user.sub_total,
 		order_user.totalPrice,
 		order_user.product_amount,
+		order_user.date_order,
 		order_user.cd_card,
 		order_user.status,
 		card.number_card
