@@ -21,7 +21,7 @@ exports.GetAllOrders = async (req, res, next) => {
 		order_user.status,
 		card.number_card
         from tbl_orders  as order_user inner join tbl_cards as card
-        on order_user.id_user = card.cd_card WHERE order_user.id_user = ?;`, id_user);
+        on card.cd_card = order_user.cd_card WHERE order_user.id_user = ?;`, id_user);
         if(result.length > 0){
             const response = {
                 Search: result.map(orders => {
