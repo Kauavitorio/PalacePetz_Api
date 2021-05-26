@@ -220,7 +220,7 @@ a[x-apple-data-detectors='true'] {
   <div align="center">
     <!--[if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-spacing: 0; border-collapse: collapse; mso-table-lspace:0pt; mso-table-rspace:0pt;font-family:arial,helvetica,sans-serif;"><tr><td style="font-family:arial,helvetica,sans-serif;" align="center"><v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="" style="height:41px; v-text-anchor:middle; width:177px;" arcsize="10%" stroke="f" fillcolor="#06bec0"><w:anchorlock/><center style="color:#FFFFFF;font-family:arial,helvetica,sans-serif;"><![endif]-->
       <a href="https://palacepetz.azurewebsites.net/pedido/{{order_id}}" target="_blank" style="box-sizing: border-box;display: inline-block;font-family:arial,helvetica,sans-serif;text-decoration: none;-webkit-text-size-adjust: none;text-align: center;color: #FFFFFF; background-color: #06bec0; border-radius: 4px; -webkit-border-radius: 4px; -moz-border-radius: 4px; width:auto; max-width:100%; overflow-wrap: break-word; word-break: break-word; word-wrap:break-word; mso-border-alt: none;">
-        <span style="display:block;padding:10px 20px;line-height:120%;"><span style="font-size: 18px; line-height: 21.6px;">Gerenciar pedido</span></span>
+        <span style="display:block;padding:10px 20px;line-height:120%;"><span style="font-size: 18px; line-height: 21.6px;">Acompanhar o status do pedido</span></span>
       </a>
     <!--[if mso]></center></v:roundrect></td></tr></table><![endif]-->
   </div>
@@ -335,7 +335,7 @@ a[x-apple-data-detectors='true'] {
         
   <div style="color: #000000; line-height: 140%; text-align: left; word-wrap: break-word;">
     <p style="font-size: 14px; line-height: 140%; text-align: center;"><span style="color: #444444; font-size: 14px; line-height: 19.6px;"><strong><span style="font-size: 20px; line-height: 28px;">ENDEREÇO PARA ENVIO</span></strong></span></p>
-<p style="font-size: 14px; line-height: 140%; text-align: center;"><br /><span style="color: #444444; font-size: 14px; line-height: 19.6px;"><strong><span style="font-size: 20px; line-height: 28px;">{{address_user}}<br>{{complement}}</span></p>
+<p style="font-size: 14px; line-height: 140%; text-align: center;"><br /><span style="color: #444444; font-size: 14px; line-height: 19.6px;"><strong><span style="font-size: 20px; line-height: 28px;">{{address_user}}<br>{{complement}}, {{zipcode}}</span></p>
   </div>
 
       </td>
@@ -359,7 +359,11 @@ a[x-apple-data-detectors='true'] {
         
   <div style="color: #000000; line-height: 140%; text-align: left; word-wrap: break-word;">
     <p style="font-size: 14px; line-height: 140%; text-align: center;"><span style="color: #444444; font-size: 14px; line-height: 19.6px;"><strong><span style="font-size: 20px; line-height: 28px;">DESCRIÇÃO</span></strong></span></p>
-<p style="font-size: 14px; line-height: 140%; text-align: center;"><br /><span style="color: #444444; font-size: 14px; line-height: 19.6px;"><strong><span style="font-size: 20px; line-height: 28px;">Pedido: <a style="color: #06bec0; text-decoration: none;">#{{order_id}}</a></span></strong></span><br /><span style="color: #444444; font-size: 14px; line-height: 19.6px;"><strong><span style="font-size: 20px; line-height: 28px;">Data do pedido: {{order_date}}</span></strong></span><br /><span style="color: #444444; font-size: 14px; line-height: 19.6px;"><strong><span style="font-size: 20px; line-height: 28px;">Total do pedido: {{order_total}}</span></strong></span></p>
+<p style="font-size: 14px; line-height: 140%; text-align: center;"><br /><span style="color: #444444; font-size: 14px; line-height: 19.6px;"><strong><span style="font-size: 20px; line-height: 28px;">Pedido: <a style="color: #06bec0; text-decoration: none;">#{{order_id}}</a></span></strong></span><br />
+  <span style="color: #444444; font-size: 14px; line-height: 19.6px;"><strong><span style="font-size: 20px; line-height: 28px;">Data do pedido: {{order_date}}</span></strong></span><br />
+  <span style="color: #444444; font-size: 14px; line-height: 19.6px;"><strong><span style="font-size: 20px; line-height: 28px;">SubTotal: {{sub_total}}</span></strong></span><br />
+  <span style="color: #444444; font-size: 14px; line-height: 19.6px;"><strong><span style="color: #06bec0; font-size: 19px; line-height: 28px;">Desconto: -R${{discount}}</span></strong></span><br />
+  <span style="color: #444444; font-size: 14px; line-height: 19.6px;"><strong><span style="font-size: 20px; line-height: 28px;">Total do pedido: {{order_total}}</span></strong></span></p>
   </div>
 
       </td>
