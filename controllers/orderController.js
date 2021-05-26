@@ -7,7 +7,20 @@ const Emails = require('./email')
 exports.GetAllOrders = async (req, res, next) => {
     try {
         var id_user = req.params.id_user
-        var result = await mysql.execute('SELECT * FROM tbl_orders where id_user = ?', id_user);
+        var result = await mysql.execute(`select 
+		order_user.cd_order,
+		order_user.id_user,
+		order_user.cpf_user,
+		order_user.discount,
+		order_user.coupom,
+		order_user.sub_total,
+		order_user.totalPrice,
+		order_user.product_amount,
+		order_user.cd_card,
+		order_user.status,
+		card.number_card
+        from tbl_orders  as order_user inner join tbl_cards as card
+        on order_user.id_user = card.cd_card WHERE order_user.id_user = ?;`, id_user);
         if(result.length > 0){
             const response = {
                 Search: result.map(orders => {
@@ -24,6 +37,7 @@ exports.GetAllOrders = async (req, res, next) => {
                         date_order: EncryptDep.Decrypt(orders.date_order),
                         cd_card: parseInt(orders.cd_card),
                         status: EncryptDep.Decrypt(orders.status),
+                        payment: EncryptDep.Decrypt(orders.number_card)
                     }
                 })
                 }
