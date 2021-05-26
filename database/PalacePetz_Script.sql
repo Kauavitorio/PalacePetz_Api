@@ -105,6 +105,14 @@ create table tbl_orders(
 )DEFAULT CHARACTER SET utf8  DEFAULT COLLATE utf8_general_ci;
 ALTER TABLE tbl_orders auto_increment = 26542;
 
+-- Table for products historic
+drop table tbl_product_historic;
+create table tbl_product_historic(
+    cd_historic int primary key auto_increment,
+    id_user int not null, FOREIGN KEY (id_user) REFERENCES tbl_account (id_user),
+    cd_prod int not null, FOREIGN KEY (cd_prod) REFERENCES tbl_products (cd_prod)
+)DEFAULT CHARACTER SET utf8  DEFAULT COLLATE utf8_general_ci;
+
 
 /* Table for Discounts */
 drop table tbl_discounts;
@@ -144,6 +152,7 @@ update tbl_versionMobile set versionName = "1.3.3", versionCode = 7 where cd_ver
 select * from tbl_versionMobile;
 
 -- Selects
+select * from tbl_account;
 select * from tbl_products;
 select * from tbl_shoppingCart;
 select * from tbl_discounts;
