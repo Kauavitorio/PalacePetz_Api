@@ -3,6 +3,7 @@ const app = express();
 const morgan = require('morgan');
 const bodyParser = require('body-parser')
 
+/* Create const for all Routers */
 const userRoute = require('./routes/users')
 const productRoute = require('./routes/products')
 const categoryRoute = require('./routes/category')
@@ -10,6 +11,7 @@ const mobileRoute = require('./routes/mobile')
 const shoppingCart = require('./routes/shoppingcart')
 const testRoute = require('./tests/routes/tests')
 const discountsRoute = require('./routes/discounts')
+const orderRoute = require('./routes/order') // End routers consts
 
 //  Configuring APP
 app.use(morgan('dev'));
@@ -56,8 +58,11 @@ app.use('/category', categoryRoute);
 // Discounts Route
 app.use('/discounts', discountsRoute);
 
-// Category Route
+// Mobile Route
 app.use('/mobile', mobileRoute);
+
+// Order Route
+app.use('/order', orderRoute);
 
 //  Router for Test
 app.use('/test', testRoute); 

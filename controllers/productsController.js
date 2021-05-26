@@ -14,8 +14,7 @@ exports.RegisterNewProduct = async (req, res, next) => {
     var image_prod = req.body.image_prod
     ServerDetails.showRequestId()
     try {
-
-        /* Get current date */
+        /* Get ent date */
         let data = new Date();
         var dataFormat = data.toISOString().substring(0, 10);
         var queryCat = `SELECT * FROM tbl_category WHERE cd_category = ?`

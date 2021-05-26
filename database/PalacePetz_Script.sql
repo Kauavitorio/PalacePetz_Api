@@ -37,7 +37,6 @@ create table tbl_account(
     verify int default 0
 )DEFAULT CHARACTER SET utf8  DEFAULT COLLATE utf8_general_ci;
 alter table tbl_account add column used_coupons varchar(500) default "no coupons";
-update tbl_account set used_coupons = "no coupons" where id_user = 1;
 
 --  Table for Products
 -- drop table tbl_products;
@@ -64,7 +63,7 @@ create table tbl_category(
 )DEFAULT CHARACTER SET utf8  DEFAULT COLLATE utf8_general_ci;
 
 --	Table for Cards
- drop table tbl_cards;
+drop table tbl_cards;
 SELECT * FROM tbl_cards WHERE id_user = ?;
 create table tbl_cards(
     cd_card int primary key auto_increment,
@@ -88,6 +87,25 @@ create table tbl_shoppingCart(
     sub_total varchar(500) not null
 )DEFAULT CHARACTER SET utf8  DEFAULT COLLATE utf8_general_ci;
 
+-- Table for Orders
+drop table tbl_orders;
+create table tbl_orders(
+    cd_order int primary key auto_increment,
+    id_user int not null, FOREIGN KEY (id_user) REFERENCES tbl_account (id_user),
+    cpf_user varchar(600) not null,
+    discount varchar(500),
+    coupom varchar(500),
+    sub_total varchar(500) not null,
+    totalPrice varchar(500) not null,
+    product_amount int not null,
+    order_products varchar(500) not null,
+    date_order varchar(500) not null,
+    cd_card int not null, FOREIGN KEY (cd_card) REFERENCES tbl_cards (cd_card), 
+    status varchar(500) not null    
+)DEFAULT CHARACTER SET utf8  DEFAULT COLLATE utf8_general_ci;
+ALTER TABLE tbl_orders auto_increment = 26542;
+
+
 /* Table for Discounts */
 drop table tbl_discounts;
 create table tbl_discounts(
@@ -95,10 +113,16 @@ create table tbl_discounts(
     name_tag varchar(20) not null,
     discount_total varchar(10) not null,
     max_uses int not null,
-    used int,
+    used int default 0,
     expiry_date varchar(100) not null
 )DEFAULT CHARACTER SET utf8  DEFAULT COLLATE utf8_general_ci;
-insert into tbl_discounts (name_tag, discount_total, max_uses, used, expiry_date) values ("primeiracompra", "20", 5, 0, "25/05/2021");
+insert into tbl_discounts (name_tag, discount_total, max_uses, used, expiry_date) values ("primeiracompra", "20", 500, 0, "31/12/2021");
+insert into tbl_discounts (name_tag, discount_total, max_uses, used, expiry_date) values ("souoprimeiro", "70", 1, 0, "31/12/2021");
+insert into tbl_discounts (name_tag, discount_total, max_uses, used, expiry_date) values ("diapalace", "2", 500, 0, "31/12/2021");
+insert into tbl_discounts (name_tag, discount_total, max_uses, used, expiry_date) values ("weekendpetz", "12", 500, 0, "31/12/2021");
+insert into tbl_discounts (name_tag, discount_total, max_uses, used, expiry_date) values ("usooapp", "30", 500, 0, "31/12/2021");
+update tbl_account set used_coupons = "no coupons" where id_user = 4;
+update tbl_account set used_coupons = "no coupons" where id_user =34;
 select * from tbl_discounts;
 
 /*	Table for Server Details  */
@@ -116,12 +140,12 @@ create table tbl_versionMobile(
     versionName varchar(10) not null,
     versionCode int not null
 )DEFAULT CHARACTER SET utf8  DEFAULT COLLATE utf8_general_ci;
-update tbl_versionMobile set versionName = "1.3.2", versionCode = 6 where cd_version = 4;
+update tbl_versionMobile set versionName = "1.3.3", versionCode = 7 where cd_version = 4;
 select * from tbl_versionMobile;
 
 -- Selects
-select * from tbl_account;
 select * from tbl_products;
 select * from tbl_shoppingCart;
 select * from tbl_discounts;
 select * from tbl_serverDetails;
+select * from tbl_orders;

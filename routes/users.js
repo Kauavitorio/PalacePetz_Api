@@ -10,6 +10,9 @@ router.post('/register', UsersController.RegisterUsers);
 // Login User
 router.post('/login', UsersController.Login);
 
+// Login User
+router.post('/register-historic-product/:id_user/:cd_prod', UsersController.Register_Product_On_User_Historic);
+
 // Update Address
 router.patch('/update/address/', UsersController.UpdateAddress)
 

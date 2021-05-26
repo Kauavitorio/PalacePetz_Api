@@ -310,6 +310,29 @@ exports.ChangePassword = async (req, res, next) => {
     }
 }
 
+exports.Register_Product_On_User_Historic = async (req, res, next) => {
+    try {
+        var id_user = req.params.id_user
+        var cd_prod = req.params.cd_prod
+
+        var resultSearch = await mysql.execute('SELECT * FROM tbl_product_historic where id_user = ? and cd_prod = ?', [ id_user, cd_prod ])
+        if(resultSearch.length > 0)
+            return res.status(409).send({message: `Product is registred.`})
+        else{
+            var resultInsert = await mysql.execute('INSERT INTO tbl_product_historic (id_user, cd_prod) VALUES (?, ?)', [id_user, cd_prod])
+            const response = {
+                message: 'Successfully inserted',
+                cd_historic: resultInsert.insertId
+            }
+            res.status(201).send(response)
+        }
+
+    } catch (error) {
+        ServerDetails.RegisterServerError("Register Product Historic", error.toString());
+        return res.status(500).send( { error: error } )
+    }
+}
+
 function makeidForUser(length) {
     var result           = [];
     var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
