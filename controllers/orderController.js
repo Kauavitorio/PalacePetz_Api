@@ -74,7 +74,7 @@ exports.FinishOrder = async (req, res, next) => {
             address_user = EncryptDep.Decrypt(result_first_info[0].address_user)
             user_email = EncryptDep.Decrypt(result_first_info[0].email)
             complement = EncryptDep.Decrypt(result_first_info[0].complement)
-            user_zipcode = EncryptDep.Decrypt(result_first_info[0].user_zipcode)
+            user_zipcode = EncryptDep.Decrypt(result_first_info[0].zipcode)
 
             /* Get products cart */ 
             var cd_products_cart = []

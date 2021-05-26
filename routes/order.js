@@ -6,6 +6,6 @@ const OrderController = require('../controllers/orderController')
 router.post('/finish-order', OrderController.FinishOrder);
 
 //  Get user Orders
-router.post('/:id_user', OrderController.GetAllOrders);
+router.get('/:id_user', OrderController.GetAllOrders);
 
 module.exports = router
