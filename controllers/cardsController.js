@@ -96,7 +96,7 @@ exports.RemoveUserCard = async (req, res, next) => {
         const queryHave = 'SELECT * FROM tbl_cards WHERE id_user = ? and cd_card = ?;'
         const resultHaveOnCart = await mysql.execute(queryHave, [req.params.id_user, req.params.cd_card])
         if(resultHaveOnCart.length > 0){
-            const query = `delete from tbl_cards where id_user = ? and cd_prod = ?;`
+            const query = `delete from tbl_cards where id_user = ? and cd_card = ?;`
         await mysql.execute(query, [  req.params.id_user, req.params.cd_prod ])
         const response = {
             mensagem: 'Card successfully removed!!'}
@@ -105,7 +105,7 @@ exports.RemoveUserCard = async (req, res, next) => {
             return res.status(417).send({warning: 'User don`t have this product on cart'})
         }
     } catch (error) {
-        ServerDetails.RegisterServerError("Remove Item From Cart", error.toString());
+        ServerDetails.RegisterServerError("Remove user Card", error.toString());
         return res.status(500).send({ error: error.toString()})
     }
 }
