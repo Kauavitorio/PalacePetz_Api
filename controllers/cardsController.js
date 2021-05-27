@@ -97,7 +97,7 @@ exports.RemoveUserCard = async (req, res, next) => {
         const resultHaveOnCart = await mysql.execute(queryHave, [req.params.id_user, req.params.cd_card])
         if(resultHaveOnCart.length > 0){
             const query = `delete from tbl_cards where id_user = ? and cd_card = ?;`
-        await mysql.execute(query, [  req.params.id_user, req.params.cd_prod ])
+        await mysql.execute(query, [  req.params.id_user, req.params.cd_card ])
         const response = {
             mensagem: 'Card successfully removed!!'}
         return res.status(200).send(response);
