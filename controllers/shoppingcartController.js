@@ -139,6 +139,7 @@ exports.UpdateCartToNewAmount = async (req, res, next) => {
 
 exports.RemoveItemFromCart = async (req, res, next) => {
     try {
+        ServerDetails.showRequestId();
         //  Verify if have same product on user cart
         const queryHave = 'SELECT * FROM tbl_shoppingCart WHERE id_user = ? and cd_prod = ?;'
         const resultHaveOnCart = await mysql.execute(queryHave, [req.params.id_user, req.params.cd_prod])

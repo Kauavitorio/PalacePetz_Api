@@ -90,5 +90,22 @@ exports.GetUserCards = async (req, res, next) => {
 
 //  Method for remove user cards
 exports.RemoveUserCard = async (req, res, next) => {
-
+    try {
+        ServerDetails.showRequestId();
+        //  Verify if have same product on user cart
+        const queryHave = 'SELECT * FROM tbl_cards WHERE id_user = ? and cd_card = ?;'
+        const resultHaveOnCart = await mysql.execute(queryHave, [req.params.id_user, req.params.cd_card])
+        if(resultHaveOnCart.length > 0){
+            const query = `delete from tbl_cards where id_user = ? and cd_prod = ?;`
+        await mysql.execute(query, [  req.params.id_user, req.params.cd_prod ])
+        const response = {
+            mensagem: 'Card successfully removed!!'}
+        return res.status(200).send(response);
+        }else{
+            return res.status(417).send({warning: 'User don`t have this product on cart'})
+        }
+    } catch (error) {
+        ServerDetails.RegisterServerError("Remove Item From Cart", error.toString());
+        return res.status(500).send({ error: error.toString()})
+    }
 }
