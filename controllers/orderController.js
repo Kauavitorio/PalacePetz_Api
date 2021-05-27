@@ -113,6 +113,7 @@ exports.FinishOrder = async (req, res, next) => {
     }
 }
 
+//  Method to remove products stock
 exports.DropStock = async (cd_prod, amount) => {
     var resultProd = await mysql.execute('SELECT * FROM tbl_products WHERE cd_prod = ?', parseInt(cd_prod))
     var result_stock = parseInt(resultProd[0].amount)
