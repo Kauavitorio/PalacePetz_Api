@@ -8,5 +8,6 @@ const _PORT = process.env.PORT || 3000;
 const _SERVER = _HTTP.createServer(_APP);
 
 //  Putting the server to listen to the port informed by the provider or the fixed one
-_SERVER.listen(_PORT);
+var port_number = _SERVER.listen(process.env.PORT || 3000);
+_APP.listen(port_number);
 //  Server run on Heroku
