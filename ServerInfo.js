@@ -61,8 +61,18 @@ function GetTime(){
     return hour + ":" + min;
 }
 
+exports.GetTime = () => {
+    var date = new Date();
+    var hour = date.getHours();
+    hour = (hour < 10 ? "0" : "") + hour;
+    var min  = date.getMinutes();
+    min = (min < 10 ? "0" : "") + min;
+    return hour + ":" + min;
+}
+
+
 var requestId = 0;
 exports.showRequestId = () => {
     requestId++;
-    console.log("---------------------\n-- ✅ Request Id: " + requestId + "\n---------------------")
+    console.log("---------------------\n---- ✅ Request Id: " + requestId + "\n-----------------------")
 }

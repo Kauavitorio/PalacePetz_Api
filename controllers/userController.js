@@ -314,12 +314,16 @@ exports.Register_Product_On_User_Historic = async (req, res, next) => {
     try {
         var id_user = req.params.id_user
         var cd_prod = req.params.cd_prod
+        var datetime = ServerDetails.GetDate() + " " + ServerDetails.GetTime()
 
         var resultSearch = await mysql.execute('SELECT * FROM tbl_product_historic where id_user = ? and cd_prod = ?', [ id_user, cd_prod ])
-        if(resultSearch.length > 0)
+        if(resultSearch.length > 0){
+            await mysql.execute('UPDATE tbl_product_historic SET datetime = ? WHERE cd_prod = ? and id_user = ?;',
+            [datetime, cd_prod, id_user])
             return res.status(409).send({message: `Product is registred.`})
+        }
         else{
-            var resultInsert = await mysql.execute('INSERT INTO tbl_product_historic (id_user, cd_prod) VALUES (?, ?)', [id_user, cd_prod])
+            var resultInsert = await mysql.execute('INSERT INTO tbl_product_historic (id_user, cd_prod, datetime) VALUES (?, ?, ?)', [id_user, cd_prod, datetime])
             const response = {
                 message: 'Successfully inserted',
                 cd_historic: resultInsert.insertId
@@ -329,6 +333,64 @@ exports.Register_Product_On_User_Historic = async (req, res, next) => {
 
     } catch (error) {
         ServerDetails.RegisterServerError("Register Product Historic", error.toString());
+        return res.status(500).send( { error: error } )
+    }
+}
+
+exports.GetUserHistoric = async (req, res, next) => {
+    try {
+        var id_user = req.params.id_user
+        var result_USER = await mysql.execute('SELECT * FROM tbl_account WHERE id_user = ?', id_user)
+        if(result_USER.length > 0){
+            var results = await mysql.execute(`select 
+            hist.cd_historic,
+            hist.id_user,
+            hist.cd_prod,
+            hist.datetime,
+            prod.cd_prod,
+            prod.image_prod,
+            prod.nm_product,
+            prod.product_price
+            from tbl_product_historic as hist inner join tbl_products as prod
+            on hist.cd_prod = prod.cd_prod where hist.id_user = ?;`, id_user)
+            if(results.length > 0){
+                const response = {
+                    Search: results.map(hist => {
+                        return {
+                            cd_historic: parseInt(hist.cd_historic),
+                            id_user: parseInt(hist.id_user),
+                            datetime: hist.datetime,
+                            cd_prod: parseInt(hist.cd_prod),
+                            image_prod: hist.image_prod,
+                            nm_product: hist.nm_product,
+                            product_price: hist.product_price
+                        }
+                    })
+                    }
+                return res.status(200).send(response)
+            }else{
+                const response = {
+                    Search: results.map(cart => {
+                        return {
+                            cd_cart: 0,
+                            cd_prod: 0,
+                            nm_product: "Nenhum Produto em sue carrinho",
+                            image_prod: "https://media.discordapp.net/attachments/707671310104526863/846488817367384144/unnamed-removebg-preview.png?width=467&height=467",
+                            amount: 0,
+                            id_user: 0,
+                            product_price: 0,
+                            totalPrice: 0,
+                            product_amount: 0,
+                            sub_total: 0
+                        }
+                    })
+                    }
+                return res.status(206).send(response)
+            }
+        }else
+            return res.status(404).send( { message: 'User not registered' } )
+    } catch (error) {
+        ServerDetails.RegisterServerError("Get Product Historic", error.toString());
         return res.status(500).send( { error: error } )
     }
 }
