@@ -395,6 +395,22 @@ exports.GetUserHistoric = async (req, res, next) => {
     }
 }
 
+exports.ClearHistoric = async (req, res, next) => {
+    try {
+        var id_user = req.params.id_user
+        var result_USER = await mysql.execute('SELECT * FROM tbl_account WHERE id_user = ?', id_user)
+        if(result_USER.length > 0){
+            /* Clear Table Historic */
+            await mysql.execute(`DELETE FROM tbl_product_historic WHERE id_user = ?`, id_user) 
+            res.status(200).send({message: 'Historic sucessfully clear'})
+        }else
+            return res.status(404).send( { message: 'User not registered' } )
+    } catch (error) {
+        ServerDetails.RegisterServerError("Clear Product Historic", error.toString());
+        return res.status(500).send( { error: error } )
+    }
+}
+
 function makeidForUser(length) {
     var result           = [];
     var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -404,6 +420,6 @@ function makeidForUser(length) {
     charactersLength)));
     }
     var charset = result.join('');
-   var id = charset + Math.floor(Math.random() * 256);
+    var id = charset + Math.floor(Math.random() * 256);
     return id;
 }

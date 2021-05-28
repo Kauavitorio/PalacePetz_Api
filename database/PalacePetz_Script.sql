@@ -113,18 +113,6 @@ create table tbl_product_historic(
     cd_prod int not null, FOREIGN KEY (cd_prod) REFERENCES tbl_products (cd_prod),
     datetime varchar(16) not null
 )DEFAULT CHARACTER SET utf8  DEFAULT COLLATE utf8_general_ci;
-insert into tbl_product_historic (id_user, cd_prod, datetime) values (4, 164, "21/02/5414 10:25");
-select 
-            hist.cd_historic,
-            hist.id_user,
-            hist.cd_prod,
-            hist.datetime,
-            prod.cd_prod,
-            prod.image_prod,
-            prod.nm_product,
-            prod.product_price
-            from tbl_product_historic as hist inner join tbl_products as prod
-            on hist.cd_prod = prod.cd_prod where hist.id_user = 4;
 
 /* Table for Discounts */
 drop table tbl_discounts;

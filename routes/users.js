@@ -16,6 +16,9 @@ router.post('/register-historic-product/:id_user/:cd_prod', UsersController.Regi
 // Get User Product Historic
 router.get('/historic-product/:id_user', UsersController.GetUserHistoric);
 
+// Clear User Product Historic
+router.delete('/historic-product/:id_user', UsersController.ClearHistoric);
+
 // Update Address
 router.patch('/update/address/', UsersController.UpdateAddress)
 
