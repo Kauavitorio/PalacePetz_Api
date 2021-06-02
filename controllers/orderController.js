@@ -59,6 +59,7 @@ exports.FinishOrder = async (req, res, next) => {
         var address_user;  
         var complement;
         var user_email;
+        var name_user;
         var user_zipcode;
         var cd_card = req.body.cd_card
         var discount = req.body.discount
@@ -67,10 +68,13 @@ exports.FinishOrder = async (req, res, next) => {
         var totalPrice = req.body.totalPrice
         var order_date = ServerDetails.GetDate()
         var status = "Aguardando aprovação"
+        var deliveryTime = 45
+        var procentDiscount;
 
         /* Get user cpf */
         var result_first_info = await mysql.execute('SELECT * FROM tbl_account WHERE id_user = ?', id_user)
         if(result_first_info.length > 0){
+            name_user = EncryptDep.Decrypt(result_first_info[0].name_user)
             cpf_user = EncryptDep.Decrypt(result_first_info[0].cpf_user)
             address_user = EncryptDep.Decrypt(result_first_info[0].address_user)
             user_email = EncryptDep.Decrypt(result_first_info[0].email)
@@ -85,16 +89,22 @@ exports.FinishOrder = async (req, res, next) => {
                 this.DropStock(result_user_cart[i].cd_prod, parseInt(result_user_cart[i].product_amount))
             }
 
+            if(coupom != null || coupom != "" || coupom != " "){
+                var result_discount = await mysql.execute('SELECT * FROM tbl_discounts WHERE name_tag = ?', coupom)
+                procentDiscount = result_discount[0].discount_total
+                discount = discount + " - " + procentDiscount+ "%"
+            }
+
             /* Insert Order */
             var insert_order = await mysql.execute(`INSERT INTO tbl_orders (id_user, cpf_user, discount, coupom, sub_total,
-                totalPrice, product_amount, order_products, date_order, cd_card, status) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+                totalPrice, product_amount, order_products, date_order, cd_card, status, deliveryTime) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
                 [id_user, EncryptDep.Encrypto(cpf_user), EncryptDep.Encrypto(discount), EncryptDep.Encrypto(coupom), EncryptDep.Encrypto(sub_total), EncryptDep.Encrypto(totalPrice),
-                    cd_products_cart.length, cd_products_cart.toString(), EncryptDep.Encrypto(order_date), cd_card, EncryptDep.Encrypto(status)])
+                    cd_products_cart.length, cd_products_cart.toString(), EncryptDep.Encrypto(order_date), cd_card, EncryptDep.Encrypto(status), deliveryTime])
 
             /* Clear Table Shooping Cart */
             await mysql.execute(`DELETE FROM tbl_shoppingCart WHERE id_user = ?`, id_user) 
 
-            Emails.SendOrderConfirmation(user_email, insert_order.insertId, order_date, sub_total, discount, totalPrice, address_user, complement, user_zipcode)
+            Emails.SendOrderConfirmation(user_email, name_user, insert_order.insertId, order_date, sub_total, discount, totalPrice, address_user, complement, user_zipcode)
             
             res.status(201).send({message: 'Order sucessfully created'})
         }else{

@@ -97,7 +97,7 @@ exports.SendPasswordReset = ($recipient, $reset_link) => {
 }
 
 //  Method to send order confirmation
-exports.SendOrderConfirmation = ($recipient, $order_id, $order_date, $sub_total, $discount, $order_total,
+exports.SendOrderConfirmation = ($recipient, $name_user, $order_id, $order_date, $sub_total, $discount, $order_total,
     $address_user, $complement, $zipcode) => {
 
     //  Create HTML reader
@@ -116,6 +116,7 @@ exports.SendOrderConfirmation = ($recipient, $order_id, $order_date, $sub_total,
         var template = handlebars.compile(html);
         var replacements = {
             order_id: $order_id,
+            name_user: $name_user,
             order_date: $order_date,
             sub_total: $sub_total,
             discount: $discount,
