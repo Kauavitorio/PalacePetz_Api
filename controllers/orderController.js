@@ -19,6 +19,7 @@ exports.GetAllOrders = async (req, res, next) => {
 		order_user.date_order,
 		order_user.cd_card,
 		order_user.status,
+		order_user.deliveryTime,
 		card.number_card
         from tbl_orders  as order_user inner join tbl_cards as card
         on card.cd_card = order_user.cd_card WHERE order_user.id_user = ?;`, id_user);
@@ -37,6 +38,7 @@ exports.GetAllOrders = async (req, res, next) => {
                         date_order: EncryptDep.Decrypt(orders.date_order),
                         cd_card: parseInt(orders.cd_card),
                         status: EncryptDep.Decrypt(orders.status),
+                        deliveryTime: orders.deliveryTime,
                         payment: EncryptDep.Decrypt(orders.number_card)
                     }
                 })
