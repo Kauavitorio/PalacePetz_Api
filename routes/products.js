@@ -24,4 +24,7 @@ router.get('/list/filter/category/:cd_category', ProductsController.ListProducts
 // List Products with species filter
 router.get('/list/filter/species/:species', ProductsController.ListProductsBySpecies)
 
+// List Products with product name
+router.get('/list/filter/name/:nm_product', ProductsController.ListProductsByName)
+
 module.exports = router

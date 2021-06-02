@@ -74,6 +74,7 @@ create table tbl_cards(
     cvv_card varchar(500) not null,
     nmUser_card varchar(500) not null
 )DEFAULT CHARACTER SET utf8  DEFAULT COLLATE utf8_general_ci;
+ALTER TABLE tbl_cards auto_increment = 2542;
 
 /* Table for Shopping Cart */
 drop table tbl_shoppingCart;
@@ -154,9 +155,9 @@ select * from tbl_versionMobile;
 
 -- Selects
 select * from tbl_account;
+update tbl_products set amount = 0 where cd_prod = 184;
 select * from tbl_products;
 select * from tbl_shoppingCart;
-delete from tbl_cards where cd_card = 4;
 select * from tbl_cards;
 select * from tbl_discounts;
 select * from tbl_serverDetails;
