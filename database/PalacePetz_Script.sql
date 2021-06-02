@@ -155,7 +155,6 @@ select * from tbl_versionMobile;
 
 -- Selects
 select * from tbl_account;
-update tbl_products set amount = 0 where cd_prod = 184;
 select * from tbl_products;
 select * from tbl_shoppingCart;
 select * from tbl_cards;

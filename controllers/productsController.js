@@ -414,7 +414,7 @@ exports.ListProductsByName = async (req, res, next) => {
 		prod.image_prod,
 		prod.popular
         from tbl_products  as prod inner join tbl_category as cat
-        on prod.cd_category = cat.cd_category WHERE prod.nm_product like "%?%";`, req.params.nm_product);
+        on prod.cd_category = cat.cd_category WHERE prod.nm_product like "%${req.params.nm_product}%";`);
         if (results.length <= 0) {
             return res.status(204).send({ message: 'No Products registerd' })
         }else{
