@@ -156,21 +156,10 @@ exports.ListAllPopularProducts = async (req, res, next) => {
     try{
         ServerDetails.showRequestId()
         const results = await mysql.execute(`select 
-		prod.cd_prod,
-		prod.cd_category,
-		cat.nm_category,
-		prod.nm_product,
-		prod.amount,
-		prod.species,
-		prod.product_price,
-		prod.species,
-		prod.description,
-		prod.date_prod,
-		prod.shelf_life,
-		prod.image_prod,
-		prod.popular
+		prod.*,
+		cat.nm_category
         from tbl_products as prod inner join tbl_category as cat
-        on prod.cd_category = cat.cd_category WHERE prod.popular = 1;`);
+        on prod.cd_category = cat.cd_category WHERE prod.popular = 1 and prod.amount > 0;`);
         if (results.length <= 0) {
             return res.status(204).send({ message: 'No Products registerd' })
         }else{

@@ -94,15 +94,16 @@ create table tbl_orders(
     cd_order int primary key auto_increment,
     id_user int not null, FOREIGN KEY (id_user) REFERENCES tbl_account (id_user),
     cpf_user varchar(600) not null,
-    discount varchar(500),
-    coupom varchar(500),
-    sub_total varchar(500) not null,
-    totalPrice varchar(500) not null,
+    discount varchar(600),
+    coupom varchar(600),
+    sub_total varchar(600) not null,
+    totalPrice varchar(600) not null,
     product_amount int not null,
-    order_products varchar(500) not null,
-    date_order varchar(500) not null,
+    order_products varchar(600) not null,
+    date_order varchar(600) not null,
     cd_card int not null,
-    status varchar(500) not null    
+    status varchar(600) not null,
+    deliveryTime int default 45 not null
 )DEFAULT CHARACTER SET utf8  DEFAULT COLLATE utf8_general_ci;
 ALTER TABLE tbl_orders auto_increment = 26542;
 
