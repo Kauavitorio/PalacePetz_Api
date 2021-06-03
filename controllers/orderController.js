@@ -91,7 +91,7 @@ exports.FinishOrder = async (req, res, next) => {
                 this.DropStock(result_user_cart[i].cd_prod, parseInt(result_user_cart[i].product_amount))
             }
 
-            if(coupom != null || coupom != "" || coupom != " "){
+            if(coupom != null && coupom != "" && coupom != " "){
                 var result_discount = await mysql.execute('SELECT * FROM tbl_discounts WHERE name_tag = ?', coupom)
                 procentDiscount = result_discount[0].discount_total
                 discount = discount + " - " + procentDiscount+ "%"
