@@ -32,7 +32,6 @@ exports.SendEmailConfirmation = ($recipient, $username, $url_toConfirm) => {
             username: $username,
             url_confirm: $url_toConfirm
         };
-c
         //  Set email template
         var htmlToSend = template(replacements);
         //  Create email formart
