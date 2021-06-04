@@ -84,7 +84,7 @@ exports.RegisterUsers = async (req, res, next) => {
             if(Emailcollection.length > 0){
                 return res.status(409).send({ message: 'User already registered' })
             }else{
-                var idVerifyEMail = makeidForUser(2) + "-Pala"+ makeidForUser(1) +"cePetz-" + "a" + makeidForUser(1) + "l"+ makeidForUser(3) + "a"+ makeidForUser(1) + "c"+ makeidForUser(1) + "e"+ makeidForUser(1) + makeidForUser(9) + "-Pala"+ makeidForUser(1) +"cePetz-" + makeidForUser(2)
+                var idVerifyEMail = Generate_verify_id_for_user(2) + "-Pala"+ Generate_verify_id_for_user(1) +"cePetz-" + "a" + Generate_verify_id_for_user(1) + "l"+ Generate_verify_id_for_user(3) + "a"+ Generate_verify_id_for_user(1) + "c"+ Generate_verify_id_for_user(1) + "e"+ Generate_verify_id_for_user(1) + Generate_verify_id_for_user(9) + "-Pala"+ Generate_verify_id_for_user(1) +"cePetz-" + Generate_verify_id_for_user(2)
                 const hash = await bcrypt.hashSync(req.body.password, 12);
                 query = 'INSERT INTO tbl_account (name_user, email, cpf_user, password, img_user, verify_id) VALUES (?,?,?,?,?,?)';
                 var results = await mysql.execute(query, [ EncryptDep.Encrypto(req.body.name_user), EncryptDep.Encrypto(req.body.email),
@@ -107,7 +107,7 @@ exports.RegisterUsers = async (req, res, next) => {
                 }
             }
         }else{
-                var idVerifyEMail = makeidForUser(2) + "-Pala"+ makeidForUser(1) +"cePetz-" + "a" + makeidForUser(1) + "l"+ makeidForUser(3) + "a"+ makeidForUser(1) + "c"+ makeidForUser(1) + "e"+ makeidForUser(1) + makeidForUser(9) + "-Pala"+ makeidForUser(1) +"cePetz-" + makeidForUser(2)
+                var idVerifyEMail = Generate_verify_id_for_user(2) + "-Pala"+ Generate_verify_id_for_user(1) +"cePetz-" + "a" + Generate_verify_id_for_user(1) + "l"+ Generate_verify_id_for_user(3) + "a"+ Generate_verify_id_for_user(1) + "c"+ Generate_verify_id_for_user(1) + "e"+ Generate_verify_id_for_user(1) + Generate_verify_id_for_user(9) + "-Pala"+ Generate_verify_id_for_user(1) +"cePetz-" + Generate_verify_id_for_user(2)
                 const hash = await bcrypt.hashSync(req.body.password, 12);
                 query = 'INSERT INTO tbl_account (name_user, email, cpf_user, password, img_user, verify_id) VALUES (?,?,?,?,?,?)';
                 var results = await mysql.execute(query, [ EncryptDep.Encrypto(req.body.name_user), EncryptDep.Encrypto(req.body.email),
@@ -223,7 +223,6 @@ exports.ConfirmEmail = async (req, res, next) => {
         }else{
             const resultList = await mysql.execute('SELECT verify_id FROM tbl_account WHERE id_user = ?;', id_user)
             if(resultList.length > 0){
-                console.log(resultList[0].verify_id)
                 if(resultList[0].verify_id == verify_id){
                     const queryUpdate = `UPDATE tbl_account set verify_id = "Confirmed", verify = 1 WHERE id_user = ?`
                     await mysql.execute(queryUpdate, id_user);
@@ -255,7 +254,7 @@ exports.RequestPasswordReset = async (req, res, next) => {
             if(email == emailUser ){
             var email_user = email
             var id_user = result[i].id_user
-            var idPasswordReset = "pswd"+ makeidForUser(9) + "PalacePetz-" + "sys" + makeidForUser(1) + "tem"+ makeidForUser(3) + "a"+ makeidForUser(2) + "c"+ makeidForUser(3) + "e"+ makeidForUser(1) + "key" + makeidForUser(4) + "-Pala"+ makeidForUser(5) +"cePetz-pswd" + makeidForUser(8) + 'p0'
+            var idPasswordReset = "pswd"+ Generate_verify_id_for_user(9) + "PalacePetz-" + "sys" + Generate_verify_id_for_user(1) + "tem"+ Generate_verify_id_for_user(3) + "a"+ Generate_verify_id_for_user(2) + "c"+ Generate_verify_id_for_user(3) + "e"+ Generate_verify_id_for_user(1) + "key" + Generate_verify_id_for_user(4) + "-Pala"+ Generate_verify_id_for_user(5) +"cePetz-pswd" + Generate_verify_id_for_user(8) + 'p0'
             const queryUpdate = `UPDATE tbl_account SET verify_id = ? WHERE id_user = ?`
             await mysql.execute(queryUpdate, [idPasswordReset, id_user])
             var resultEmail = Emails.SendPasswordReset(email_user, 'https://palacepetz.azurewebsites.net/' + "novasenha/" + idPasswordReset + "/" + id_user)
@@ -310,6 +309,7 @@ exports.ChangePassword = async (req, res, next) => {
     }
 }
 
+//  Method to Register Products on User Historic
 exports.Register_Product_On_User_Historic = async (req, res, next) => {
     try {
         var id_user = req.params.id_user
@@ -337,6 +337,7 @@ exports.Register_Product_On_User_Historic = async (req, res, next) => {
     }
 }
 
+//  Method to get User Historic
 exports.GetUserHistoric = async (req, res, next) => {
     try {
         var id_user = req.params.id_user
@@ -395,6 +396,7 @@ exports.GetUserHistoric = async (req, res, next) => {
     }
 }
 
+//  Method to clear User Hostoric
 exports.ClearHistoric = async (req, res, next) => {
     try {
         var id_user = req.params.id_user
@@ -411,7 +413,7 @@ exports.ClearHistoric = async (req, res, next) => {
     }
 }
 
-function makeidForUser(length) {
+function Generate_verify_id_for_user(length) {
     var result           = [];
     var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     var charactersLength = characters.length;
