@@ -1,3 +1,5 @@
+const Server = require('../ServerInfo')
+
 //Method for Verify BadWords on User Name
 exports.VerifyUsername = (Username) => {
     var FullName = Username.toLowerCase().split(" ");
@@ -6,16 +8,18 @@ exports.VerifyUsername = (Username) => {
     NameList.push(FullName[1])
     var BadWords = getBadWordsList();
     var BadWordsList = []
-    console.log("\nBad Word list have: " + BadWords.length + " words\n")
+    console.log("\n ⚔️   Bad Word list have: " + BadWords.length + " words ⚔️ \n")
     for(var i = 0; i < NameList.length; i++){
         if(BadWords.includes(NameList[i])){
             BadWordsList.push(NameList[i])
         }
     }
     if(BadWordsList.length > 0){
-        console.log("\n--- Bad Words detected ---")
+        console.log("-------------------------------------")
+        console.log("  --- ⛔️ Bad Words detected ⛔️ ---")
         console.log(BadWordsList)
-        console.log(`--- For ${Username} --\n`)
+        console.log(`--- For ${Username} ---`)
+        console.log("-------------------------------------\n")
         return true;
     }else{
         return false;
