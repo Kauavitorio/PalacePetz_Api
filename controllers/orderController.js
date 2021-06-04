@@ -57,7 +57,6 @@ exports.FinishOrder = async (req, res, next) => {
     try {
         ServerDetails.showRequestId()
         var id_user = req.body.id_user
-        var cpf_user;
         var address_user;  
         var complement;
         var user_email;
@@ -77,7 +76,6 @@ exports.FinishOrder = async (req, res, next) => {
         var result_first_info = await mysql.execute('SELECT * FROM tbl_account WHERE id_user = ?', id_user)
         if(result_first_info.length > 0){
             name_user = EncryptDep.Decrypt(result_first_info[0].name_user)
-            cpf_user = EncryptDep.Decrypt(result_first_info[0].cpf_user)
             address_user = EncryptDep.Decrypt(result_first_info[0].address_user)
             user_email = EncryptDep.Decrypt(result_first_info[0].email)
             complement = EncryptDep.Decrypt(result_first_info[0].complement)
@@ -98,9 +96,9 @@ exports.FinishOrder = async (req, res, next) => {
             }
 
             /* Insert Order */
-            var insert_order = await mysql.execute(`INSERT INTO tbl_orders (id_user, cpf_user, discount, coupom, sub_total,
-                totalPrice, product_amount, order_products, date_order, cd_card, status, deliveryTime) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-                [id_user, EncryptDep.Encrypto(cpf_user), EncryptDep.Encrypto(discount), EncryptDep.Encrypto(coupom), EncryptDep.Encrypto(sub_total), EncryptDep.Encrypto(totalPrice),
+            var insert_order = await mysql.execute(`INSERT INTO tbl_orders (id_user, discount, coupom, sub_total,
+                totalPrice, product_amount, order_products, date_order, cd_card, status, deliveryTime) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+                [id_user, EncryptDep.Encrypto(discount), EncryptDep.Encrypto(coupom), EncryptDep.Encrypto(sub_total), EncryptDep.Encrypto(totalPrice),
                     cd_products_cart.length, cd_products_cart.toString(), EncryptDep.Encrypto(order_date), cd_card, EncryptDep.Encrypto(status), deliveryTime])
 
             /* Clear Table Shooping Cart */
