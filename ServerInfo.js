@@ -70,9 +70,21 @@ exports.GetTime = () => {
     return hour + ":" + min;
 }
 
-
+//  Method to print on console the Request Id
 var requestId = 0;
 exports.showRequestId = () => {
     requestId++;
-    console.log("---------------------\n---- ✅ Request Id: " + requestId + "\n-----------------------")
+    var getdate = GetDate() + " • " + GetTime();
+    if(requestId.toString().length == 1)
+        console.log("----------------------------------------------------\n------ ✅ Request Id: " 
+        + requestId + ` ${getdate} ✅ ------\n----------------------------------------------------`)
+    else if (requestId.toString().length == 2)
+        console.log("-----------------------------------------------------\n------ ✅ Request Id: " 
+        + requestId + ` ${getdate} ✅ ------\n-----------------------------------------------------`)
+    else if (requestId.toString().length == 3)
+        console.log("------------------------------------------------------\n------ ✅ Request Id: " 
+        + requestId + ` ${getdate} ✅ ------\n------------------------------------------------------`)
+    else
+        console.log("-------------------------------------------------------\n------ ✅ Request Id: " 
+        + requestId + ` ${getdate} ✅ ------\n-------------------------------------------------------`)
 }

@@ -93,19 +93,31 @@ drop table tbl_orders;
 create table tbl_orders(
     cd_order int primary key auto_increment,
     id_user int not null, FOREIGN KEY (id_user) REFERENCES tbl_account (id_user),
-    cpf_user varchar(600) not null,
-    discount varchar(600),
-    coupom varchar(600),
-    sub_total varchar(600) not null,
-    totalPrice varchar(600) not null,
-    product_amount int not null,
-    order_products varchar(600) not null,
     date_order varchar(600) not null,
+    coupom varchar(600),
+    discount varchar(600),
+    totalPrice varchar(600) not null,
+    sub_total varchar(600) not null,
+    order_products varchar(600) not null,
+    product_amount int not null,
     cd_card int not null,
     status varchar(600) not null,
     deliveryTime int default 45 not null
 )DEFAULT CHARACTER SET utf8  DEFAULT COLLATE utf8_general_ci;
 ALTER TABLE tbl_orders auto_increment = 26542;
+
+-- Table for Pets
+drop table tbl_pets;
+create table tbl_pets(
+    cd_animal int primary key auto_increment,
+    nm_animal varchar(500) not null,
+    id_user int not null, FOREIGN KEY (id_user) REFERENCES tbl_account (id_user),
+    breed_animal varchar(500) not null,
+    age_animal varchar(500) not null,
+    species_animal varchar(500) not null,
+    image_animal varchar(600) not null
+)DEFAULT CHARACTER SET utf8  DEFAULT COLLATE utf8_general_ci;
+ALTER TABLE tbl_pets auto_increment = 252;
 
 -- Table for products historic
 drop table tbl_product_historic;
@@ -151,12 +163,14 @@ create table tbl_versionMobile(
     versionName varchar(10) not null,
     versionCode int not null
 )DEFAULT CHARACTER SET utf8  DEFAULT COLLATE utf8_general_ci;
-update tbl_versionMobile set versionName = "1.3.4", versionCode = 8 where cd_version = 4;
+update tbl_versionMobile set versionName = "1.3.5", versionCode = 9 where cd_version = 4;
 select * from tbl_versionMobile;
 
 -- Selects
 select * from tbl_account;
 select * from tbl_products;
+select * from tbl_category;
+select * from tbl_pets;
 select * from tbl_shoppingCart;
 select * from tbl_cards;
 select * from tbl_discounts;

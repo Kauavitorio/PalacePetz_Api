@@ -3,6 +3,7 @@ const router = express.Router();
 const multer = require('multer');
 const UsersController = require('../controllers/userController')
 const CardController = require('../controllers/cardsController')
+const PetsController = require('../controllers/petsController')
 
 //  Register User
 router.post('/register', UsersController.RegisterUsers);
@@ -38,7 +39,6 @@ router.post('/request/password/', UsersController.RequestPasswordReset)
 router.post('/change/password/', UsersController.ChangePassword)
 
 /*----------- Cards Action ---------------*/
-
 // Register new Card
 router.post('/register/card', CardController.RegisterNewCard)
 
@@ -46,6 +46,14 @@ router.post('/register/card', CardController.RegisterNewCard)
 router.get('/cards/list/:id_user', CardController.GetUserCards)
 
 //  Delete User Card
-router.delete('/card/remove/:id_user/:cd_card', CardController.RemoveUserCard)
+router.delete('/card/remove/:id_user/:cd_card', CardController.RemoveUserCard) // End Cards Actions
+
+
+/*----------- Pets Actions ---------------*/
+//  Insert new pet for user
+router.post('/pet/insert', PetsController.Insert_New_Pet) 
+
+//  Get User Pet
+router.get('/pet/:id_user', PetsController.GetPets) // End Pets Actions
 
 module.exports = router
