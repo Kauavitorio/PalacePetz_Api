@@ -23,8 +23,7 @@ exports.Insert_New_Pet = async (req, res, next) => {
             }
             if(animalList.length < 0){
                 if(!badWords.VerifyUsername(nm_animal)){
-                    var resultInsert = await mysql.execute('INSERT INTO tbl_pets (nm_animal, id_user, breed_animal, age_animal, species_animal, image_animal) VALUES (?, ?, ?, ?, ?, ?)', [ EncryptDep.Encrypto(nm_animal), id_user, EncryptDep.Encrypto(req.body.breed_animal), 
-                    EncryptDep.Encrypto(req.body.age_animal), EncryptDep.Encrypto(req.body.species_animal), EncryptDep.Encrypto(image_animal)])
+                    var resultInsert = await mysql.execute('INSERT INTO tbl_pets (nm_animal, id_user, breed_animal, age_animal, weight_animal, species_animal, image_animal) VALUES (?, ?, ?, ?, ?, ?, ?)', [ EncryptDep.Encrypto(nm_animal), id_user, EncryptDep.Encrypto(req.body.breed_animal), EncryptDep.Encrypto(req.body.age_animal), EncryptDep.Encrypto(req.body.weight_animal), EncryptDep.Encrypto(req.body.species_animal), EncryptDep.Encrypto(image_animal)])
                     const response = {
                         message: 'Pet successfully inserted',
                         insertPet: {
