@@ -21,7 +21,7 @@ exports.Insert_New_Pet = async (req, res, next) => {
                 if(nm_animal == EncryptDep.Decrypt(resultPets[i].nm_animal))
                     animalList.push(nm_animal)
             }
-            if(animalList.length < 0){
+            if(animalList.length <= 0){
                 if(!badWords.VerifyUsername(nm_animal)){
                     var resultInsert = await mysql.execute('INSERT INTO tbl_pets (nm_animal, id_user, breed_animal, age_animal, weight_animal, species_animal, image_animal) VALUES (?, ?, ?, ?, ?, ?, ?)', [ EncryptDep.Encrypto(nm_animal), id_user, EncryptDep.Encrypto(req.body.breed_animal), EncryptDep.Encrypto(req.body.age_animal), EncryptDep.Encrypto(req.body.weight_animal), EncryptDep.Encrypto(req.body.species_animal), EncryptDep.Encrypto(image_animal)])
                     const response = {
@@ -69,7 +69,7 @@ exports.GetPets = async (req, res, next) => {
                         nm_animal: EncryptDep.Decrypt(pets.nm_animal),
                         id_user: parseInt(pets.id_user),
                         breed_animal: EncryptDep.Decrypt(pets.breed_animal),
-                        age_animal: parseInt(EncryptDep.Decrypt(pets.age_animal)),
+                        age_animal: EncryptDep.Decrypt(pets.age_animal),
                         weight_animal: EncryptDep.Decrypt(pets.weight_animal),
                         species_animal: EncryptDep.Decrypt(pets.species_animal),
                         image_animal: EncryptDep.Decrypt(pets.image_animal)
