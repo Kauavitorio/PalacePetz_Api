@@ -114,6 +114,7 @@ create table tbl_pets(
     id_user int not null, FOREIGN KEY (id_user) REFERENCES tbl_account (id_user),
     breed_animal varchar(500) not null,
     age_animal varchar(500) not null,
+    weight_animal varchar(500) not null,
     species_animal varchar(500) not null,
     image_animal varchar(600) not null
 )DEFAULT CHARACTER SET utf8  DEFAULT COLLATE utf8_general_ci;
