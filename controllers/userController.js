@@ -246,11 +246,14 @@ exports.RequestPasswordReset = async (req, res, next) => {
     try {
         ServerDetails.showRequestId()
     var emailUser = req.body.email
+    console.log(emailUser + " --- Email que chegou")
     const query = `SELECT * FROM tbl_account;`
     const result = await mysql.execute(query)
     if(result.length > 0){
+        console.log('Passou o banco')
         for(var i = 0 ; i < result.length; i++){
             var email = EncryptDep.Decrypt(result[i].email);
+            console.log(email)
             if(email == emailUser ){
             var email_user = email
             var id_user = result[i].id_user
@@ -268,6 +271,7 @@ exports.RequestPasswordReset = async (req, res, next) => {
             }
         }
     }else{
+        console.log('Bug DataBase')
         return res.status(404).send( { message: 'User not registered' } )
     }
     } catch (error) {
