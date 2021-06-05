@@ -249,7 +249,6 @@ exports.RequestPasswordReset = async (req, res, next) => {
     var UserValiList = []
     var email_user;
     var id_user;
-    console.log(emailUser + " --- Email que chegou")
     const query = `SELECT * FROM tbl_account;`
     const result = await mysql.execute(query)
     if(result.length > 0){
