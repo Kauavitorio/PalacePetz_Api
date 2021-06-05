@@ -247,20 +247,21 @@ exports.RequestPasswordReset = async (req, res, next) => {
         ServerDetails.showRequestId()
     var emailUser = req.body.email
     var UserValiList = []
+    var email_user;
+    var id_user;
     console.log(emailUser + " --- Email que chegou")
     const query = `SELECT * FROM tbl_account;`
     const result = await mysql.execute(query)
     if(result.length > 0){
-        console.log('Passou o banco')
         for(var i = 0 ; i < result.length; i++){
             var email = EncryptDep.Decrypt(result[i].email);
-            console.log(email)
-            if(email == emailUser )
+            if(email == emailUser ){
+                email_user = email
+                id_user = result[i].id_user
                 UserValiList.push(email)
+            }
         }
         if(UserValiList.length > 0){
-            var email_user = email
-            var id_user = result[i].id_user
             var idPasswordReset = "pswd"+ Generate_verify_id_for_user(9) + "PalacePetz-" + "sys" + Generate_verify_id_for_user(1) + "tem"+ Generate_verify_id_for_user(3) + "a"+ Generate_verify_id_for_user(2) + "c"+ Generate_verify_id_for_user(3) + "e"+ Generate_verify_id_for_user(1) + "key" + Generate_verify_id_for_user(4) + "-Pala"+ Generate_verify_id_for_user(5) +"cePetz-pswd" + Generate_verify_id_for_user(8) + 'p0'
             const queryUpdate = `UPDATE tbl_account SET verify_id = ? WHERE id_user = ?`
             await mysql.execute(queryUpdate, [idPasswordReset, id_user])
@@ -273,7 +274,6 @@ exports.RequestPasswordReset = async (req, res, next) => {
         }else
             return res.status(404).send( { message: 'User not registered' } )
     }else{
-        console.log('Bug DataBase')
         return res.status(404).send( { message: 'User not registered' } )
     }
     } catch (error) {
