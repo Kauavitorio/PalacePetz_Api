@@ -97,7 +97,6 @@ exports.Edit_User_Pet = async (req, res, next) => {
         var weight_animal = req.body.weight_animal;
         var species_animal = req.body.species_animal;
         var image_animal = req.body.image_animal;
-        console.log(`ID: ${id_user} CD_ANIMAL: ${cd_animal}`)
         
         if(image_animal == null || image_animal == "" || image_animal == " " || image_animal.length <= 12 )
             image_animal = _IMG_DEFAULT
@@ -119,8 +118,8 @@ exports.Edit_User_Pet = async (req, res, next) => {
 exports.Remove_User_Pet = async (req, res, next) => {
     try {
         Server.showRequestId();
-        var cd_animal = req.body.cd_animal;
-        var id_user = req.body.id_user;
+        var cd_animal = req.params.cd_animal;
+        var id_user = req.params.id_user;
         var resultSearch = await mysql.execute('SELECT * FROM tbl_pets WHERE cd_animal = ? and id_user = ?', [ cd_animal, id_user ])
         if(resultSearch <= 0)
             return res.status(401).send({ message: 'This user doesnt have this pet registered' })
