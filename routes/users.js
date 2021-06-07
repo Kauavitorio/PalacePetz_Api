@@ -60,6 +60,6 @@ router.get('/pet/:id_user', PetsController.GetPets)
 router.patch('/pet/update', PetsController.Edit_User_Pet) 
 
 //  Remover User Pet
-router.delete('pet/remove/:cd_animal/:id_user', PetsController.Remove_User_Pet) // End Pets Actions
+router.delete('/pet/remove/:cd_animal/:id_user', PetsController.Remove_User_Pet) // End Pets Actions
 
 module.exports = router
