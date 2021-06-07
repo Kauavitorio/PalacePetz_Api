@@ -59,6 +59,7 @@ exports.Insert_New_Pet = async (req, res, next) => {
 //  Method to get all User Pets
 exports.GetPets = async (req, res, next) => {
     try {
+        Server.showRequestId()
         var id_user = req.params.id_user
         var result = await mysql.execute('SELECT * FROM tbl_pets WHERE id_user = ?', id_user)
         if(result.length > 0){
@@ -110,6 +111,25 @@ exports.Edit_User_Pet = async (req, res, next) => {
         }
     } catch (error) {
         Server.RegisterServerError("Edit Pet", error.toString());
+        return res.status(500).send({ error: error.toString()})
+    }
+}
+
+//  Method to remove user pet
+exports.Remove_User_Pet = async (req, res, next) => {
+    try {
+        Server.showRequestId();
+        var cd_animal = req.body.cd_animal;
+        var id_user = req.body.id_user;
+        var resultSearch = await mysql.execute('SELECT * FROM tbl_pets WHERE cd_animal = ? and id_user = ?', [ cd_animal, id_user ])
+        if(resultSearch <= 0)
+            return res.status(401).send({ message: 'This user doesnt have this pet registered' })
+        else{
+            await mysql.execute('DELETE FROM tbl_pets where id_user = ? and cd_animal = ?;', [ id_user , cd_animal ])
+            return res.status(200).send( { message: 'Pet information successfully update'} )
+        }
+    } catch (error) {
+        Server.RegisterServerError("Delete Pet", error.toString());
         return res.status(500).send({ error: error.toString()})
     }
 }

@@ -57,6 +57,9 @@ router.post('/pet/insert', PetsController.Insert_New_Pet)
 router.get('/pet/:id_user', PetsController.GetPets) 
 
 //  Edit User Pet
-router.patch('/pet/update', PetsController.Edit_User_Pet) // End Pets Actions
+router.patch('/pet/update', PetsController.Edit_User_Pet) 
+
+//  Remover User Pet
+router.delete('pet/remove', PetsController.Remove_User_Pet) // End Pets Actions
 
 module.exports = router
