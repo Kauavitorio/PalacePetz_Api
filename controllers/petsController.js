@@ -84,3 +84,30 @@ exports.GetPets = async (req, res, next) => {
         return res.status(500).send({ error: error.toString()})
     }
 }
+
+exports.Edit_User_Pet = async (req, res, next) => {
+    try {
+        Server.showRequestId();
+        var cd_animal = req.body.cd_animal;
+        var nm_animal = req.body.nm_animal;
+        var id_user = req.body.id_user;
+        var breed_animal = req.body.breed_animal;
+        var age_animal = req.body.age_animal;
+        var weight_animal = req.body.weight_animal;
+        var species_animal = req.body.species_animal;
+        var image_animal = req.body.image_animal;
+        
+        if(image_animal == null || image_animal == "" || image_animal == " " || image_animal.length <= 12 )
+            image_animal = _IMG_DEFAULT
+
+        var resultSearch = await mysql.execute('SELECT * FROM tbl_pets WHERE cd_animal = ? and id_user = ?', [ cd_animal, id_user ])
+        if(resultSearch > 0){
+            await mysql.execute('UPDATE tbl_pets set nm_animal = ?, breed_animal = ?, age_animal = ?, weight_animal = ?, species_animal =?, image_animal = ? WHERE id_user = ? and cd_animal = ?;', [EncryptDep.Encrypto(nm_animal), EncryptDep.Encrypto(breed_animal), EncryptDep.Encrypto(age_animal), EncryptDep.Encrypto(weight_animal), EncryptDep.Encrypto(species_animal), EncryptDep.Encrypto(image_animal), id_user , cd_animal])
+            return res.status(200).send( { message: 'Pet information successfully update'} )
+        }else
+            return res.status().send({ message: 'This user doesnt have this pet registered' })
+    } catch (error) {
+        Server.RegisterServerError("Edit Pet", error.toString());
+        return res.status(500).send({ error: error.toString()})
+    }
+}
