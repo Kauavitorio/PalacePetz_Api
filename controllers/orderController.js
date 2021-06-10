@@ -10,7 +10,6 @@ exports.GetAllOrders = async (req, res, next) => {
         var result = await mysql.execute(`select 
 		order_user.cd_order,
 		order_user.id_user,
-		order_user.cpf_user,
 		order_user.discount,
 		order_user.coupom,
 		order_user.sub_total,
@@ -29,7 +28,6 @@ exports.GetAllOrders = async (req, res, next) => {
                     return {
                         cd_order: parseInt(orders.cd_order),
                         id_user: parseInt(orders.id_user),
-                        cpf_user: EncryptDep.Decrypt(orders.cpf_user),
                         discount: EncryptDep.Decrypt(orders.discount),
                         coupom: EncryptDep.Decrypt(orders.coupom),
                         sub_total: EncryptDep.Decrypt(orders.sub_total),
