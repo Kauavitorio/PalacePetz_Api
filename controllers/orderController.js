@@ -97,13 +97,11 @@ exports.FinishOrder = async (req, res, next) => {
                 discount = discount + " - " + procentDiscount+ "%"
             }
 
-            console.log("INSERT ORDER")
             /* Insert Order */
             var insert_order = await mysql.execute(`INSERT INTO tbl_orders (id_user, discount, coupom, sub_total,
                 totalPrice, date_order, cd_card, status, deliveryTime) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)`,
                 [id_user, EncryptDep.Encrypto(discount), EncryptDep.Encrypto(coupom), EncryptDep.Encrypto(sub_total), EncryptDep.Encrypto(totalPrice), EncryptDep.Encrypto(order_date), cd_card, EncryptDep.Encrypto(status), deliveryTime])
 
-                console.log("INSERT ITEMS")
             var order_id = insert_order.insertId
             for(let i = 0; i < cd_products_cart.length; i++){
                 var result_prod_search = await mysql.execute('SELECT * FROM tbl_products WHERE cd_prod = ?', cd_products_cart[i])
@@ -115,7 +113,7 @@ exports.FinishOrder = async (req, res, next) => {
             /* Clear Table Shooping Cart */
             await mysql.execute(`DELETE FROM tbl_shoppingCart WHERE id_user = ?`, id_user) 
 
-            //Emails.SendOrderConfirmation(user_email, name_user, order_id, order_date, sub_total, discount, totalPrice, address_user, complement, user_zipcode)
+            Emails.SendOrderConfirmation(user_email, name_user, order_id, order_date, sub_total, discount, totalPrice, address_user, complement, user_zipcode)
             
             res.status(201).send({message: 'Order sucessfully created'})
         }else{
