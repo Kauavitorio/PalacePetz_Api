@@ -24,49 +24,17 @@ exports.ApplyDiscount = async (req, res, netx) => {
             expiry_date = result[0].expiry_date
             if(strData < expiry_date ){
                 if(used < max_uses){
-                    var resultsUser = await mysql.execute('SELECT used_coupons FROM tbl_account WHERE id_user = ?', id_user)
-                    if(resultsUser.length > 0){
-                        all_user_cupons = resultsUser[0].used_coupons
-                        if (all_user_cupons == "no coupons"){
-                            if(cuponsArray == null || cuponsArray.length <= 0)
-                                cuponsArray.push(cd_discounts)
-                                
-                            await mysql.execute(`update tbl_account set used_coupons = ? where id_user = ?`, [cuponsArray, id_user])
-                            used++
-                            await mysql.execute('update tbl_discounts set used = ? where cd_discounts =? ', [ used, cd_discounts])
-                            var response = {
-                                cd_discounts: cd_discounts,
-                                discount_total: discount_total
-                            }
-                            return res.status(200).send(response)
-                        }else{
-                            var splitUserCupons = all_user_cupons.split(',')
-                            for (let i = 0; i < splitUserCupons.length; i++) {
-                                if(splitUserCupons[i] == cd_discounts){
-                                    cuponUsed.push(cd_discounts)
-                                }
-                                else{
-                                    cuponsArray.push(splitUserCupons[i])
-                                }
-                            }
+                    var resultsUser = await mysql.execute('SELECT * FROM tbl_coupons_used WHERE id_user = ? and cd_discounts = ?', [id_user , cd_discounts])
+                    if(resultsUser.length <= 0){
+                        used++
+                        await mysql.execute(`CALL spDiscounts_ActivateDiscount(?, ?, ?);`, [id_user, cd_discounts, used])
+                        var response = {
+                            cd_discounts: cd_discounts,
+                            discount_total: discount_total
                         }
-                        if(cuponUsed.length <= 0){
-                            if(cuponsArray == null || cuponsArray.length <= 0)
-                                cuponsArray.push(cd_discounts)
-                            
-                            cuponsArray.push(cd_discounts)
-                            await mysql.execute(`update tbl_account set used_coupons = ? where id_user = ?`, [cuponsArray.toString(), id_user])
-                            used++
-                            await mysql.execute('update tbl_discounts set used = ? where cd_discounts =? ', [ used, cd_discounts])
-                            var response = {
-                                cd_discounts: cd_discounts,
-                                discount_total: discount_total
-                            }
-                            return res.status(200).send(response)
-                        }else
-                            return res.status(401).send({ message: 'Coupon already used' })
+                        return res.status(200).send(response)
                     }else
-                        return res.status(204).send({ message: 'Cupon not existy' })
+                        return res.status(401).send({ message: 'Coupon already used' })
                 }else
                     return res.status(423).send({ message: 'Cupom is expired max uses' })
             }else
