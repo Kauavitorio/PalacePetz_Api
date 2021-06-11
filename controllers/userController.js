@@ -292,7 +292,7 @@ exports.ChangePassword = async (req, res, next) => {
         var nm_user;
         var last2 = verify_id.slice(-2);
         if(verify_id.substr(0, 4) === "pswd" || last2 == 'p0') {
-            var query = `SELECT verify_id, verify FROM tbl_account WHERE id_user = ?`
+            var query = `SELECT * FROM tbl_account WHERE id_user = ?`
             var result = await mysql.execute(query, id_user)
             if(result.length > 0){
                 email_user = result[0].email;
