@@ -18,7 +18,7 @@ use db_palacepetz;
 /**************************************************/
 
 --	Table for Account
- drop table tbl_account;
+drop table tbl_account;
 create table tbl_account(
     id_user int primary key auto_increment,
     name_user varchar(600) not null,
@@ -187,7 +187,7 @@ create table tbl_versionMobile(
     versionName varchar(10) not null,
     versionCode int not null
 )DEFAULT CHARACTER SET utf8  DEFAULT COLLATE utf8_general_ci;
-update tbl_versionMobile set versionName = "1.3.7", versionCode = 11 where cd_version = 4;
+update tbl_versionMobile set versionName = "1.4.3", versionCode = 14 where cd_version = 4;
 select * from tbl_versionMobile;
 
 -- Selects

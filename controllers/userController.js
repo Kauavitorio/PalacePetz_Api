@@ -288,23 +288,28 @@ exports.ChangePassword = async (req, res, next) => {
         var verify_id = req.body.verify_id
         var id_user = req.body.id_user
         var newpassword = req.body.newpassword
+        var email_user;
+        var nm_user;
         var last2 = verify_id.slice(-2);
         if(verify_id.substr(0, 4) === "pswd" || last2 == 'p0') {
             var query = `SELECT verify_id, verify FROM tbl_account WHERE id_user = ?`
             var result = await mysql.execute(query, id_user)
             if(result.length > 0){
+                email_user = result[0].email;
+                nm_user = result[0].name_user;
                 if(result[0].verify_id == verify_id){
                     if(result[0].verify == 1){
                         const hash = await bcrypt.hashSync(newpassword, 12);
                         var queryUpdate = `UPDATE tbl_account SET password = ?, verify_id = "Confirmed" WHERE id_user = ?`
                         await mysql.execute(queryUpdate, [ hash, id_user ])
+                        Emails.SendPasswordHasChange(email_user, nm_user, id_user)
                         return res.status(200).send({ message: 'Password updated' })
                     }else
                     return res.status(401).send({ message: 'User does not contain verified email' })
                 }else
                 return res.status(405).send({ message: 'ID does not correspond to a password change' })
             }else
-            return res.status(405).send({ message: 'User not registered' })
+                return res.status(405).send({ message: 'User not registered' })
         }else{
             return res.status(405).send({ message: 'ID does not correspond to a password change' })
         }
