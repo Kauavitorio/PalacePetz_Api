@@ -295,8 +295,8 @@ exports.ChangePassword = async (req, res, next) => {
             var query = `SELECT * FROM tbl_account WHERE id_user = ?`
             var result = await mysql.execute(query, id_user)
             if(result.length > 0){
-                email_user = result[0].email;
-                nm_user = result[0].name_user;
+                email_user = EncryptDep.Decrypt(result[0].email);
+                nm_user = EncryptDep.Decrypt(result[0].name_user);
                 if(result[0].verify_id == verify_id){
                     if(result[0].verify == 1){
                         const hash = await bcrypt.hashSync(newpassword, 12);
