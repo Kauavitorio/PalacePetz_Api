@@ -36,7 +36,7 @@ exports.SendEmailConfirmation = ($recipient, $username, $url_toConfirm) => {
         var htmlToSend = template(replacements);
         //  Create email formart
         var mailOptions = {
-        from: '"Palace Petz 🐶" <palacepetz.shop@gmail.com>',
+        from: '"Palace Petz" <palacepetz.shop@gmail.com>',
         to: $recipient,
         subject: 'Confirmação de e-mail!',
         html : htmlToSend
@@ -78,7 +78,7 @@ exports.SendPasswordReset = ($recipient, $reset_link) => {
         var htmlToSend = template(replacements);
         //  Create email formart
         var mailOptions = {
-        from: '"Palace Petz 🐱" <palacepetz.shop@gmail.com>',
+        from: '"Palace Petz" <palacepetz.shop@gmail.com>',
         to: $recipient,
         subject: 'Redefinição de senha!',
         html : htmlToSend
@@ -130,7 +130,7 @@ exports.SendOrderConfirmation = ($recipient, $name_user, $order_id, $order_date,
         var htmlToSend = template(replacements);
         //  Create email formart
         var mailOptions = {
-        from: '"Palace Petz 🐣" <palacepetz.shop@gmail.com>',
+        from: '"Palace Petz" <palacepetz.shop@gmail.com>',
         to: $recipient,
         subject: 'Pedido #' + $order_id,
         html : htmlToSend
