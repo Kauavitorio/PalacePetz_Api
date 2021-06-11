@@ -175,7 +175,7 @@ exports.SendPasswordHasChange = ($recipient, $nm_user, $user_id) => {
         var mailOptions = {
         from: '"Palace Petz 🐣" <palacepetz.shop@gmail.com>',
         to: $recipient,
-        subject: 'Pedido #' + $order_id,
+        subject: 'Sua senha da PalacePEtz foi alterada',
         html : htmlToSend
     };
     transporter.sendMail(mailOptions, function(error, info){
