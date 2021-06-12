@@ -65,7 +65,7 @@ exports.Login = async (req, res, next) => {
             if(resultList.length > 0){
                 for(var i = 0 ; i < resultList.length; i++){
                     var usernameGET = EncryptDep.Decrypt(resultList[i].username);
-                    if(usernameGET == login_emput){
+                    if(usernameGET == login_emput.toLowerCase()){
                         id_user = resultList[i].id_user
                         Userlist.push(id_user)
                     }
@@ -140,12 +140,17 @@ exports.RegisterUsers = async (req, res, next) => {
             }else{
                 var idVerifyEMail = Generate_verify_id_for_user(2) + "-Pala"+ Generate_verify_id_for_user(1) +"cePetz-" + "a" + Generate_verify_id_for_user(1) + "l"+ Generate_verify_id_for_user(3) + "a"+ Generate_verify_id_for_user(1) + "c"+ Generate_verify_id_for_user(1) + "e"+ Generate_verify_id_for_user(1) + Generate_verify_id_for_user(9) + "-Pala"+ Generate_verify_id_for_user(1) +"cePetz-" + Generate_verify_id_for_user(2)
                 const hash = await bcrypt.hashSync(req.body.password, 12);
-                query = 'INSERT INTO tbl_account (name_user, email, cpf_user, password, img_user, verify_id) VALUES (?,?,?,?,?,?)';
-                var results = await mysql.execute(query, [ EncryptDep.Encrypto(req.body.name_user), EncryptDep.Encrypto(req.body.email),
+                var cpf_userBase = req.body.cpf_user
+                var nm_userBase = req.body.name_user
+                var username = nm_userBase.replace(' ', '').toLowerCase() + cpf_userBase.split(".")[0] + cpf_userBase.split(".")[1];
+                query = 'INSERT INTO tbl_account (name_user, username, email, cpf_user, password, img_user, verify_id) VALUES (?,?,?,?,?,?,?)';
+                var results = await mysql.execute(query, [ EncryptDep.Encrypto(req.body.name_user), EncryptDep.Encrypto(username), EncryptDep.Encrypto(req.body.email),
                     EncryptDep.Encrypto(req.body.cpf_user), hash, EncryptDep.Encrypto(IMG_USER), idVerifyEMail])
 
+                this.UpdateUserNameIntern(results.insertId, nm_userBase.replace(' ', '').toLowerCase())
+
                 //  Sending email for new user
-                var resultEmail = Emails.SendEmailConfirmation(req.body.email, req.body.name_user, process.env.URL_API + "user/confirm/email/" + idVerifyEMail + "/" + results.insertId)
+                //var resultEmail = Emails.SendEmailConfirmation(req.body.email, req.body.name_user, process.env.URL_API + "user/confirm/email/" + idVerifyEMail + "/" + results.insertId)
                 //  Creating resposto to return
                 const response = {
                     message: 'User created successfully',
@@ -163,9 +168,14 @@ exports.RegisterUsers = async (req, res, next) => {
         }else{
                 var idVerifyEMail = Generate_verify_id_for_user(2) + "-Pala"+ Generate_verify_id_for_user(1) +"cePetz-" + "a" + Generate_verify_id_for_user(1) + "l"+ Generate_verify_id_for_user(3) + "a"+ Generate_verify_id_for_user(1) + "c"+ Generate_verify_id_for_user(1) + "e"+ Generate_verify_id_for_user(1) + Generate_verify_id_for_user(9) + "-Pala"+ Generate_verify_id_for_user(1) +"cePetz-" + Generate_verify_id_for_user(2)
                 const hash = await bcrypt.hashSync(req.body.password, 12);
-                query = 'INSERT INTO tbl_account (name_user, email, cpf_user, password, img_user, verify_id) VALUES (?,?,?,?,?,?)';
-                var results = await mysql.execute(query, [ EncryptDep.Encrypto(req.body.name_user), EncryptDep.Encrypto(req.body.email),
+                var cpf_userBase = req.body.cpf_user
+                var nm_userBase = req.body.name_user
+                var username = nm_userBase.replace(' ', '').toLowerCase() + cpf_userBase.split(".")[0] + cpf_userBase.split(".")[1];
+                query = 'INSERT INTO tbl_account (name_user, username, email, cpf_user, password, img_user, verify_id) VALUES (?,?,?,?,?,?,?)';
+                var results = await mysql.execute(query, [ EncryptDep.Encrypto(req.body.name_user), EncryptDep.Encrypto(username), EncryptDep.Encrypto(req.body.email),
                     EncryptDep.Encrypto(req.body.cpf_user), hash, EncryptDep.Encrypto(IMG_USER), idVerifyEMail])
+
+                this.UpdateUserNameIntern(results.insertId, nm_userBase.replace(' ', '').toLowerCase())
 
                 //  Sending email for new user
                 var resultEmail = Emails.SendEmailConfirmation(req.body.email, req.body.name_user, process.env.URL_API + "user/confirm/email/" + idVerifyEMail + "/" + results.insertId)
@@ -499,6 +509,19 @@ exports.UpdateUserName = async (req, res, next) => {
     }catch(error){
         ServerDetails.RegisterServerError("Update Profile", error.toString());
         return res.status(500).send( { error: error } )
+    }
+}
+
+//  Method for Update UserName
+exports.UpdateUserNameIntern = async (id_user, username) => {
+    try{
+        var newUserName = username + id_user;
+        var query = `UPDATE tbl_account SET 
+            username = ?
+                WHERE id_user = ?;`
+            await mysql.execute(query, [EncryptDep.Encrypto(newUserName), id_user])
+    }catch(error){
+        ServerDetails.RegisterServerError("Update Profile", error.toString());
     }
 }
 
