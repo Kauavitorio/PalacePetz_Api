@@ -22,6 +22,7 @@ drop table tbl_account;
 create table tbl_account(
     id_user int primary key auto_increment,
     name_user varchar(600) not null,
+    username varchar(600) not null,
     email varchar(600) not null,
     cpf_user varchar(600) not null,
     address_user varchar(600),

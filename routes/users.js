@@ -23,6 +23,9 @@ router.delete('/historic-product/:id_user', UsersController.ClearHistoric);
 // Update Address
 router.patch('/update/address/', UsersController.UpdateAddress)
 
+//  Update Username
+router.patch('/update/username', UsersController.UpdateUserName)
+
 // Update Profile Image
 router.patch('/update/profile/image/', UsersController.UpdateProfileImage)
 
