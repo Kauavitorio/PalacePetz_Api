@@ -150,7 +150,7 @@ exports.RegisterUsers = async (req, res, next) => {
                 this.UpdateUserNameIntern(results.insertId, nm_userBase.replace(' ', '').toLowerCase())
 
                 //  Sending email for new user
-                //var resultEmail = Emails.SendEmailConfirmation(req.body.email, req.body.name_user, process.env.URL_API + "user/confirm/email/" + idVerifyEMail + "/" + results.insertId)
+                var resultEmail = Emails.SendEmailConfirmation(req.body.email, req.body.name_user, process.env.URL_API + "user/confirm/email/" + idVerifyEMail + "/" + results.insertId)
                 //  Creating resposto to return
                 const response = {
                     message: 'User created successfully',
