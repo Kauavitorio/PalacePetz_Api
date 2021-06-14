@@ -62,13 +62,12 @@ exports.Login = async (req, res, next) => {
                 return res.status(500).send({ error: "No email on database"})
             }
         }else if(CpfValidator.testCPF(login_emput)){
-            const resultList = await mysql.execute('SELECT cpf_user, id_user FROM tbl_account;')
+            const resultList = await mysql.execute('SELECT cpf_user, id_user, password FROM tbl_account;')
             if(resultList.length > 0){
                 for(var i = 0 ; i < resultList.length; i++){
                     var cpf_userGET = EncryptDep.Decrypt(resultList[i].cpf_user);
-                    console.log(cpf_userGET + " BD\n")
-                    console.log(login_emput + " GET\n")
-                    if(cpf_userGET.trim().replace(/\./g, '').replace('-', '') == login_emput.trim().replace(/\./g, '').replace('-', '')){
+                    if(cpf_userGET.trim().replace(/\./g, '').replace('-', '') == login_emput.trim().replace(/\./g, '').replace('-', '')
+                    && bcrypt.compareSync(password, resultList[i].password)){
                         id_user = resultList[i].id_user
                         Userlist.push(id_user)
                     }
