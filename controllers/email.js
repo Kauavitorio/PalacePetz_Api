@@ -26,7 +26,7 @@ exports.SendEmailConfirmation = ($recipient, $username, $url_toConfirm) => {
             }
         });
     };
-    readHTMLFile(__dirname + '/templates/confirmEmail.html', function(err, html) {
+    readHTMLFile(__dirname + '/templates/emailconfirmation.html', function(err, html) {
         var template = handlebars.compile(html);
         var replacements = {
             username: $username,
@@ -46,7 +46,7 @@ exports.SendEmailConfirmation = ($recipient, $username, $url_toConfirm) => {
             console.log(error);
             return "Error";
         } else {
-            console.log('Email sent: ' + info.response);
+            console.log('Email confirmation sent: ' + info.response);
             return "Sent";
         }
     });
@@ -183,7 +183,7 @@ exports.SendPasswordHasChange = ($recipient, $nm_user, $user_id) => {
             console.log(error);
             return "Error";
         } else {
-            console.log('Confirm Order Email sent: ' + info.response);
+            console.log('Password Has Changed Email sent: ' + info.response);
             return "Sent";
         }
     });
