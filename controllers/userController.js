@@ -66,6 +66,8 @@ exports.Login = async (req, res, next) => {
             if(resultList.length > 0){
                 for(var i = 0 ; i < resultList.length; i++){
                     var cpf_userGET = EncryptDep.Decrypt(resultList[i].cpf_user);
+                    console.log(cpf_userGET + " BD\n")
+                    console.log(login_emput + " GET\n")
                     if(cpf_userGET.trim().replace(/\./g, '').replace('-', '') == login_emput.trim().replace(/\./g, '').replace('-', '')){
                         id_user = resultList[i].id_user
                         Userlist.push(id_user)
