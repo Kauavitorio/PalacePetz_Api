@@ -3,6 +3,7 @@ const bcrypt = require('bcrypt');
 const EncryptDep = require('../controllers/encryption')
 const ServerDetails = require('../ServerInfo') 
 const BadWords = require('../controllers/badWords')
+const CpfValidator = require('../CpfValidator')
 const Emails = require('./email')
 const IMG_USER = 'https://www.kauavitorio.com/host-itens/Default_Profile_Image_palacepetz.png';
 
@@ -60,7 +61,54 @@ exports.Login = async (req, res, next) => {
                 console.log('No email on database')
                 return res.status(500).send({ error: "No email on database"})
             }
-        }else{
+        }else if(CpfValidator.testCPF(login_emput)){
+            const resultList = await mysql.execute('SELECT cpf_user, id_user FROM tbl_account;')
+            if(resultList.length > 0){
+                for(var i = 0 ; i < resultList.length; i++){
+                    var cpf_userGET = EncryptDep.Decrypt(resultList[i].cpf_user);
+                    if(cpf_userGET.trim().replace(/\./g, '').replace('-', '') == login_emput.trim().replace(/\./g, '').replace('-', '')){
+                        id_user = resultList[i].id_user
+                        Userlist.push(id_user)
+                    }
+                }
+                if(Userlist.length > 0){
+                    const result = await mysql.execute('SELECT * FROM tbl_account WHERE id_user = ?', id_user)
+                    if(result.length > 0){
+                    const match = await bcrypt.compareSync(password, result[0].password);
+                    if(match){
+                        var verify_id = result[0].verify_id
+                        var verify = result[0].verify
+                        const response = {
+                            id_user: result[0].id_user,
+                            name_user: EncryptDep.Decrypt(result[0].name_user),
+                            email: EncryptDep.Decrypt(result[0].email),
+                            cpf_user: EncryptDep.Decrypt(result[0].cpf_user),
+                            address_user: EncryptDep.Decrypt(result[0].address_user),
+                            complement: EncryptDep.Decrypt(result[0].complement),
+                            zipcode: EncryptDep.Decrypt(result[0].zipcode),
+                            phone_user: EncryptDep.Decrypt(result[0].phone_user),
+                            birth_date: EncryptDep.Decrypt(result[0].birth_date),
+                            user_type: result[0].user_type,
+                            img_user: EncryptDep.Decrypt(result[0].img_user)
+                        }
+                    if(verify_id == "Confirmed" || verify == 1)
+                        return res.status(200).send(response);
+                    else
+                        return res.status(405).send( {message: 'Email is not verified !!'} );
+                    
+                    }else
+                        return res.status(401).send({ message: "Password or email invalid" });
+                    
+                    }
+                }else{
+                    return res.status(401).send({ message: "Password or email invalid" });
+                }
+            }else{
+                console.log('No email on database')
+                return res.status(500).send({ error: "No email on database"})
+            }
+        }
+        else{
             const resultList = await mysql.execute('SELECT username, id_user FROM tbl_account;')
             if(resultList.length > 0){
                 for(var i = 0 ; i < resultList.length; i++){
