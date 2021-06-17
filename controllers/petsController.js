@@ -56,6 +56,36 @@ exports.Insert_New_Pet = async (req, res, next) => {
     }
 }
 
+//  Method to get one User Pet
+exports.GetOnePet = async (req, res, next) => {
+    try {
+        Server.showRequestId()
+        var id_user = req.params.id_user
+        var cd_animal = req.params.cd_animal
+        var result = await mysql.execute('SELECT * FROM tbl_pets WHERE id_user = ? and cd_animal = ?', [ id_user, cd_animal ])
+        if(result.length > 0){
+            const response = {
+                Search: result.map(pets => {
+                    return {
+                        cd_animal: parseInt(pets.cd_animal),
+                        nm_animal: EncryptDep.Decrypt(pets.nm_animal),
+                        id_user: parseInt(pets.id_user),
+                        breed_animal: EncryptDep.Decrypt(pets.breed_animal),
+                        age_animal: EncryptDep.Decrypt(pets.age_animal),
+                        weight_animal: EncryptDep.Decrypt(pets.weight_animal),
+                        species_animal: EncryptDep.Decrypt(pets.species_animal),
+                        image_animal: EncryptDep.Decrypt(pets.image_animal)
+                    }
+                })
+                }
+            return res.status(200).send(response)
+        }else
+            return res.status(204).send('This user dont have any pet')
+    } catch (error) {
+        Server.RegisterServerError("Get Pets", error.toString());
+        return res.status(500).send({ error: error.toString()})
+    }
+}
 //  Method to get all User Pets
 exports.GetPets = async (req, res, next) => {
     try {

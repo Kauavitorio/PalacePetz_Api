@@ -176,17 +176,24 @@ exports.RegisterUsers = async (req, res, next) => {
             return res.status(406).send({ error: "Username not allowed"})
         }else{
             var Emailcollection = [];
+            var Cpfcollection = [];
             const resultList = await mysql.execute('SELECT email FROM tbl_account;')
             if(resultList.length > 0){
                 for(var i = 0 ; i < resultList.length; i++){
                 var email = EncryptDep.Decrypt(resultList[i].email);
-                    if(email == req.body.email ){
-                        Emailcollection.push(i)
-                    }
+                var cpf = EncryptDep.Decrypt(resultList[i].cpf_user);
+                if(email == req.body.email )
+                    Emailcollection.push(i)
+
+                if(cpf == req.body.cpf_user )
+                    Cpfcollection.push(i)
+
                 }
-            if(Emailcollection.length > 0){
+            if(Emailcollection.length > 0)
                 return res.status(409).send({ message: 'User already registered' })
-            }else{
+            else if(Cpfcollection.length > 0)
+                return res.status(412).send({ message: 'Cpf already registered' })
+            else{
                 var idVerifyEMail = Generate_verify_id_for_user(2) + "-Pala"+ Generate_verify_id_for_user(1) +"cePetz-" + "a" + Generate_verify_id_for_user(1) + "l"+ Generate_verify_id_for_user(3) + "a"+ Generate_verify_id_for_user(1) + "c"+ Generate_verify_id_for_user(1) + "e"+ Generate_verify_id_for_user(1) + Generate_verify_id_for_user(9) + "-Pala"+ Generate_verify_id_for_user(1) +"cePetz-" + Generate_verify_id_for_user(2)
                 const hash = await bcrypt.hashSync(req.body.password, 12);
                 var cpf_userBase = req.body.cpf_user
