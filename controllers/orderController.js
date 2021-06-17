@@ -3,7 +3,7 @@ const ServerDetails = require('../ServerInfo')
 const EncryptDep = require('../controllers/encryption')
 const Emails = require('./email')
 
-//  Method to show to user ours orders
+//  Method to show to user your orders
 exports.GetAllOrders = async (req, res, next) => {
     try {
         var id_user = req.params.id_user
@@ -39,6 +39,49 @@ exports.GetAllOrders = async (req, res, next) => {
                         payment: EncryptDep.Decrypt(orders.number_card)
                     }
                 })
+                }
+            return res.status(200).send(response)
+        }else
+            return res.status(404).send( { message: 'No orders for this user' } )
+    } catch (error) {
+        ServerDetails.RegisterServerError("Get Order", error.toString());
+        return res.status(500).send({ error: error})
+    }
+}
+
+//  Method to show to user your last orders
+exports.GetLastOrders = async (req, res, next) => {
+    try {
+        var id_user = req.params.id_user
+        var result = await mysql.execute(`select 
+		order_user.cd_order,
+		order_user.id_user,
+		order_user.discount,
+		order_user.coupom,
+		order_user.sub_total,
+		order_user.totalPrice,
+		order_user.date_order,
+		order_user.cd_card,
+		order_user.status,
+		order_user.deliveryTime,
+		card.number_card
+        from tbl_orders  as order_user inner join tbl_cards as card
+        on card.cd_card = order_user.cd_card WHERE order_user.id_user = ? order by cd_order desc
+        limit 1;`, id_user);
+        if(result.length > 0){
+            const response = {
+                cd_order: parseInt(result[0].cd_order),
+                id_user: parseInt(result[0].id_user),
+                discount: EncryptDep.Decrypt(result[0].discount),
+                coupom: EncryptDep.Decrypt(result[0].coupom),
+                sub_total: EncryptDep.Decrypt(result[0].sub_total),
+                totalPrice: EncryptDep.Decrypt(result[0].totalPrice),
+                product_amount: 0,
+                date_order: EncryptDep.Decrypt(result[0].date_order),
+                cd_card: parseInt(result[0].cd_card),
+                status: EncryptDep.Decrypt(result[0].status),
+                deliveryTime: result[0].deliveryTime,
+                payment: EncryptDep.Decrypt(result[0].number_card)
                 }
             return res.status(200).send(response)
         }else
