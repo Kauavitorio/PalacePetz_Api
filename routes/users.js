@@ -56,8 +56,11 @@ router.delete('/card/remove/:id_user/:cd_card', CardController.RemoveUserCard) /
 //  Insert new pet for user
 router.post('/pet/insert', PetsController.Insert_New_Pet) 
 
-//  Get User Pet
+//  Get User Pets
 router.get('/pet/:id_user', PetsController.GetPets) 
+
+//  Get User Pet
+router.get('/pet/:id_user/:cd_animal', PetsController.GetOnePet) 
 
 //  Edit User Pet
 router.patch('/pet/update', PetsController.Edit_User_Pet) 
