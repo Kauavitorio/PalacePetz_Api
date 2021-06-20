@@ -37,6 +37,41 @@ create table tbl_account(
     verify int default 0
 )DEFAULT CHARACTER SET utf8  DEFAULT COLLATE utf8_general_ci;
 
+-- Table for Employers
+-- drop table tbl_employers;
+create table tbl_employers(
+    id_employee int primary key auto_increment,
+    role varchar(600) not null,
+    number_ctps varchar(600) not null,
+    id_user int not null, FOREIGN KEY (id_user) REFERENCES tbl_account (id_user)
+);
+
+-- Employee Procedures
+DELIMITER $$
+drop procedure if exists spInsert_Employee;
+CREATE PROCEDURE spInsert_Employee($id_user int, $number_ctps varchar(600), $role varchar(600))
+BEGIN
+		INSERT tbl_employers (role, number_ctps, id_user) VALUES ($role, $number_ctps, $id_user);
+END $$
+DELIMITER ;
+
+DELIMITER $$
+drop procedure if exists spDelete_Employee;
+CREATE PROCEDURE spDelete_Employee($id_user int)
+BEGIN
+  DECLARE $id_employee INT;
+  
+		SELECT id_employee
+			INTO $id_employee
+			FROM tbl_employers
+		WHERE id_user = $id_user;
+        
+        delete from tbl_employers WHERE id_employee = $id_employee;
+        delete from tbl_account WHERE id_user = $id_user;
+
+END $$
+DELIMITER ;
+
 --  Table for Products
 -- drop table tbl_products;
 CREATE TABLE tbl_products(
@@ -102,6 +137,7 @@ create table tbl_orders(
     deliveryTime int default 45 not null
 )DEFAULT CHARACTER SET utf8  DEFAULT COLLATE utf8_general_ci;
 ALTER TABLE tbl_orders auto_increment = 26542;
+
 
 -- Table for Orders Itens
 drop table if exists tbl_orders_items;
@@ -193,6 +229,7 @@ select * from tbl_versionMobile;
 
 -- Selects
 select * from tbl_account;
+select * from tbl_employers;
 select * from tbl_products;
 select * from tbl_category;
 select * from tbl_pets;
