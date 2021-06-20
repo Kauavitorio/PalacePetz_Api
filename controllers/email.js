@@ -26,7 +26,7 @@ exports.SendEmailConfirmation = ($recipient, $username, $url_toConfirm) => {
             }
         });
     };
-    readHTMLFile(__dirname + '/templates/emailconfirmation.html', function(err, html) {
+    readHTMLFile(__dirname + '/templates/confirmEmail.html', function(err, html) {
         var template = handlebars.compile(html);
         var replacements = {
             username: $username,
