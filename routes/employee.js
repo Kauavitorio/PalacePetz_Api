@@ -12,7 +12,7 @@ router.post('/informations', employeeController.GetEmployeeInformation)
 router.post('/register-employee', employeeController.RegisterEmployee)
 
 //  Route to get all employers
-router.get('/employee/:id_employee', employeeController.ListEmployee)
+router.get('/employee/:c', employeeController.ListEmployee)
 
 //  Route to update an employee
 router.patch('/update-employee', employeeController.UpdateEmployee)

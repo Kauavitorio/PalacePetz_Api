@@ -34,7 +34,7 @@ exports.RegisterEmployee = async (req, res, next) => {
         var complement = req.body.complement
         var zipcode = req.body.zipcode
         var birth_date = req.body.birth_date
-        var user_type = req.body.user_type
+        var user_type_insert = req.body.user_type
         var img_user = req.body.img_user
         var password = req.body.password
         var phone_user = req.body.phone_user
@@ -66,7 +66,7 @@ exports.RegisterEmployee = async (req, res, next) => {
             else{
                 if(!badWords.VerifyUsername(name_user)){
                     const hash = await bcrypt.hashSync(password, 13);
-                    var result_user = await mysql.execute('INSERT INTO tbl_account (name_user, email, cpf_user, address_user, complement, zipcode, phone_user, birth_date, user_type, img_user, password, verify_id, verify) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [EncryptDep.Encrypto(name_user), EncryptDep.Encrypto(email), EncryptDep.Encrypto(cpf_user), EncryptDep.Encrypto(address_user), EncryptDep.Encrypto(complement), EncryptDep.Encrypto(zipcode), EncryptDep.Encrypto(phone_user), EncryptDep.Encrypto(birth_date), user_type, EncryptDep.Encrypto(img_user), hash, verify_id, verify]);
+                    var result_user = await mysql.execute('INSERT INTO tbl_account (name_user, email, cpf_user, address_user, complement, zipcode, phone_user, birth_date, user_type, img_user, password, verify_id, verify) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [EncryptDep.Encrypto(name_user), EncryptDep.Encrypto(email), EncryptDep.Encrypto(cpf_user), EncryptDep.Encrypto(address_user), EncryptDep.Encrypto(complement), EncryptDep.Encrypto(zipcode), EncryptDep.Encrypto(phone_user), EncryptDep.Encrypto(birth_date), user_type_insert, EncryptDep.Encrypto(img_user), hash, verify_id, verify]);
     
                     var result_employee = await mysql.execute('CALL spInsert_Employee(?, ?, ?)', [ result_user.insertId, EncryptDep.Encrypto(number_ctps), EncryptDep.Encrypto(role) ])
                     const response = {

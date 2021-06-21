@@ -36,6 +36,7 @@ create table tbl_account(
     verify_id varchar(200) not null,
     verify int default 0
 )DEFAULT CHARACTER SET utf8  DEFAULT COLLATE utf8_general_ci;
+alter table tbl_account modify column email varchar(800) not null;
 
 -- Table for Employers
 -- drop table tbl_employers;
@@ -228,6 +229,7 @@ update tbl_versionMobile set versionName = "1.4.5", versionCode = 16 where cd_ve
 select * from tbl_versionMobile;
 
 -- Selects
+update tbl_account set user_type = 0 where id_user = 4;
 select * from tbl_account;
 select * from tbl_employers;
 select * from tbl_products;

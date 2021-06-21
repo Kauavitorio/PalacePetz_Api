@@ -20,7 +20,6 @@ exports.Login = async (req, res, next) => {
             if(resultList.length > 0){
                 for(var i = 0 ; i < resultList.length; i++){
                     var emailGet = EncryptDep.Decrypt(resultList[i].email);
-                    console.log(emailGet)
                     if(emailGet == login_emput){
                         id_user = resultList[i].id_user
                         Userlist.push(id_user)
