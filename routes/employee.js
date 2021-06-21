@@ -3,6 +3,9 @@ const router = express.Router();
 const employeeController = require('../controllers/employeeController')
 
 
+//  Route to "login" Employee | Get just employee info
+router.post('/informations', employeeController.GetEmployeeInformation)
+
 // -----  Manager Actions -------
 
 //  Route to register an employee

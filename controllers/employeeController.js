@@ -5,6 +5,25 @@ const badWords = require('./badWords')
 const bcrypt = require('bcrypt');
 const _IMG_DEFAULT = 'https://www.kauavitorio.com/host-itens/Default_Profile_Image_palacepetz.png';
 
+exports.GetEmployeeInformation = async (req, res, next) => {
+    try {
+        var id_user = req.body.id_user
+        var result = await mysql.execute('SELECT * FROM tbl_employers WHERE id_user = ?', id_user)
+        if(result.length > 0){
+            const response = {
+                id_employee: result[0].id_employee,
+                role: EncryptDep.Encrypto(result[0].role),
+                number_ctps: EncryptDep.Encrypto(result[0].number_ctps)
+            }
+            return res.status(200).send(response)
+        }else
+        return res.status(204).send({ message: 'Employee is not registred!!'})
+    } catch (error) {
+        Server.RegisterServerError("Get Employee Information", error.toString());
+        return res.status(500).send({ error: error})
+    }
+}
+
 exports.RegisterEmployee = async (req, res, next) => {
     try {
         // USER INFORMATION
