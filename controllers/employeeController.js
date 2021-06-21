@@ -36,22 +36,26 @@ exports.GetAnEmployeeInformation = async (req, res, next) => {
         on account.id_user = employee.id_user WHERE account.id_user = ?;`, id_user)
         if(result.length > 0){
             const response = {
-                id_user: parseInt(result[0].id_user),
-                name_user: EncryptDep.Decrypt(result[0].name_user),
-                username: EncryptDep.Decrypt(result[0].username),
-                email: EncryptDep.Decrypt(result[0].email),
-                cpf_user: EncryptDep.Decrypt(result[0].cpf_user),
-                address_user: EncryptDep.Decrypt(result[0].address_user),
-                complement: EncryptDep.Decrypt(result[0].complement),
-                zipcode: EncryptDep.Decrypt(result[0].zipcode),
-                phone_user: EncryptDep.Decrypt(result[0].phone_user),
-                birth_date: EncryptDep.Decrypt(result[0].birth_date),
-                user_type: parseInt(result[0].user_type),
-                img_user: EncryptDep.Decrypt(result[0].img_user),
-                id_employee: parseInt(result[0].id_employee),
-                role: EncryptDep.Decrypt(result[0].role),
-                number_ctps: EncryptDep.Decrypt(result[0].number_ctps)
-            }
+                Search: result.map(employee => {
+                    return {
+                        id_user: parseInt(employee.id_user),
+                        name_user: EncryptDep.Decrypt(employee.name_user),
+                        username: EncryptDep.Decrypt(employee.username),
+                        email: EncryptDep.Decrypt(employee.email),
+                        cpf_user: EncryptDep.Decrypt(employee.cpf_user),
+                        address_user: EncryptDep.Decrypt(employee.address_user),
+                        complement: EncryptDep.Decrypt(employee.complement),
+                        zipcode: EncryptDep.Decrypt(employee.zipcode),
+                        phone_user: EncryptDep.Decrypt(employee.phone_user),
+                        birth_date: EncryptDep.Decrypt(employee.birth_date),
+                        user_type: parseInt(employee.user_type),
+                        img_user: EncryptDep.Decrypt(employee.img_user),
+                        id_employee: parseInt(employee.id_employee),
+                        role: EncryptDep.Decrypt(employee.role),
+                        number_ctps: EncryptDep.Decrypt(employee.number_ctps)
+                    }
+                })
+                }
             return res.status(200).send(response)
         }else
         return res.status(204).send({ message: 'Employee is not registred!!'})
