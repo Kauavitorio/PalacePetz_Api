@@ -24,6 +24,43 @@ exports.GetEmployeeInformation = async (req, res, next) => {
     }
 }
 
+exports.GetAnEmployeeInformation = async (req, res, next) => {
+    try {
+        var id_user = req.body.id_user
+        var result = await mysql.execute(`select 
+        account.*,
+        employee.id_employee,
+        employee.role,
+        employee.number_ctps
+        from tbl_account as account inner join tbl_employers as employee
+        on account.id_user = employee.id_user WHERE account.id_user = ?;`, id_user)
+        if(result.length > 0){
+            const response = {
+                id_user: parseInt(result[0].id_user),
+                name_user: EncryptDep.Decrypt(result[0].name_user),
+                username: EncryptDep.Decrypt(result[0].username),
+                email: EncryptDep.Decrypt(result[0].email),
+                cpf_user: EncryptDep.Decrypt(result[0].cpf_user),
+                address_user: EncryptDep.Decrypt(result[0].address_user),
+                complement: EncryptDep.Decrypt(result[0].complement),
+                zipcode: EncryptDep.Decrypt(result[0].zipcode),
+                phone_user: EncryptDep.Decrypt(result[0].phone_user),
+                birth_date: EncryptDep.Decrypt(result[0].birth_date),
+                user_type: parseInt(result[0].user_type),
+                img_user: EncryptDep.Decrypt(result[0].img_user),
+                id_employee: parseInt(result[0].id_employee),
+                role: EncryptDep.Decrypt(result[0].role),
+                number_ctps: EncryptDep.Decrypt(result[0].number_ctps)
+            }
+            return res.status(200).send(response)
+        }else
+        return res.status(204).send({ message: 'Employee is not registred!!'})
+    } catch (error) {
+        Server.RegisterServerError("Get Employee Information", error.toString());
+        return res.status(500).send({ error: error})
+    }
+}
+
 exports.RegisterEmployee = async (req, res, next) => {
     try {
         // USER INFORMATION

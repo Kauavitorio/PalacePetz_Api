@@ -229,7 +229,6 @@ update tbl_versionMobile set versionName = "1.4.5", versionCode = 16 where cd_ve
 select * from tbl_versionMobile;
 
 -- Selects
-update tbl_account set user_type = 0 where id_user = 4;
 select * from tbl_account;
 select * from tbl_employers;
 select * from tbl_products;

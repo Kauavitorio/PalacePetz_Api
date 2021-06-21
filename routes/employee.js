@@ -6,6 +6,9 @@ const employeeController = require('../controllers/employeeController')
 //  Route to "login" Employee | Get just employee info
 router.post('/informations', employeeController.GetEmployeeInformation)
 
+//  Get an employee info
+router.get('/informations/:id_user', employeeController.GetAnEmployeeInformation)
+
 // -----  Manager Actions -------
 
 //  Route to register an employee
