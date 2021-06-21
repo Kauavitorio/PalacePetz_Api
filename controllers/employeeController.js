@@ -3,6 +3,7 @@ const EncryptDep = require('./encryption')
 const Server = require('../ServerInfo') 
 const badWords = require('./badWords')
 const bcrypt = require('bcrypt');
+const _IMG_DEFAULT = 'https://www.kauavitorio.com/host-itens/Default_Profile_Image_palacepetz.png';
 
 exports.RegisterEmployee = async (req, res, next) => {
     try {
@@ -22,6 +23,9 @@ exports.RegisterEmployee = async (req, res, next) => {
         var number_ctps = req.body.number_ctps
         var verify_id = "Confirmed"
         var verify = 1 // END USER INFORMATION
+
+        if(img_user == null || img_user == "" || img_user == " " || img_user.length <= 12 )
+            img_user = _IMG_DEFAULT
 
         //  Array to know if user is already registered
         var test_insert_array = []
@@ -133,6 +137,9 @@ exports.UpdateEmployee = async(req, res, next) => {
         var role = req.body.role
         var number_ctps = req.body.number_ctps
         var id_user = req.body.id_user // END USER INFORMATION
+
+        if(img_user == null || img_user == "" || img_user == " " || img_user.length <= 12 )
+            img_user = _IMG_DEFAULT
 
         var id_employee = req.body.id_employee;
         var Test_select = await mysql.execute('SELECT * FROM tbl_account WHERE id_user = ?', id_employee)
