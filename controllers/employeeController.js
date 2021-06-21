@@ -12,8 +12,8 @@ exports.GetEmployeeInformation = async (req, res, next) => {
         if(result.length > 0){
             const response = {
                 id_employee: result[0].id_employee,
-                role: EncryptDep.Encrypto(result[0].role),
-                number_ctps: EncryptDep.Encrypto(result[0].number_ctps)
+                role: EncryptDep.Decrypt(result[0].role),
+                number_ctps: EncryptDep.Decrypt(result[0].number_ctps)
             }
             return res.status(200).send(response)
         }else
@@ -42,20 +42,6 @@ exports.RegisterEmployee = async (req, res, next) => {
         var number_ctps = req.body.number_ctps
         var verify_id = "Confirmed"
         var verify = 1 // END USER INFORMATION
-
-        console.log(name_user + " Nome")
-        console.log(email + " Email")
-        console.log(cpf_user + " CPF")
-        console.log(address_user + " ADDRESS")
-        console.log(complement + " COmple")
-        console.log(zipcode + " ZIp")
-        console.log(birth_date + " Anir")
-        console.log(user_type + " Type")
-        console.log(img_user + " IMG")
-        console.log(password + "Senha")
-        console.log(phone_user + " Celular")
-        console.log(role + " Cargo")
-        console.log(number_ctps + " CD LA")
 
         if(img_user == null || img_user == "" || img_user == " " || img_user.length <= 12 )
             img_user = _IMG_DEFAULT
