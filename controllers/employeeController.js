@@ -43,18 +43,19 @@ exports.RegisterEmployee = async (req, res, next) => {
         var verify_id = "Confirmed"
         var verify = 1 // END USER INFORMATION
 
-        console.log(name_user)
-        console.log(email)
-        console.log(cpf_user)
-        console.log(address_user)
-        console.log(complement)
-        console.log(zipcode)
-        console.log(birth_date)
-        console.log(img_user)
-        console.log(password)
-        console.log(phone_user)
-        console.log(role)
-        console.log(number_ctps)
+        console.log(name_user + " Nome")
+        console.log(email + " Email")
+        console.log(cpf_user + " CPF")
+        console.log(address_user + " ADDRESS")
+        console.log(complement + " COmple")
+        console.log(zipcode + " ZIp")
+        console.log(birth_date + " Anir")
+        console.log(user_type + " Type")
+        console.log(img_user + " IMG")
+        console.log(password + "Senha")
+        console.log(phone_user + " Celular")
+        console.log(role + " Cargo")
+        console.log(number_ctps + " CD LA")
 
         if(img_user == null || img_user == "" || img_user == " " || img_user.length <= 12 )
             img_user = _IMG_DEFAULT
