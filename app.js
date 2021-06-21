@@ -11,7 +11,8 @@ const mobileRoute = require('./routes/mobile')
 const shoppingCart = require('./routes/shoppingcart')
 const testRoute = require('./tests/routes/tests')
 const discountsRoute = require('./routes/discounts')
-const orderRoute = require('./routes/order') // End routers consts
+const orderRoute = require('./routes/order')
+const employeeRoute = require('./routes/employee') // End routers consts
 
 //  Configuring APP
 app.use(morgan('dev'));
@@ -63,6 +64,9 @@ app.use('/mobile', mobileRoute);
 
 // Order Route
 app.use('/order', orderRoute);
+
+//  Employee Route
+app.use('/employee', employeeRoute);
 
 //  Router for Test
 app.use('/test', testRoute); 
