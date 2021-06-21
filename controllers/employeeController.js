@@ -26,7 +26,7 @@ exports.GetEmployeeInformation = async (req, res, next) => {
 
 exports.GetAnEmployeeInformation = async (req, res, next) => {
     try {
-        var id_user = req.body.id_user
+        var id_user = req.params.id_user
         var result = await mysql.execute(`select 
         account.*,
         employee.id_employee,
