@@ -48,13 +48,7 @@ create table tbl_employers(
 );
 
 -- Employee Procedures
-DELIMITER $$
 drop procedure if exists spInsert_Employee;
-CREATE PROCEDURE spInsert_Employee($id_user int, $number_ctps varchar(600), $role varchar(600))
-BEGIN
-		INSERT tbl_employers (role, number_ctps, id_user) VALUES ($role, $number_ctps, $id_user);
-END $$
-DELIMITER ;
 
 DELIMITER $$
 drop procedure if exists spDelete_Employee;
@@ -72,6 +66,15 @@ BEGIN
 
 END $$
 DELIMITER ;
+
+--  Table for Veterinary
+-- drop table if exists tbl_veterinary
+CREATE TABLE tbl_veterinary(
+    cd_veterinary int PRIMARY KEY AUTO_INCREMENT,
+    id_user int not null, FOREIGN KEY (id_user) REFERENCES tbl_account (id_user),
+    id_employee int not null, FOREIGN KEY (id_employee) REFERENCES tbl_employers (id_employee),
+    num_crmv varchar(500) not null 
+)DEFAULT CHARACTER SET utf8  DEFAULT COLLATE utf8_general_ci;
 
 --  Table for Products
 -- drop table tbl_products;
@@ -165,6 +168,22 @@ create table tbl_pets(
 )DEFAULT CHARACTER SET utf8  DEFAULT COLLATE utf8_general_ci;
 ALTER TABLE tbl_pets auto_increment = 252;
 
+-- Table for Schedules
+drop table if exists tbl_schedules;
+create table tbl_schedules(
+    cd_schedule int PRIMARY KEY auto_increment,
+    id_user int not null, FOREIGN KEY(id_user) REFERENCES tbl_account (id_user),
+    date_schedule varchar(600) not null,
+    time_schedule varchar(600) not null,
+    cd_animal int not null, FOREIGN KEY(cd_animal) REFERENCES tbl_pets (cd_animal),
+    cd_veterinary int, FOREIGN KEY(cd_veterinary) REFERENCES tbl_employers (id_user),
+    description varchar(600),
+    service_type int not null,
+    delivery int,
+    status int not null
+)DEFAULT CHARACTER SET utf8  DEFAULT COLLATE utf8_general_ci;
+ALTER TABLE tbl_schedules auto_increment = 242;
+
 -- Table for products historic
 drop table if exists tbl_product_historic;
 create table tbl_product_historic(
@@ -231,6 +250,8 @@ select * from tbl_versionMobile;
 -- Selects
 select * from tbl_account;
 select * from tbl_employers;
+select * from tbl_schedules;
+select * from tbl_veterinary;
 select * from tbl_products;
 select * from tbl_category;
 select * from tbl_pets;

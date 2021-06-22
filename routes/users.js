@@ -4,6 +4,7 @@ const multer = require('multer');
 const UsersController = require('../controllers/userController')
 const CardController = require('../controllers/cardsController')
 const PetsController = require('../controllers/petsController')
+const ScheduleController = require('../controllers/scheduleController')
 
 //  Register User
 router.post('/register', UsersController.RegisterUsers);
@@ -67,5 +68,16 @@ router.patch('/pet/update', PetsController.Edit_User_Pet)
 
 //  Remover User Pet
 router.delete('/pet/remove/:cd_animal/:id_user', PetsController.Remove_User_Pet) // End Pets Actions
+
+/* ----------- Services Actions ----------- */
+
+//  Get all User Schedules
+router.get('/schedules/:id_user', ScheduleController.GetAllSchedules)
+
+//  Create new Shedule for Bath
+router.post('/create/schedule', ScheduleController.CreateSchedule)
+
+// Cancel User Schedule
+router.delete('/schedule/cancel', ScheduleController.CancelSchedule) // End Services Actions
 
 module.exports = router

@@ -1,0 +1,84 @@
+const mysql = require('../mysql')
+const EncryptDep = require('./encryption')
+const Server = require('../ServerInfo') 
+
+exports.GetAllSchedules = async (req, res, next) => {
+    try {
+        var id_user = req.params.id_user 
+        var result = await mysql.execute('SELECT * FROM tbl_schedules WHERE id_user = ? and status < 2;', id_user)
+        if (result.length > 0){
+            const response = {
+                Search: result.map(schedules => {
+                    return {
+                        cd_schedule: parseInt(schedules.cd_schedule),
+                        id_user: parseInt(schedules.id_user),
+                        date_schedule: EncryptDep.Decrypt(schedules.date_schedule),
+                        time_schedule: EncryptDep.Decrypt(schedules.time_schedule),
+                        cd_animal: parseInt(schedules.cd_animal),
+                        cd_veterinary: parseInt(schedules.cd_veterinary),
+                        description: EncryptDep.Decrypt(schedules.description),
+                        service_type: parseInt(schedules.service_type),
+                        delivery: parseInt(schedules.delivery),
+                        status: parseInt(schedules.status)
+                    }
+                })
+                }
+            return res.status(200).send(response)
+        }else
+            return res.status(204).send({ message: 'No Schedule for this user' })
+    } catch (error) {
+        Server.RegisterServerError("Get Schedules", error.toString());
+        return res.status(500).send({ error: error.toString()})
+    }
+}
+
+exports.CancelSchedule = async (req, res, next)=> {
+    try {
+        var id_user = req.body.id_user
+        var cd_schedule = req.body.cd_schedule
+        
+        var select_user = await mysql.execute(`SELECT * FROM tbl_account WHERE id_user = ?`, id_user)
+        if (select_user.length > 0) {
+            await mysql.execute(`UPDATE tbl_schedules SET status = 2 WHERE cd_schedule = ?`, cd_schedule)
+            return res.status(200).send({message: 'Canceled with Success!'})
+        }else
+            return res.status(405).send({ message: 'This user doesnt exist' })
+
+    } catch (error) {
+        Server.RegisterServerError("Cancel Schedules", error.toString());
+        return res.status(500).send({ error: error.toString()})
+    }
+}
+
+//  Method to Create new Schedule  
+exports.CreateSchedule = async (req, res, next) => {
+    try {
+        var date_schedule = req.body.date_schedule
+        var time_schedule = req.body.time_schedule
+        var cd_animal = req.body.cd_animal
+        var cd_veterinary = req.body.cd_veterinary
+        var description = req.body.description
+        var service_type = req.body.service_type
+        var delivery = req.body.delivery
+        var status = 0
+        var id_user = req.body.id_user
+        
+
+        var result_select = await mysql.execute(`SELECT * FROM tbl_account WHERE id_user = ?;`, id_user)
+
+        if(result_select.length > 0){
+            var insert_schedule = await mysql.execute(`INSERT INTO tbl_schedules(date_schedule, time_schedule, cd_animal, cd_veterinary, description, service_type, delivery, status, id_user) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?) `, [ EncryptDep.Encrypto(date_schedule), EncryptDep.Encrypto(time_schedule), cd_animal, cd_veterinary, EncryptDep.Encrypto(description), service_type, delivery, status, id_user ])
+            const response = {
+                message: 'Scheduled performed successfully',
+                cd_schedule: insert_schedule.insertId
+            }
+            return res.status(201).send(response)
+        
+        } else
+            return res.status(204).send({ message: 'This user doesnt exist' })
+
+    } catch (error) {
+        Server.RegisterServerError("Create Schedule", error.toString());
+        return res.status(500).send({ error: error.toString()})
+    }
+}
