@@ -214,7 +214,7 @@ exports.UpdateEmployee = async(req, res, next) => {
             if(!badWords.VerifyUsername(name_user)){;
                 await mysql.execute('UPDATE  tbl_account SET name_user = ? , cpf_user = ? , address_user = ? , complement = ?, zipcode = ?, phone_user = ?,  birth_date = ?, user_type = ?, img_user ? WHERE id_user = ?', [EncryptDep.Encrypto(name_user), EncryptDep.Encrypto(cpf_user), EncryptDep.Encrypto(address_user), EncryptDep.Encrypto(complement), EncryptDep.Encrypto(zipcode), EncryptDep.Encrypto(phone_user), EncryptDep.Encrypto(birth_date), user_type, EncryptDep.Encrypto(img_user), id_user]);
 
-                await mysql.execute('UPDATE tbl_employers SET role = ?, number_ctps = ?', [ result_user.insertId, EncryptDep.Encrypto(number_ctps), EncryptDep.Encrypto(role) ])
+                await mysql.execute('UPDATE tbl_employers SET role = ?, number_ctps = ? WHERE id_user = ?', [ EncryptDep.Encrypto(role), EncryptDep.Encrypto(number_ctps), id_user ])
                 const response = {
                     message: 'Successfully inserted',
                     id_employee: result_employee.insertId
