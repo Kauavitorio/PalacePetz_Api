@@ -37,6 +37,11 @@ exports.GetAnEmployeeInformation = async (req, res, next) => {
         from tbl_account as account inner join tbl_employers as employee
         on account.id_user = employee.id_user WHERE account.id_user = ?;`, id_user)
         if(result.length > 0){
+            var num_crmv = "";
+            if(result[0].user_type == 2){
+                var result_vety = await mysql.execute('SELECT num_crmv FROM tbl_veterinary WHERE id_user = ?', id_user)
+                num_crmv = EncryptDep.Decrypt(result_vety[0].num_crmv)
+            }
             const response = {
                 Search: result.map(employee => {
                     return {
@@ -54,6 +59,7 @@ exports.GetAnEmployeeInformation = async (req, res, next) => {
                         img_user: EncryptDep.Decrypt(employee.img_user),
                         id_employee: parseInt(employee.id_employee),
                         role: EncryptDep.Decrypt(employee.role),
+                        num_crmv: num_crmv,
                         number_ctps: EncryptDep.Decrypt(employee.number_ctps)
                     }
                 })
@@ -85,7 +91,8 @@ exports.RegisterEmployee = async (req, res, next) => {
         var role = req.body.role
         var number_ctps = req.body.number_ctps
         var verify_id = "Confirmed"
-        var verify = 1 // END USER INFORMATION
+        var verify = 1 
+        var num_crmv = req.body.num_crmv // END USER INFORMATION
 
         if(img_user == null || img_user == "" || img_user == " " || img_user.length <= 12 )
             img_user = _IMG_DEFAULT
@@ -112,11 +119,14 @@ exports.RegisterEmployee = async (req, res, next) => {
                     const hash = await bcrypt.hashSync(password, 13);
                     var result_user = await mysql.execute('INSERT INTO tbl_account (name_user, email, cpf_user, address_user, complement, zipcode, phone_user, birth_date, user_type, img_user, password, verify_id, verify) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [EncryptDep.Encrypto(name_user), EncryptDep.Encrypto(email), EncryptDep.Encrypto(cpf_user), EncryptDep.Encrypto(address_user), EncryptDep.Encrypto(complement), EncryptDep.Encrypto(zipcode), EncryptDep.Encrypto(phone_user), EncryptDep.Encrypto(birth_date), user_type_insert, EncryptDep.Encrypto(img_user), hash, verify_id, verify]);
 
-                    var result_employee = await mysql.execute('CALL spInsert_Employee(?, ?, ?)', [ result_user.insertId, EncryptDep.Encrypto(number_ctps), EncryptDep.Encrypto(role) ])
+                    var result_employee = await mysql.execute('INSERT tbl_employers (role, number_ctps, id_user) VALUES (?, ?, ?);', [ EncryptDep.Encrypto(role), EncryptDep.Encrypto(number_ctps), result_user.insertId ])
                     const response = {
                         message: 'Successfully inserted',
                         id_employee: result_employee.insertId
                     }
+
+                    if (user_type_insert == 2)
+                        await mysql.execute('INSERT INTO tbl_veterinary (id_user, id_employee, num_crmv) VALUES (?, ?, ?)', [ result_user.insertId, result_employee.insertId, EncryptDep.Encrypto(num_crmv) ])
                     
                     var splitFuncName = name_user.split(' ')
                     var id_insert = result_user.insertId;   
@@ -200,7 +210,8 @@ exports.UpdateEmployee = async(req, res, next) => {
         var role = req.body.role
         var number_ctps = req.body.number_ctps
         var password = req.body.password;
-        var id_user = req.body.id_user // END USER INFORMATION
+        var id_user = req.body.id_user
+        var num_crmv = req.body.num_crmv // END USER INFORMATION
 
         if(img_user == null || img_user == "" || img_user == " " || img_user.length <= 12 )
             img_user = _IMG_DEFAULT
@@ -220,6 +231,19 @@ exports.UpdateEmployee = async(req, res, next) => {
                 await mysql.execute('UPDATE  tbl_account SET name_user = ? , cpf_user = ? , address_user = ? , complement = ?, zipcode = ?, phone_user = ?,  birth_date = ?, user_type = ?, img_user = ?, password = ? WHERE id_user = ?', [EncryptDep.Encrypto(name_user), EncryptDep.Encrypto(cpf_user), EncryptDep.Encrypto(address_user), EncryptDep.Encrypto(complement), EncryptDep.Encrypto(zipcode), EncryptDep.Encrypto(phone_user), EncryptDep.Encrypto(birth_date), user_type, EncryptDep.Encrypto(img_user), hash, id_user]);
 
                 await mysql.execute('UPDATE tbl_employers SET role = ?, number_ctps = ? WHERE id_user = ?', [ EncryptDep.Encrypto(role), EncryptDep.Encrypto(number_ctps), id_user ])
+
+                if (user_type_insert == 2){
+                    var result_veterinary = await mysql.execute('SELECT * FROM tbl_veterinary WHERE id_user = ?', id_user)
+                    if(result_veterinary.length > 0)
+                        await mysql.execute('UPDATE tbl_veterinary set num_crmv = ? WHERE id_user = ?', [ EncryptDep.Encrypto(num_crmv), id_user ])
+                    else{
+                        var result_employee = await mysql.execute('SELECT * FROM tbl_employers WHERE id_user = ?', id_user)
+                        var id_employee = result_employee[0].id_employee
+                        await mysql.execute('INSERT INTO tbl_veterinary (id_user, id_employee, num_crmv) VALUES (?, ?, ?)', [ id_user, id_employee, EncryptDep.Encrypto(num_crmv) ])
+                    }
+
+                }
+
                 return res.status(200).send({message: 'OK'})
             }else
                 return res.status(406).send({ message: 'Employee name is not allowed' }) 
