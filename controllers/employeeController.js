@@ -108,7 +108,7 @@ exports.RegisterEmployee = async (req, res, next) => {
                 if(!badWords.VerifyUsername(name_user)){
                     const hash = await bcrypt.hashSync(password, 13);
                     var result_user = await mysql.execute('INSERT INTO tbl_account (name_user, email, cpf_user, address_user, complement, zipcode, phone_user, birth_date, user_type, img_user, password, verify_id, verify) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [EncryptDep.Encrypto(name_user), EncryptDep.Encrypto(email), EncryptDep.Encrypto(cpf_user), EncryptDep.Encrypto(address_user), EncryptDep.Encrypto(complement), EncryptDep.Encrypto(zipcode), EncryptDep.Encrypto(phone_user), EncryptDep.Encrypto(birth_date), user_type_insert, EncryptDep.Encrypto(img_user), hash, verify_id, verify]);
-    
+
                     var result_employee = await mysql.execute('CALL spInsert_Employee(?, ?, ?)', [ result_user.insertId, EncryptDep.Encrypto(number_ctps), EncryptDep.Encrypto(role) ])
                     const response = {
                         message: 'Successfully inserted',
@@ -196,6 +196,7 @@ exports.UpdateEmployee = async(req, res, next) => {
         var phone_user = req.body.phone_user
         var role = req.body.role
         var number_ctps = req.body.number_ctps
+        var password = req.body.password;
         var id_user = req.body.id_user // END USER INFORMATION
 
         if(img_user == null || img_user == "" || img_user == " " || img_user.length <= 12 )
@@ -211,14 +212,11 @@ exports.UpdateEmployee = async(req, res, next) => {
             var user_type = Test_select[0].user_type;
             if (user_type <= 2) return res.status(401).send({message: 'You can not update employers'})
             else{
-            if(!badWords.VerifyUsername(name_user)){;
-                await mysql.execute('UPDATE  tbl_account SET name_user = ? , cpf_user = ? , address_user = ? , complement = ?, zipcode = ?, phone_user = ?,  birth_date = ?, user_type = ?, img_user ? WHERE id_user = ?', [EncryptDep.Encrypto(name_user), EncryptDep.Encrypto(cpf_user), EncryptDep.Encrypto(address_user), EncryptDep.Encrypto(complement), EncryptDep.Encrypto(zipcode), EncryptDep.Encrypto(phone_user), EncryptDep.Encrypto(birth_date), user_type, EncryptDep.Encrypto(img_user), id_user]);
+            if(!badWords.VerifyUsername(name_user)){
+                const hash = await bcrypt.hashSync(password, 13);
+                await mysql.execute('UPDATE  tbl_account SET name_user = ? , cpf_user = ? , address_user = ? , complement = ?, zipcode = ?, phone_user = ?,  birth_date = ?, user_type = ?, img_user = ?, password = ? WHERE id_user = ?', [EncryptDep.Encrypto(name_user), EncryptDep.Encrypto(cpf_user), EncryptDep.Encrypto(address_user), EncryptDep.Encrypto(complement), EncryptDep.Encrypto(zipcode), EncryptDep.Encrypto(phone_user), EncryptDep.Encrypto(birth_date), user_type, EncryptDep.Encrypto(img_user), hash, id_user]);
 
                 await mysql.execute('UPDATE tbl_employers SET role = ?, number_ctps = ? WHERE id_user = ?', [ EncryptDep.Encrypto(role), EncryptDep.Encrypto(number_ctps), id_user ])
-                const response = {
-                    message: 'Successfully inserted',
-                    id_employee: result_employee.insertId
-                }
                 return res.status(200).send({message: 'OK'})
             }else
                 return res.status(406).send({ message: 'Employee name is not allowed' }) 
