@@ -9,6 +9,9 @@ router.post('/informations', employeeController.GetEmployeeInformation)
 //  Get an employee info
 router.get('/informations/:id_user', employeeController.GetAnEmployeeInformation)
 
+//  Update A Product
+router.patch('/update/product', employeeController.UpdateProduct)
+
 // -----  Manager Actions -------
 
 //  Route to register an employee

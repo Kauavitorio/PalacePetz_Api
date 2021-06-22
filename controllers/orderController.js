@@ -145,9 +145,8 @@ exports.FinishOrder = async (req, res, next) => {
             var order_id = insert_order.insertId
             for(let i = 0; i < cd_products_cart.length; i++){
                 var result_prod_search = await mysql.execute('SELECT * FROM tbl_products WHERE cd_prod = ?', cd_products_cart[i])
-                if(result_prod_search.length > 0){
+                if(result_prod_search.length > 0)
                     this.Insert_Order_Items(order_id, id_user, cd_products_cart[i], prod_amount[i], result_prod_search[0].product_price)
-                }
             }
 
             /* Clear Table Shooping Cart */
@@ -155,6 +154,8 @@ exports.FinishOrder = async (req, res, next) => {
 
             Emails.SendOrderConfirmation(user_email, name_user, order_id, order_date, sub_total, discount, totalPrice, address_user, complement, user_zipcode)
             
+            this.CheckToTryPopularProduct()
+
             res.status(201).send({message: 'Order sucessfully created'})
         }else{
             return res.status(401).send({ message: "User not exist" });
@@ -172,6 +173,7 @@ exports.FinishOrder = async (req, res, next) => {
     }
 }
 
+//  Method to insert order product in list
 exports.Insert_Order_Items = async (order_id, id_user, cd_prod, prod_amount, prod_price) => {
     await mysql.execute(`INSERT INTO tbl_orders_items (cd_order, id_user, cd_prod, product_amount, product_price)
     VALUES (?, ?, ?, ?, ?)`, [order_id, id_user, cd_prod, prod_amount, prod_price])
@@ -188,4 +190,29 @@ exports.DropStock = async (cd_prod, amount) => {
         dropStock =  result_stock - amount;
 
     await mysql.execute('UPDATE tbl_products SET amount = ? where cd_prod = ?', [dropStock, parseInt(cd_prod)])
+}
+
+//  Method to put product popular
+exports.CheckToTryPopularProduct = async () =>{
+    try {
+        var Order_Products = []
+        var Order_Amount = []
+        var result_Orders = await mysql.execute('SELECT * FROM tbl_orders_items;')
+        for (let i = 0; i < result_Orders.length; i ++){
+            if(!Order_Products.includes(result_Orders[i].cd_prod))
+                Order_Products.push(result_Orders[i].cd_prod)
+        }
+
+        for (let i = 0; i < Order_Products.length; i++){
+            var result_amount = await mysql.execute('select count(*) AS count from tbl_orders_items where cd_prod = ?;', Order_Products[i])
+            Order_Amount.push(result_amount[0].count)
+        }
+
+        for (let i = 0; i < Order_Products.length; i ++){
+            if(Order_Amount[i] >= 5)
+                await mysql.execute('UPDATE tbl_products set popular = 1 WHERE cd_prod = ?', Order_Products[i])
+        }
+    } catch (error) {
+        ServerDetails.RegisterServerError("Check To Popular", error.toString());
+    }
 }

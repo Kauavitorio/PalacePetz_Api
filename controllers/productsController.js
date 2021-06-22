@@ -159,7 +159,7 @@ exports.ListAllPopularProducts = async (req, res, next) => {
 		prod.*,
 		cat.nm_category
         from tbl_products as prod inner join tbl_category as cat
-        on prod.cd_category = cat.cd_category WHERE prod.popular = 1 and prod.amount > 0;`);
+        on prod.cd_category = cat.cd_category  WHERE prod.popular = 1 and prod.amount > 0 ORDER BY RAND() LIMIT 8;`);
         if (results.length <= 0) {
             return res.status(204).send({ message: 'No Products registerd' })
         }else{

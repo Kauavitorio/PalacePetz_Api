@@ -5,6 +5,7 @@ const badWords = require('./badWords')
 const bcrypt = require('bcrypt');
 const _IMG_DEFAULT = 'https://www.kauavitorio.com/host-itens/Default_Profile_Image_palacepetz.png';
 
+//  Method to get information about self
 exports.GetEmployeeInformation = async (req, res, next) => {
     try {
         var id_user = req.body.id_user
@@ -24,6 +25,7 @@ exports.GetEmployeeInformation = async (req, res, next) => {
     }
 }
 
+//  Method to get information about one employee
 exports.GetAnEmployeeInformation = async (req, res, next) => {
     try {
         var id_user = req.params.id_user
@@ -65,6 +67,7 @@ exports.GetAnEmployeeInformation = async (req, res, next) => {
     }
 }
 
+//  Method to register Employee 
 exports.RegisterEmployee = async (req, res, next) => {
     try {
         // USER INFORMATION
@@ -264,5 +267,21 @@ exports.UpdateUserNameIntern = async (id_user, username) => {
             await mysql.execute(query, [EncryptDep.Encrypto(newUserName), id_user])
     }catch(error){
         ServerDetails.RegisterServerError("Update Profile", error.toString());
+    }
+}
+
+//  Method to update a product
+exports.UpdateProduct = async (req, res, next) => {
+    try {
+        var cd_prod = req.body.cd_prod
+        var result_search = await mysql.execute('SELECT * FROM tbl_products WHERE cd_prod = ?', cd_prod)
+        if(result_search.length > 0){
+            await mysql.execute('UPDATE tbl_products set cd_category= ?, nm_product = ?, amount = ?, species = ?, product_price = ?, date_prod = ?, shelf_life = ?, image_prod = ? WHERE cd_prod = ?', [ req.body.cd_category, req.body.nm_product, req.body.amount, req.body.species, req.body.product_price, req.body.date_prod, req.body.shelf_life, req.body.image_prod, cd_prod ])
+            return res.status(200).send({ message: 'OK' })
+        }else
+            return res.status(204).send({ message: 'Product not found' })
+    } catch (error) {
+        Server.RegisterServerError("Update Product", error.toString());
+        return res.status(500).send({ error: error})
     }
 }
