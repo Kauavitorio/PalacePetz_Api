@@ -53,11 +53,28 @@ drop procedure if exists spDelete_Employee;
 CREATE PROCEDURE spDelete_Employee($id_user int)
 BEGIN
   DECLARE $id_employee INT;
+  DECLARE $cd_veterinary INT;
+  DECLARE $user_type INT;
+  
+		SELECT user_type
+			INTO $user_type
+			FROM tbl_account
+		WHERE id_user = $id_user;
+        
+        IF $user_type = 2 THEN 
+		SELECT cd_veterinary
+			INTO $cd_veterinary
+			FROM tbl_veterinary
+		WHERE id_user = $id_user;
+        
+        delete from tbl_veterinary WHERE cd_veterinary = $cd_veterinary;
+        END IF;
   
 		SELECT id_employee
 			INTO $id_employee
 			FROM tbl_employers
 		WHERE id_user = $id_user;
+        
         
         delete from tbl_employers WHERE id_employee = $id_employee;
         delete from tbl_account WHERE id_user = $id_user;
@@ -175,6 +192,7 @@ create table tbl_schedules(
     time_schedule varchar(600) not null,
     cd_animal int not null, FOREIGN KEY(cd_animal) REFERENCES tbl_pets (cd_animal),
     cd_veterinary int, FOREIGN KEY(cd_veterinary) REFERENCES tbl_employers (id_user),
+    payment_type int not null,
     description varchar(600),
     service_type int not null,
     delivery int,

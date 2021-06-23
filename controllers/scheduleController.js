@@ -56,18 +56,36 @@ exports.CreateSchedule = async (req, res, next) => {
         var date_schedule = req.body.date_schedule
         var time_schedule = req.body.time_schedule
         var cd_animal = req.body.cd_animal
-        var cd_veterinary = req.body.cd_veterinary
+        var nm_veterinary = req.body.cd_veterinary
         var description = req.body.description
         var service_type = req.body.service_type
+        var payment = req.body.payment_type
         var delivery = req.body.delivery
         var status = 0
         var id_user = req.body.id_user
-        
+        var cd_veterinary;
 
         var result_select = await mysql.execute(`SELECT * FROM tbl_account WHERE id_user = ?;`, id_user)
 
         if(result_select.length > 0){
-            var insert_schedule = await mysql.execute(`INSERT INTO tbl_schedules(date_schedule, time_schedule, cd_animal, cd_veterinary, description, service_type, delivery, status, id_user) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?) `, [ EncryptDep.Encrypto(date_schedule), EncryptDep.Encrypto(time_schedule), cd_animal, cd_veterinary, EncryptDep.Encrypto(description), service_type, delivery, status, id_user ])
+            
+            if(!Number.isInteger(cd_animal)){
+                var result_selectPet = await mysql.execute(`SELECT nm_animal, cd_animal FROM tbl_pets WHERE id_user = ?;`, id_user)
+                for(let i = 0; i < result_selectPet.length; i++){
+                    var nm_pet_get = EncryptDep.Decrypt(result_selectPet[i].nm_animal)
+                    if(nm_pet_get == cd_animal)
+                        cd_animal = result_selectPet[i].cd_animal
+                }
+            }
+            if(!Number.isInteger(nm_veterinary)){
+                var result_selectVet = await mysql.execute(`SELECT name_user, id_user FROM tbl_account;`)
+                for(let i = 0; i < result_selectVet.length; i++){
+                    var nm_user_get = EncryptDep.Decrypt(result_selectVet[i].name_user)
+                    if(nm_user_get == nm_veterinary)
+                        cd_veterinary = result_selectVet[i].id_user
+                }
+            }
+            var insert_schedule = await mysql.execute(`INSERT INTO tbl_schedules(date_schedule, time_schedule, cd_animal, cd_veterinary, payment_type, description, service_type, delivery, status, id_user) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?) `, [ EncryptDep.Encrypto(date_schedule), EncryptDep.Encrypto(time_schedule), cd_animal, cd_veterinary, payment, EncryptDep.Encrypto(description), service_type, delivery, status, id_user ])
             const response = {
                 message: 'Scheduled performed successfully',
                 cd_schedule: insert_schedule.insertId
