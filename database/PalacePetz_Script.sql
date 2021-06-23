@@ -48,8 +48,6 @@ create table tbl_employers(
 );
 
 -- Employee Procedures
-drop procedure if exists spInsert_Employee;
-
 DELIMITER $$
 drop procedure if exists spDelete_Employee;
 CREATE PROCEDURE spDelete_Employee($id_user int)

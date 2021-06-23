@@ -211,7 +211,8 @@ exports.UpdateEmployee = async(req, res, next) => {
         var number_ctps = req.body.number_ctps
         var password = req.body.password;
         var id_user = req.body.id_user
-        var num_crmv = req.body.num_crmv // END USER INFORMATION
+        var num_crmv = req.body.num_crmv
+        var user_type_insert = req.body.user_type // END USER INFORMATION
 
         if(img_user == null || img_user == "" || img_user == " " || img_user.length <= 12 )
             img_user = _IMG_DEFAULT

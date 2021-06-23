@@ -152,7 +152,7 @@ exports.FinishOrder = async (req, res, next) => {
             /* Clear Table Shooping Cart */
             await mysql.execute(`DELETE FROM tbl_shoppingCart WHERE id_user = ?`, id_user) 
 
-            Emails.SendOrderConfirmation(user_email, name_user, order_id, order_date, sub_total, discount, totalPrice, address_user, complement, user_zipcode)
+            //Emails.SendOrderConfirmation(user_email, name_user, order_id, order_date, sub_total, discount, totalPrice, address_user, complement, user_zipcode)
             
             this.CheckToTryPopularProduct()
 
