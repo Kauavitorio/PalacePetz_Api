@@ -78,6 +78,6 @@ router.get('/schedules/:id_user', ScheduleController.GetAllSchedules)
 router.post('/create/schedule', ScheduleController.CreateSchedule)
 
 // Cancel User Schedule
-router.delete('/schedule/cancel', ScheduleController.CancelSchedule) // End Services Actions
+router.delete('/schedule/cancel/:cd_schedule/:id_user/:description', ScheduleController.CancelSchedule) // End Services Actions
 
 module.exports = router
