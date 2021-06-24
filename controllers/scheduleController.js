@@ -5,7 +5,12 @@ const Server = require('../ServerInfo')
 exports.GetAllSchedules = async (req, res, next) => {
     try {
         var id_user = req.params.id_user 
-        var result = await mysql.execute('SELECT * FROM tbl_schedules WHERE id_user = ? and status < 2;', id_user)
+        var result = await mysql.execute(`select 
+		schedules.*,
+        veterinary.name_user as nm_veterinary,
+        pet.nm_animal
+        from tbl_schedules as schedules inner join tbl_account as veterinary on veterinary.id_user = schedules.cd_veterinary
+        inner join tbl_pets as pet on pet.cd_animal = schedules.cd_animal  WHERE schedules.id_user = ? and schedules.status < 2;`, id_user)
         if (result.length > 0){
             const response = {
                 Search: result.map(schedules => {
@@ -17,6 +22,8 @@ exports.GetAllSchedules = async (req, res, next) => {
                         cd_animal: parseInt(schedules.cd_animal),
                         cd_veterinary: parseInt(schedules.cd_veterinary),
                         description: EncryptDep.Decrypt(schedules.description),
+                        nm_veterinary: EncryptDep.Decrypt(schedules.nm_veterinary),
+                        nm_animal: EncryptDep.Decrypt(schedules.nm_animal),
                         service_type: parseInt(schedules.service_type),
                         delivery: parseInt(schedules.delivery),
                         status: parseInt(schedules.status)

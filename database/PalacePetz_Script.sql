@@ -243,7 +243,6 @@ BEGIN
 END $$
 DELIMITER ;
 
-
 /*	Table for Server Details  */
 drop table tbl_serverDetails;
 create table tbl_serverDetails(
