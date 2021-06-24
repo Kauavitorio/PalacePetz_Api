@@ -41,9 +41,9 @@ exports.GetAllSchedules = async (req, res, next) => {
 
 exports.CancelSchedule = async (req, res, next)=> {
     try {
-        var id_user = req.body.id_user
-        var cd_schedule = req.body.cd_schedule
-        var description = req.body.description
+        var id_user = req.params.id_user
+        var cd_schedule = req.params.cd_schedule
+        var description = req.params.description
         
         var select_user = await mysql.execute(`SELECT * FROM tbl_account WHERE id_user = ?`, id_user)
         if (select_user.length > 0) {
