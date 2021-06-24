@@ -5,7 +5,13 @@ const Server = require('../ServerInfo')
 exports.GetAllSchedules = async (req, res, next) => {
     try {
         var id_user = req.params.id_user 
-        var result = await mysql.execute(`CALL spSelect_Schedules(?);`, id_user)
+        var result = await mysql.execute(`select 
+        schedules.*,
+        veterinary.name_user as nm_veterinary,
+        pet.nm_animal
+        from tbl_schedules as schedules inner join tbl_pets as pet on pet.cd_animal = schedules.cd_animal
+        LEFT join tbl_account as veterinary on CASE WHEN schedules.service_type = 1 THEN veterinary.id_user = schedules.cd_veterinary END
+        WHERE schedules.id_user = ? and schedules.status < 2;`, id_user)
         if (result.length > 0){
             const response = {
                 Search: result.map(schedules => {
