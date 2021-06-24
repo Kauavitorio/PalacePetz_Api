@@ -43,10 +43,11 @@ exports.CancelSchedule = async (req, res, next)=> {
     try {
         var id_user = req.body.id_user
         var cd_schedule = req.body.cd_schedule
+        var description = req.body.description
         
         var select_user = await mysql.execute(`SELECT * FROM tbl_account WHERE id_user = ?`, id_user)
         if (select_user.length > 0) {
-            await mysql.execute(`UPDATE tbl_schedules SET status = 2 WHERE cd_schedule = ?`, cd_schedule)
+            await mysql.execute(`UPDATE tbl_schedules SET status = 2, description = ? WHERE cd_schedule = ?`, [ EncryptDep.Encrypto(description), cd_schedule, ])
             return res.status(200).send({message: 'Canceled with Success!'})
         }else
             return res.status(405).send({ message: 'This user doesnt exist' })
