@@ -12,6 +12,9 @@ router.get('/informations/:id_user', employeeController.GetAnEmployeeInformation
 //  Update A Product
 router.patch('/update/product', employeeController.UpdateProduct)
 
+//  Delete A Product
+router.delete('/delete/product/:id_employee/:cd_prod', employeeController.DeleteProduct)
+
 // -----  Manager Actions -------
 
 //  Route to register an employee
