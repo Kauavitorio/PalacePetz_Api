@@ -27,6 +27,6 @@ router.patch('/update-employee', employeeController.UpdateEmployee)
 router.delete('/delete-employee', employeeController.DeleteEmployee)
 
 //  Route to get Company Statistics
-router.get('/company/statistics', employeeController.GetStatistics)
+router.post('/company/statistics', employeeController.GetStatistics)
 
 module.exports = router
