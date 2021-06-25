@@ -189,3 +189,54 @@ exports.SendPasswordHasChange = ($recipient, $nm_user, $user_id) => {
     });
     });
 }
+
+//  Method to send Schedule Confirmation
+exports.SendScheduleConfirmation = ($recipient, $nm_user, $user_id, $service_type, $date_schedule, $time_schedule) => {
+    var service_type;
+    if($service_type == 1)
+        service_type = "Sua consulta veterinária";
+    else service_type = "O banho e tosa de seu animal";
+
+    //  Create HTML reader
+    var readHTMLFile = function(path, callback) {
+        fs.readFile(path, {encoding: 'utf-8'}, function (err, html) {
+            if (err) {
+                throw err;
+                callback(err);
+            }
+            else {
+                callback(null, html);
+            }
+        });
+    };
+    readHTMLFile(__dirname + '/templates/schedule_confirmation.html', function(err, html) {
+        var template = handlebars.compile(html);
+        var replacements = {
+            time_schedule: $time_schedule,
+            date_schedule: $date_schedule,
+            service_type: service_type,
+            recipient: $recipient,
+            nm_user: $nm_user,
+            user_id: $user_id
+        };
+
+        //  Set email template
+        var htmlToSend = template(replacements);
+        //  Create email formart
+        var mailOptions = {
+        from: '"Palace Petz" <palacepetz.shop@gmail.com>',
+        to: $recipient,
+        subject: 'Agendamento realizado com sucesso!!',
+        html : htmlToSend
+    };
+    transporter.sendMail(mailOptions, function(error, info){
+        if (error) {
+            console.log(error);
+            return "Error";
+        } else {
+            console.log('Password Has Changed Email sent: ' + info.response);
+            return "Sent";
+        }
+    });
+    });
+}

@@ -1,6 +1,7 @@
 const mysql = require('../mysql')
 const EncryptDep = require('./encryption')
 const Server = require('../ServerInfo') 
+const Emails = require('./email')
 
 exports.GetAllSchedules = async (req, res, next) => {
     try {
@@ -72,11 +73,16 @@ exports.CreateSchedule = async (req, res, next) => {
         var delivery = req.body.delivery
         var status = 0
         var id_user = req.body.id_user
-        var cd_veterinary;
+        var email = "";
+        var nm_user = "";
+        var user_id = 0;
 
         var result_select = await mysql.execute(`SELECT * FROM tbl_account WHERE id_user = ?;`, id_user)
 
         if(result_select.length > 0){
+            email = result_select[0].email
+            nm_user = result_select[0].name_user
+            user_id = result_select[0].id_user
             
             if(!Number.isInteger(cd_animal)){
                 var result_selectPet = await mysql.execute(`SELECT nm_animal, cd_animal FROM tbl_pets WHERE id_user = ?;`, id_user)
@@ -91,14 +97,18 @@ exports.CreateSchedule = async (req, res, next) => {
                 for(let i = 0; i < result_selectVet.length; i++){
                     var nm_user_get = EncryptDep.Decrypt(result_selectVet[i].name_user)
                     if(nm_user_get == nm_veterinary)
-                        cd_veterinary = result_selectVet[i].id_user
+                        nm_veterinary = result_selectVet[i].id_user
                 }
             }
-            var insert_schedule = await mysql.execute(`INSERT INTO tbl_schedules(date_schedule, time_schedule, cd_animal, cd_veterinary, payment_type, description, service_type, delivery, status, id_user) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?) `, [ EncryptDep.Encrypto(date_schedule), EncryptDep.Encrypto(time_schedule), cd_animal, cd_veterinary, payment, EncryptDep.Encrypto(description), service_type, delivery, status, id_user ])
+            date_schedule.replace('-', '/')
+            var insert_schedule = await mysql.execute(`INSERT INTO tbl_schedules(date_schedule, time_schedule, cd_animal, cd_veterinary, payment_type, description, service_type, delivery, status, id_user) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?) `, [ EncryptDep.Encrypto(date_schedule), EncryptDep.Encrypto(time_schedule), cd_animal, nm_veterinary, payment, EncryptDep.Encrypto(description), service_type, delivery, status, id_user ])
             const response = {
                 message: 'Scheduled performed successfully',
                 cd_schedule: insert_schedule.insertId
             }
+
+            Emails.SendScheduleConfirmation(email, nm_user, user_id, service_type, date_schedule, time_schedule)
+
             return res.status(201).send(response)
         
         } else

@@ -259,7 +259,7 @@ create table tbl_versionMobile(
     versionName varchar(10) not null,
     versionCode int not null
 )DEFAULT CHARACTER SET utf8  DEFAULT COLLATE utf8_general_ci;
-update tbl_versionMobile set versionName = "1.4.5", versionCode = 16 where cd_version = 4;
+update tbl_versionMobile set versionName = "1.5.0", versionCode = 18 where cd_version = 4;
 select * from tbl_versionMobile;
 
 -- Selects
