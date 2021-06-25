@@ -80,8 +80,8 @@ exports.CreateSchedule = async (req, res, next) => {
         var result_select = await mysql.execute(`SELECT * FROM tbl_account WHERE id_user = ?;`, id_user)
 
         if(result_select.length > 0){
-            email = result_select[0].email
-            nm_user = result_select[0].name_user
+            email = EncryptDep.Decrypt(result_select[0].email)
+            nm_user = EncryptDep.Decrypt(result_select[0].name_user)
             user_id = result_select[0].id_user
             
             if(!Number.isInteger(cd_animal)){
