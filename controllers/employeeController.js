@@ -318,7 +318,7 @@ exports.UpdateProduct = async (req, res, next) => {
         var cd_prod = req.body.cd_prod
         var result_search = await mysql.execute('SELECT * FROM tbl_products WHERE cd_prod = ?', cd_prod)
         if(result_search.length > 0){
-            await mysql.execute('UPDATE tbl_products set cd_category= ?, nm_product = ?, amount = ?, species = ?, product_price = ?, shelf_life = ?, image_prod = ?,description = ? WHERE cd_prod = ?', [ req.body.cd_category, req.body.nm_product, req.body.amount, req.body.species, req.body.product_price, req.body.shelf_life, req.body.image_prod, req.body.description, cd_prod ])
+            await mysql.execute('UPDATE tbl_products set cd_category = ?, nm_product = ?, amount = ?, species = ?, product_price = ?, shelf_life = ?, image_prod = ?,description = ? WHERE cd_prod = ?', [ req.body.cd_category, req.body.nm_product, req.body.amount, req.body.species, req.body.product_price, req.body.shelf_life, req.body.image_prod, req.body.description, cd_prod ])
             return res.status(200).send({ message: 'OK' })
         }else
             return res.status(204).send({ message: 'Product not found' })
