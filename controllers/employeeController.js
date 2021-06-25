@@ -310,3 +310,74 @@ exports.UpdateProduct = async (req, res, next) => {
         return res.status(500).send({ error: error})
     }
 }
+
+//  Method to Get Statistics
+exports.GetStatistics = async (req, res, next) => {
+    try {
+        var user_amount = 0;
+
+        //  Products amount vars
+        var products_amount = 0;
+        var qt_food = 0;
+        var qt_medicines = 0;
+        var qt_aesthetics = 0;
+        var qt_accessories = 0; // END Products amount vars
+
+        //  Percentage vars
+        var food_percentage;
+        var medicines_percentage;
+        var aesthetics_percentage;
+        var accessories_percentage; // END Percentage vars
+
+        //  Get Users Amount
+        var result_users = await mysql.execute('select count(*) as user_amount from tbl_account;')
+        user_amount = result_users[0].user_amount
+
+        //  Get Products Amount 
+        var result_products = await mysql.execute('select count(*) as products_amount from tbl_products;')
+        products_amount = result_products[0].products_amount
+
+        //  Get Products Amount with category = food 
+        var result_food = await mysql.execute('select count(*) as food_amount from tbl_products where cd_category = 4;')
+        qt_food = result_food[0].food_amount
+
+        //  Get Products Amount with category = medicines
+        var result_medicines = await mysql.execute('select count(*) as medicines_amount from tbl_products where cd_category = 14;')
+        qt_medicines = result_medicines[0].medicines_amount
+
+        //  Get Products Amount with category = aesthetics
+        var result_aesthetics = await mysql.execute('select count(*) as aesthetics_amount from tbl_products where cd_category = 34;')
+        qt_aesthetics = result_aesthetics[0].aesthetics_amount
+
+        //  Get Products Amount with category = accessories
+        var result_accessories = await mysql.execute('select count(*) as accessories_amount from tbl_products where cd_category = 24;')
+        qt_accessories = result_accessories[0].accessories_amount
+
+        food_percentage = Math.trunc(qt_food / products_amount * 100);
+        medicines_percentage = Math.trunc(qt_medicines / products_amount * 100);
+        aesthetics_percentage = Math.trunc(qt_aesthetics / products_amount * 100);
+        accessories_percentage = Math.trunc(qt_accessories / products_amount * 100);
+
+        //  Get Order Prices
+        var result_orders = await mysql.execute('select totalPrice from tbl_orders;')
+        var totalPrice = 0.0;
+        for (let i = 0; i < result_orders.length; i++){
+            totalPrice += parseFloat(EncryptDep.Decrypt(result_orders[i].totalPrice))
+        }
+
+        const response = {
+            user_amount: user_amount,
+            products_amount: products_amount,
+            food_percentage: food_percentage,
+            medicines_percentage: medicines_percentage,
+            aesthetics_percentage: aesthetics_percentage,
+            accessories_percentage: accessories_percentage,
+            totalPrice: totalPrice
+        }
+        return res.status(200).send(response)
+
+    } catch (error) {
+        Server.RegisterServerError("Get Statistics", error.toString());
+        return res.status(500).send({ error: error})
+    }
+}
