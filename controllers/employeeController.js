@@ -362,7 +362,9 @@ exports.GetStatistics = async (req, res, next) => {
         var result_orders = await mysql.execute('select totalPrice from tbl_orders;')
         var totalPrice = 0.0;
         for (let i = 0; i < result_orders.length; i++){
-            totalPrice += parseFloat(EncryptDep.Decrypt(result_orders[i].totalPrice))
+            var price_get = EncryptDep.Decrypt(result_orders[i].totalPrice)
+            console.log(price_get)
+            totalPrice += parseFloat(price_get.replace(" ", "").replace("R$", ""))
         }
 
         const response = {
