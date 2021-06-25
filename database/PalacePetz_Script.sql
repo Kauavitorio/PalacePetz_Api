@@ -167,7 +167,7 @@ create table tbl_orders_items(
     product_amount int not null, 
     product_price varchar(20) not null
 )DEFAULT CHARACTER SET utf8  DEFAULT COLLATE utf8_general_ci;
-ALTER TABLE tbl_orders auto_increment = 242;
+ALTER TABLE tbl_orders auto_increment = 25742;
 
 -- Table for Pets
 drop table if exists tbl_pets;

@@ -363,7 +363,6 @@ exports.GetStatistics = async (req, res, next) => {
         var totalPrice = 0.0;
         for (let i = 0; i < result_orders.length; i++){
             var price_get = EncryptDep.Decrypt(result_orders[i].totalPrice)
-            console.log(price_get)
             totalPrice += parseFloat(price_get.replace(" ", "").replace("R$", ""))
         }
 
