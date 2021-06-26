@@ -32,19 +32,23 @@ exports.GetAUserInfo = async (req, res, next) => {
     try {
         var result = await mysql.execute('SELECT * FROM tbl_account WHERE id_user = ?', req.params.id_user)
         const response = {
-            id_user: result[0].id_user,
-            name_user: EncryptDep.Decrypt(result[0].name_user),
-            email: EncryptDep.Decrypt(result[0].email),
-            cpf_user: EncryptDep.Decrypt(result[0].cpf_user),
-            address_user: EncryptDep.Decrypt(result[0].address_user),
-            complement: EncryptDep.Decrypt(result[0].complement),
-            zipcode: EncryptDep.Decrypt(result[0].zipcode),
-            phone_user: EncryptDep.Decrypt(result[0].phone_user),
-            birth_date: EncryptDep.Decrypt(result[0].birth_date),
-            user_type: result[0].user_type,
-            img_user: EncryptDep.Decrypt(result[0].img_user),
-            status: result[0].status
-        }
+            Search: result.map(account => {
+                return {
+                    id_user: account.id_user,
+                    name_user: EncryptDep.Decrypt(account.name_user),
+                    email: EncryptDep.Decrypt(account.email),
+                    cpf_user: EncryptDep.Decrypt(account.cpf_user),
+                    address_user: EncryptDep.Decrypt(account.address_user),
+                    complement: EncryptDep.Decrypt(account.complement),
+                    zipcode: EncryptDep.Decrypt(account.zipcode),
+                    phone_user: EncryptDep.Decrypt(account.phone_user),
+                    birth_date: EncryptDep.Decrypt(account.birth_date),
+                    user_type: account.user_type,
+                    img_user: EncryptDep.Decrypt(account.img_user),
+                    status: account.status
+                }
+            })
+            }
         return res.status(200).send(response)
     } catch (error) {
         
