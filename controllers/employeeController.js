@@ -683,3 +683,86 @@ exports.GetDetailsForAnScheduledService = async (req, res, next) => {
         return res.status(500).send( { error: error } )
     }
 }
+
+//  Method to get All Orders
+exports.GetAllOrders = async (req, res, next) => {
+    try {
+        ServerDetails.showRequestId()
+        var id_employee = req.params.id_employee
+        var result_Check = await mysql.execute('SELECT user_type FROM tbl_account WHERE id_user = ?;', id_employee)
+        if(result_Check.length > 0){
+            var user_type = result_Check[0].user_type
+            if(user_type == 1 || user_type == 3){
+                var result = await mysql.execute('select * from tbl_orders ORDER BY cd_order DESC;')
+                const response = {
+                    Search: result.map(order => {
+                        return {
+                            cd_order: parseInt(order.cd_order),
+                            id_user: parseInt(order.id_user),
+                            date_order: EncryptDep.Decrypt(order.date_order),
+                            status: EncryptDep.Decrypt(order.status)
+                        }
+                    })
+                    }
+                return res.status(200).send(response)
+            }else
+                return res.status(401).send({message: 'You can not see customers'})
+        }else
+            return res.status(401).send({message: 'You can not see customers'})
+    } catch (error) {
+        Server.RegisterServerError("Get Orders", error.toString());
+        return res.status(500).send({ error: error})
+    }
+}
+
+//  Method to get All Orders with cd_order
+exports.GetOrdersDetails = async (req, res, next) => {
+    try {
+        ServerDetails.showRequestId()
+        var id_employee = req.params.id_employee
+        var result_Check = await mysql.execute('SELECT user_type FROM tbl_account WHERE id_user = ?;', id_employee)
+        if(result_Check.length > 0){
+            var user_type = result_Check[0].user_type
+            if(user_type == 1 || user_type == 3){
+                var result = await mysql.execute('select * from tbl_orders WHERE cd_order = ?;', req.params.cd_order)
+                const response = {
+                    Search: result.map(order => {
+                        return {
+                            cd_order: parseInt(order.cd_order),
+                            id_user: parseInt(order.id_user),
+                            date_order: EncryptDep.Decrypt(order.date_order),
+                            status: EncryptDep.Decrypt(order.status)
+                        }
+                    })
+                    }
+                return res.status(200).send(response)
+            }else
+                return res.status(401).send({message: 'You can not see customers'})
+        }else
+            return res.status(401).send({message: 'You can not see customers'})
+    } catch (error) {
+        Server.RegisterServerError("Get Orders", error.toString());
+        return res.status(500).send({ error: error})
+    }
+}
+
+// Method to update order status
+exports.UpdateOrderStatus = async (req, res, next) => {
+    try {
+        ServerDetails.showRequestId()
+        var id_employee = req.params.id_employee
+        var result_Check = await mysql.execute('SELECT user_type FROM tbl_account WHERE id_user = ?;', id_employee)
+        if(result_Check.length > 0){
+            var user_type = result_Check[0].user_type
+            if(user_type == 1 || user_type == 3){
+                await mysql.execute('UPDATE tbl_orders set status = ? WHERE cd_order = ? and id_user = ?', [req.body.status, req.body.cd_order, req.body.id_user ])
+                return res.status(200).send({ message: 'Order updated' })
+            }else
+                return res.status(401).send({message: 'You can not see customers'})
+        }else
+            return res.status(401).send({message: 'You can not see customers'})
+    } catch (error) {
+        Server.RegisterServerError("Update Orders", error.toString());
+        return res.status(500).send({ error: error})
+    }
+}

@@ -36,6 +36,15 @@ router.get('/services/scheduled/:id_employee', employeeController.GetScheduledSe
 //  Method to get Shceduled Serivces Details
 router.get('/services/scheduled/details/:id_employee/:cd_schedule/:id_user', employeeController.GetDetailsForAnScheduledService)
 
+//  Method to get all order
+router.get('/order/get/:id_employee', employeeController.GetAllOrders)
+
+//  Method to get all order
+router.get('/order/get/details/:id_employee/:cd_order', employeeController.GetOrdersDetails)
+
+//  Method to update order
+router.patch('/order/update/:id_employee', employeeController.UpdateOrderStatus)
+
 // -----  Manager Actions -------
 
 //  Route to register an employee
