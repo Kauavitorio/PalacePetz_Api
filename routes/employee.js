@@ -16,7 +16,7 @@ router.patch('/update/product', employeeController.UpdateProduct)
 router.delete('/delete/product/:id_employee/:cd_prod', employeeController.DeleteProduct)
 
 //  Get All Customer
-router.get('/customer/list', employeeController.GetAllCustomer)
+router.get('/customer/list/:id_employee', employeeController.GetAllCustomer)
 
 // -----  Manager Actions -------
 

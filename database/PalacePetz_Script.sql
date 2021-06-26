@@ -34,9 +34,9 @@ create table tbl_account(
     img_user varchar(600),
     password varchar(600) not null,
     verify_id varchar(200) not null,
-    verify int default 0
+    verify int default 0,
+    status int(1) not null default 1
 )DEFAULT CHARACTER SET utf8  DEFAULT COLLATE utf8_general_ci;
-alter table tbl_account modify column email varchar(800) not null;
 
 -- Table for Employers
 -- drop table tbl_employers;
@@ -157,13 +157,12 @@ create table tbl_orders(
 )DEFAULT CHARACTER SET utf8  DEFAULT COLLATE utf8_general_ci;
 ALTER TABLE tbl_orders auto_increment = 26542;
 
-
 -- Table for Orders Itens
 drop table if exists tbl_orders_items;
 create table tbl_orders_items(
     cd_order int not null , FOREIGN KEY (cd_order) REFERENCES tbl_orders (cd_order),
     id_user int not null, FOREIGN KEY (id_user) REFERENCES tbl_account (id_user),
-    cd_prod int not null, FOREIGN KEY (cd_prod) REFERENCES tbl_products (cd_prod),
+    cd_prod int not null,
     product_amount int not null, 
     product_price varchar(20) not null
 )DEFAULT CHARACTER SET utf8  DEFAULT COLLATE utf8_general_ci;
@@ -205,9 +204,10 @@ drop table if exists tbl_product_historic;
 create table tbl_product_historic(
     cd_historic int primary key auto_increment,
     id_user int not null, FOREIGN KEY (id_user) REFERENCES tbl_account (id_user),
-    cd_prod int not null, FOREIGN KEY (cd_prod) REFERENCES tbl_products (cd_prod),
+    cd_prod int not null,
     datetime varchar(16) not null
 )DEFAULT CHARACTER SET utf8  DEFAULT COLLATE utf8_general_ci;
+select * from tbl_product_historic;
 
 /* Table for Discounts */
 drop table if exists tbl_discounts;
@@ -259,10 +259,11 @@ create table tbl_versionMobile(
     versionName varchar(10) not null,
     versionCode int not null
 )DEFAULT CHARACTER SET utf8  DEFAULT COLLATE utf8_general_ci;
-update tbl_versionMobile set versionName = "1.5.0", versionCode = 18 where cd_version = 4;
+update tbl_versionMobile set versionName = "1.5.1", versionCode = 19 where cd_version = 4;
 select * from tbl_versionMobile;
 
 -- Selects
+update tbl_account set status  = 0 where id_user = 34;
 select * from tbl_account;
 select * from tbl_employers;
 select * from tbl_schedules;
