@@ -656,6 +656,7 @@ exports.GetDetailsForAnScheduledService = async (req, res, next) => {
                             return {
                                 cd_schedule: parseInt(schedules.cd_schedule),
                                 id_user: parseInt(schedules.id_user),
+                                name_user: EncryptDep.Decrypt(schedules.name_user),
                                 nm_animal: EncryptDep.Decrypt(schedules.nm_animal),
                                 date_schedule: EncryptDep.Decrypt(schedules.date_schedule),
                                 time_schedule: EncryptDep.Decrypt(schedules.time_schedule),
