@@ -429,7 +429,7 @@ exports.GetAllCustomer = async (req, res, next) => {
                             cpf_user: EncryptDep.Decrypt(account.cpf_user),
                             phone_user: EncryptDep.Decrypt(account.phone_user),
                             user_type: parseInt(account.user_type),
-                            status: parseInt(user_type.status)
+                            status: parseInt(account.status)
                         }
                     })
                     }
