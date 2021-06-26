@@ -46,6 +46,8 @@ exports.Login = async (req, res, next) => {
                             img_user: EncryptDep.Decrypt(result[0].img_user),
                             status: result[0].status
                         }
+                    if(result[0].status == 0)
+                        return res.status(410).send({ message: 'This user is disable'});
                     if(verify_id == "Confirmed" || verify == 1){
                         return res.status(200).send(response);
                     }else{
@@ -94,6 +96,8 @@ exports.Login = async (req, res, next) => {
                             img_user: EncryptDep.Decrypt(result[0].img_user),
                             status: result[0].status
                         }
+                        if(result[0].status == 0)
+                            return res.status(410).send({ message: 'This user is disable'});
                     if(verify_id == "Confirmed" || verify == 1)
                         return res.status(200).send(response);
                     else
@@ -142,6 +146,8 @@ exports.Login = async (req, res, next) => {
                             img_user: EncryptDep.Decrypt(result[0].img_user),
                             status: result[0].status
                         }
+                    if(result[0].status == 0)
+                        return res.status(410).send({ message: 'This user is disable'});
                     if(verify_id == "Confirmed" || verify == 1)
                         return res.status(200).send(response);
                     else
