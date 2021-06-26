@@ -595,9 +595,10 @@ exports.GetScheduledServices = async (req, res, next) => {
             if(user_type_get > 0){
                 var result = await mysql.execute(`select 
                 schedules.*,
+                user.name_user,
                 veterinary.name_user as nm_veterinary,
                 pet.nm_animal
-                from tbl_schedules as schedules inner join tbl_pets as pet on pet.cd_animal = schedules.cd_animal
+                from tbl_schedules as schedules inner join tbl_pets as pet on pet.cd_animal = schedules.cd_animal inner join tbl_account as user on user.id_user = schedules.id_user
                 LEFT join tbl_account as veterinary on CASE WHEN schedules.service_type = 1 THEN veterinary.id_user = schedules.cd_veterinary END;`)
                 if (result.length > 0){
                     const response = {
@@ -605,6 +606,7 @@ exports.GetScheduledServices = async (req, res, next) => {
                             return {
                                 cd_schedule: parseInt(schedules.cd_schedule),
                                 id_user: parseInt(schedules.id_user),
+                                name_user: EncryptDep.Decrypt(schedules.name_user),
                                 date_schedule: EncryptDep.Decrypt(schedules.date_schedule),
                                 time_schedule: EncryptDep.Decrypt(schedules.time_schedule),
                                 cd_animal: parseInt(schedules.cd_animal),
@@ -642,9 +644,10 @@ exports.GetDetailsForAnScheduledService = async (req, res, next) => {
             if(user_type_get > 0){
                 var result = await mysql.execute(`select 
                 schedules.*,
+                user.name_user,
                 veterinary.name_user as nm_veterinary,
                 pet.nm_animal
-                from tbl_schedules as schedules inner join tbl_pets as pet on pet.cd_animal = schedules.cd_animal
+                from tbl_schedules as schedules inner join tbl_pets as pet on pet.cd_animal = schedules.cd_animal  inner join tbl_account as user on user.id_user = schedules.id_user
                 LEFT join tbl_account as veterinary on CASE WHEN schedules.service_type = 1 THEN veterinary.id_user = schedules.cd_veterinary END
                 WHERE schedules.cd_schedule = ? and schedules.id_user = ?;`, [ req.params.cd_schedule, req.params.id_user ])
                 if (result.length > 0){
@@ -653,6 +656,7 @@ exports.GetDetailsForAnScheduledService = async (req, res, next) => {
                             return {
                                 cd_schedule: parseInt(schedules.cd_schedule),
                                 id_user: parseInt(schedules.id_user),
+                                nm_animal: EncryptDep.Decrypt(schedules.nm_animal),
                                 date_schedule: EncryptDep.Decrypt(schedules.date_schedule),
                                 time_schedule: EncryptDep.Decrypt(schedules.time_schedule),
                                 cd_animal: parseInt(schedules.cd_animal),
