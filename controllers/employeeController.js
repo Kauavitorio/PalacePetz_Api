@@ -583,3 +583,98 @@ exports.EnableCustomerProfile = async (req, res, next) => {
         return res.status(500).send( { error: error } )
     }
 }
+
+//  Method to get all sheduled services
+exports.GetScheduledServices = async (req, res, next) => {
+    try {
+        ServerDetails.showRequestId()
+        var id_employee = req.params.id_employee
+        var result_Check = await mysql.execute('SELECT user_type FROM tbl_account WHERE id_user = ?', id_employee)
+        if(result_Check.length > 0){
+            var user_type_get = result_Check[0].user_type
+            if(user_type_get > 0){
+                var result = await mysql.execute(`select 
+                schedules.*,
+                veterinary.name_user as nm_veterinary,
+                pet.nm_animal
+                from tbl_schedules as schedules inner join tbl_pets as pet on pet.cd_animal = schedules.cd_animal
+                LEFT join tbl_account as veterinary on CASE WHEN schedules.service_type = 1 THEN veterinary.id_user = schedules.cd_veterinary END;`)
+                if (result.length > 0){
+                    const response = {
+                        Search: result.map(schedules => {
+                            return {
+                                cd_schedule: parseInt(schedules.cd_schedule),
+                                id_user: parseInt(schedules.id_user),
+                                date_schedule: EncryptDep.Decrypt(schedules.date_schedule),
+                                time_schedule: EncryptDep.Decrypt(schedules.time_schedule),
+                                cd_animal: parseInt(schedules.cd_animal),
+                                cd_veterinary: parseInt(schedules.cd_veterinary),
+                                description: EncryptDep.Decrypt(schedules.description),
+                                nm_veterinary: EncryptDep.Decrypt(schedules.nm_veterinary),
+                                nm_animal: EncryptDep.Decrypt(schedules.nm_animal),
+                                service_type: parseInt(schedules.service_type),
+                                delivery: parseInt(schedules.delivery),
+                                status: parseInt(schedules.status)
+                            }
+                        })
+                }
+            return res.status(200).send(response)
+        }else
+            return res.status(204).send({ message: 'No Schedule for this user' })
+            }else
+                return res.status(401).send({ message: 'You can not see scheduled services' })
+        }else
+            return res.status(401).send({ message: 'You can not see scheduled services' })
+    } catch (error) {
+        ServerDetails.RegisterServerError("Get Scheduled Services", error.toString());
+        return res.status(500).send( { error: error } )
+    }
+}
+
+//  Method to get Sheduled Service Details
+exports.GetDetailsForAnScheduledService = async (req, res, next) => {
+    try {
+        ServerDetails.showRequestId()
+        var id_employee = req.params.id_employee
+        var result_Check = await mysql.execute('SELECT user_type FROM tbl_account WHERE id_user = ?;', id_employee)
+        if(result_Check.length > 0){
+            var user_type_get = result_Check[0].user_type
+            if(user_type_get > 0){
+                var result = await mysql.execute(`select 
+                schedules.*,
+                veterinary.name_user as nm_veterinary,
+                pet.nm_animal
+                from tbl_schedules as schedules inner join tbl_pets as pet on pet.cd_animal = schedules.cd_animal
+                LEFT join tbl_account as veterinary on CASE WHEN schedules.service_type = 1 THEN veterinary.id_user = schedules.cd_veterinary END
+                WHERE schedules.cd_schedule = ? and schedules.id_user = ?;`, [ req.params.cd_schedule, req.params.id_user ])
+                if (result.length > 0){
+                    const response = {
+                        Search: result.map(schedules => {
+                            return {
+                                cd_schedule: parseInt(schedules.cd_schedule),
+                                id_user: parseInt(schedules.id_user),
+                                date_schedule: EncryptDep.Decrypt(schedules.date_schedule),
+                                time_schedule: EncryptDep.Decrypt(schedules.time_schedule),
+                                cd_animal: parseInt(schedules.cd_animal),
+                                cd_veterinary: parseInt(schedules.cd_veterinary),
+                                description: EncryptDep.Decrypt(schedules.description),
+                                nm_veterinary: EncryptDep.Decrypt(schedules.nm_veterinary),
+                                nm_animal: EncryptDep.Decrypt(schedules.nm_animal),
+                                service_type: parseInt(schedules.service_type),
+                                delivery: parseInt(schedules.delivery),
+                                status: parseInt(schedules.status)
+                            }
+                        })
+                }
+            return res.status(200).send(response)
+        }else
+            return res.status(204).send({ message: 'No Schedule for this user' })
+            }else
+                return res.status(401).send({message: 'You can not disable customers'})
+        }else
+            return res.status(401).send({message: 'You can not disable customers'})
+    } catch (error) {
+        ServerDetails.RegisterServerError("Get Schedule Details", error.toString());
+        return res.status(500).send( { error: error } )
+    }
+}

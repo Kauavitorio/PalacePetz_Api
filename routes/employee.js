@@ -30,6 +30,12 @@ router.get('/custumer/get/:id_user', employeeController.GetAUserInfo)
 //  Method to edit a customer
 router.patch('/custumer/edit/', employeeController.UpdateCustomerProfile)
 
+//  Method to get All Shceduled Serivces
+router.patch('/services/scheduled/:id_employee', employeeController.GetScheduledServices)
+
+//  Method to get Shceduled Serivces Details
+router.patch('/services/scheduled/details/:id_employee/:cd_schedule/:id_user', employeeController.GetDetailsForAnScheduledService)
+
 // -----  Manager Actions -------
 
 //  Route to register an employee
