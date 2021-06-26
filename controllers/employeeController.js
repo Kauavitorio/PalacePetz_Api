@@ -741,7 +741,7 @@ exports.GetOrdersDetails = async (req, res, next) => {
         }else
             return res.status(401).send({message: 'You can not see customers'})
     } catch (error) {
-        Server.RegisterServerError("Get Orders", error.toString());
+        Server.RegisterServerError("Get Orders Details", error.toString());
         return res.status(500).send({ error: error})
     }
 }
@@ -755,7 +755,7 @@ exports.UpdateOrderStatus = async (req, res, next) => {
         if(result_Check.length > 0){
             var user_type = result_Check[0].user_type
             if(user_type == 1 || user_type == 3){
-                await mysql.execute('UPDATE tbl_orders set status = ? WHERE cd_order = ? and id_user = ?', [req.body.status, req.body.cd_order, req.body.id_user ])
+                await mysql.execute('UPDATE tbl_orders set status = ? WHERE cd_order = ? and id_user = ?', [EncryptDep.Encrypto(req.body.status), req.body.cd_order, req.body.id_user ])
                 return res.status(200).send({ message: 'Order updated' })
             }else
                 return res.status(401).send({message: 'You can not see customers'})
