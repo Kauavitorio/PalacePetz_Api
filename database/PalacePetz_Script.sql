@@ -100,7 +100,7 @@ CREATE TABLE tbl_products(
     amount int not null,
     species VARCHAR(100),
     product_price DECIMAL(10, 2) not null,
-    description VARCHAR(200) not null,
+    description VARCHAR(1300) not null,
     date_prod VARCHAR(200) not null,
     shelf_life VARCHAR(10) not null,
     image_prod VARCHAR(300) not null,
@@ -190,7 +190,7 @@ create table tbl_schedules(
     id_user int not null, FOREIGN KEY(id_user) REFERENCES tbl_account (id_user),
     date_schedule varchar(600) not null,
     time_schedule varchar(600) not null,
-    cd_animal int not null, FOREIGN KEY(cd_animal) REFERENCES tbl_pets (cd_animal),
+    cd_animal int not null,
     cd_veterinary int, FOREIGN KEY(cd_veterinary) REFERENCES tbl_employers (id_user),
     payment_type int not null,
     description varchar(600),
@@ -263,6 +263,7 @@ update tbl_versionMobile set versionName = "1.5.0", versionCode = 18 where cd_ve
 select * from tbl_versionMobile;
 
 -- Selects
+update tbl_account set birth_date = null where id_user = 4;
 select * from tbl_account;
 select * from tbl_employers;
 select * from tbl_schedules;
