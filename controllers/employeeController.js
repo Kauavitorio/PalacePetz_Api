@@ -3,11 +3,13 @@ const EncryptDep = require('./encryption')
 const Server = require('../ServerInfo') 
 const badWords = require('./badWords')
 const bcrypt = require('bcrypt');
+const ServerDetails = require('../ServerInfo') 
 const _IMG_DEFAULT = 'https://www.kauavitorio.com/host-itens/Default_Profile_Image_palacepetz.png';
 
 //  Method to get information about self
 exports.GetEmployeeInformation = async (req, res, next) => {
     try {
+        ServerDetails.showRequestId()
         var id_user = req.body.id_user
         var result = await mysql.execute('SELECT * FROM tbl_employers WHERE id_user = ?', id_user)
         if(result.length > 0){
@@ -28,6 +30,7 @@ exports.GetEmployeeInformation = async (req, res, next) => {
 //  Method to get information about one employee
 exports.GetAnEmployeeInformation = async (req, res, next) => {
     try {
+        ServerDetails.showRequestId()
         var id_user = req.params.id_user
         var result = await mysql.execute(`select 
         account.*,
@@ -76,6 +79,7 @@ exports.GetAnEmployeeInformation = async (req, res, next) => {
 //  Method to register Employee 
 exports.RegisterEmployee = async (req, res, next) => {
     try {
+        ServerDetails.showRequestId()
         // USER INFORMATION
         var name_user = req.body.name_user
         var email = req.body.email
@@ -149,6 +153,7 @@ exports.RegisterEmployee = async (req, res, next) => {
 //  Method to list All employers
 exports.ListEmployee = async(req, res, next) => {
     try {
+        ServerDetails.showRequestId()
         var id_employee = req.params.id_employee;
         var Test_select = await mysql.execute('SELECT * FROM tbl_account WHERE id_user = ?', id_employee)
         if(Test_select.length > 0){
@@ -197,6 +202,7 @@ exports.ListEmployee = async(req, res, next) => {
 //  Method to update an employee
 exports.UpdateEmployee = async(req, res, next) => {
     try {
+        ServerDetails.showRequestId()
         // USER INFORMATION
         var name_user = req.body.name_user
         var cpf_user = req.body.cpf_user
@@ -264,6 +270,7 @@ exports.UpdateEmployee = async(req, res, next) => {
 //  Method to delete an employee
 exports.DeleteEmployee = async(req, res, next) => {
     try {
+        ServerDetails.showRequestId()
         var id_employee = req.body.id_employee;
         var Test_select = await mysql.execute('SELECT * FROM tbl_account WHERE id_user = ?', id_employee)
         if(Test_select.length > 0){
@@ -285,6 +292,7 @@ exports.DeleteEmployee = async(req, res, next) => {
 //  Method to delete a product
 exports.DeleteProduct = async(req, res, next) => {
     try {
+        ServerDetails.showRequestId()
         var id_employee = req.params.id_employee;
         var cd_prod = req.params.cd_prod;
         var Test_select = await mysql.execute('SELECT * FROM tbl_account WHERE id_user = ?', id_employee)
@@ -315,6 +323,7 @@ exports.UpdateUserNameIntern = async (id_user, username) => {
 //  Method to update a product
 exports.UpdateProduct = async (req, res, next) => {
     try {
+        ServerDetails.showRequestId()
         var cd_prod = req.body.cd_prod
         var result_search = await mysql.execute('SELECT * FROM tbl_products WHERE cd_prod = ?', cd_prod)
         if(result_search.length > 0){
@@ -331,6 +340,7 @@ exports.UpdateProduct = async (req, res, next) => {
 //  Method to Get Statistics
 exports.GetStatistics = async (req, res, next) => {
     try {
+        ServerDetails.showRequestId()
         var user_amount = 0;
 
         //  Products amount vars
@@ -397,5 +407,87 @@ exports.GetStatistics = async (req, res, next) => {
     } catch (error) {
         Server.RegisterServerError("Get Statistics", error.toString());
         return res.status(500).send({ error: error})
+    }
+}
+
+//  Method to get all customers
+exports.GetAllCustomer = async (req, res, next) => {
+    try {
+        ServerDetails.showRequestId()
+        var id_employee = req.body.id_employee
+        var result_Check = await mysql.execute('SELECT user_type FROM tbl_account WHERE id_user = ?;', id_employee)
+        if(result_Check.length > 0){
+            var user_type = result_Check[0].user_type
+            if(user_type == 1 || user_type == 3){
+                var result = await mysql.execute('SELECT * FROM tbl_account;')
+                const response = {
+                    Search: result.map(account => {
+                        return {
+                            id_user: parseInt(account.id_user),
+                            name_user: EncryptDep.Decrypt(account.name_user),
+                            email: EncryptDep.Decrypt(account.email),
+                            cpf_user: EncryptDep.Decrypt(account.cpf_user),
+                            phone_user: EncryptDep.Decrypt(account.phone_user),
+                            user_type: parseInt(account.user_type)
+                        }
+                    })
+                    }
+                return res.status(200).send(response)
+            }else
+                return res.status(401).send({message: 'You can not see customers'})
+        }else
+            return res.status(401).send({message: 'You can not see customers'})
+    } catch (error) {
+        Server.RegisterServerError("Get Customers", error.toString());
+        return res.status(500).send({ error: error})
+    }
+}
+
+//  Method for Update Customer
+exports.UpdateCustomerProfile = async (req, res, next) => {
+    try{
+        var try_password = req.body.password
+        ServerDetails.showRequestId()
+        var queryUser = `SELECT * FROM tbl_account WHERE id_user = ?;`
+        var result = await mysql.execute(queryUser, req.body.id_user)
+        if(result.length > 0){
+            if(BadWords.VerifyUsername(req.body.name_user)){
+                return res.status(406).send({ error: "Username not allowed"})                
+            }else{
+                if(try_password == null || try_password == "" || try_password == " " || try_password == "no update" || try_password.length < 8){
+                    var query = `UPDATE tbl_account SET 
+                    name_user = ?,
+                    cpf_user = ?,
+                    address_user = ?, 
+                    complement = ?, 
+                    zipcode = ?, 
+                    phone_user = ?, 
+                    birth_date = ?
+                        WHERE id_user = ?;`
+                    await mysql.execute(query, [EncryptDep.Encrypto(req.body.name_user), EncryptDep.Encrypto(req.body.cpf_user), EncryptDep.Encrypto(req.body.address_user), EncryptDep.Encrypto(req.body.complement), EncryptDep.Encrypto(req.body.zipcode), EncryptDep.Encrypto(req.body.phone_user), EncryptDep.Encrypto(req.body.birth_date), req.body.id_user])
+                    return res.status(200).send( { message: 'User information successfully update'} )
+                }else{
+                    const hash = await bcrypt.hashSync(try_password, 12);
+                    var query = `UPDATE tbl_account SET 
+                    name_user = ?,
+                    cpf_user = ?,
+                    address_user = ?, 
+                    complement = ?, 
+                    zipcode = ?, 
+                    phone_user = ?, 
+                    birth_date = ?,
+                    password = ?
+                        WHERE id_user = ?;`
+                    await mysql.execute(query, [EncryptDep.Encrypto(req.body.name_user), EncryptDep.Encrypto(req.body.cpf_user), EncryptDep.Encrypto(req.body.address_user), EncryptDep.Encrypto(req.body.complement), EncryptDep.Encrypto(req.body.zipcode), EncryptDep.Encrypto(req.body.phone_user), EncryptDep.Encrypto(req.body.birth_date), hash, req.body.id_user])
+                    return res.status(200).send( { message: 'User information successfully update'} )
+                }
+                
+            }
+        }else{
+            return res.status(404).send( { message: 'User not registered' } )
+        }
+    }catch(error){
+        ServerDetails.RegisterServerError("Update Profile", error.toString());
+        return res.status(500).send( { error: error } )
     }
 }

@@ -43,7 +43,8 @@ exports.Login = async (req, res, next) => {
                             phone_user: EncryptDep.Decrypt(result[0].phone_user),
                             birth_date: EncryptDep.Decrypt(result[0].birth_date),
                             user_type: result[0].user_type,
-                            img_user: EncryptDep.Decrypt(result[0].img_user)
+                            img_user: EncryptDep.Decrypt(result[0].img_user),
+                            status: result[0].status
                         }
                     if(verify_id == "Confirmed" || verify == 1){
                         return res.status(200).send(response);
@@ -90,7 +91,8 @@ exports.Login = async (req, res, next) => {
                             phone_user: EncryptDep.Decrypt(result[0].phone_user),
                             birth_date: EncryptDep.Decrypt(result[0].birth_date),
                             user_type: result[0].user_type,
-                            img_user: EncryptDep.Decrypt(result[0].img_user)
+                            img_user: EncryptDep.Decrypt(result[0].img_user),
+                            status: result[0].status
                         }
                     if(verify_id == "Confirmed" || verify == 1)
                         return res.status(200).send(response);
@@ -137,7 +139,8 @@ exports.Login = async (req, res, next) => {
                             phone_user: EncryptDep.Decrypt(result[0].phone_user),
                             birth_date: EncryptDep.Decrypt(result[0].birth_date),
                             user_type: result[0].user_type,
-                            img_user: EncryptDep.Decrypt(result[0].img_user)
+                            img_user: EncryptDep.Decrypt(result[0].img_user),
+                            status: result[0].status
                         }
                     if(verify_id == "Confirmed" || verify == 1)
                         return res.status(200).send(response);
@@ -199,9 +202,9 @@ exports.RegisterUsers = async (req, res, next) => {
                 var cpf_userBase = req.body.cpf_user
                 var nm_userBase = req.body.name_user
                 var username = nm_userBase.replace(' ', '').toLowerCase() + cpf_userBase.split(".")[0] + cpf_userBase.split(".")[1];
-                query = 'INSERT INTO tbl_account (name_user, username, email, cpf_user, password, img_user, verify_id) VALUES (?,?,?,?,?,?,?)';
+                query = 'INSERT INTO tbl_account (name_user, username, email, cpf_user, password, img_user, verify_id, status) VALUES (?,?,?,?,?,?,?,?)';
                 var results = await mysql.execute(query, [ EncryptDep.Encrypto(req.body.name_user), EncryptDep.Encrypto(username), EncryptDep.Encrypto(req.body.email),
-                    EncryptDep.Encrypto(req.body.cpf_user), hash, EncryptDep.Encrypto(IMG_USER), idVerifyEMail])
+                    EncryptDep.Encrypto(req.body.cpf_user), hash, EncryptDep.Encrypto(IMG_USER), idVerifyEMail, 1])
 
                 this.UpdateUserNameIntern(results.insertId, nm_userBase.replace(' ', '').toLowerCase())
 
@@ -227,9 +230,9 @@ exports.RegisterUsers = async (req, res, next) => {
                 var cpf_userBase = req.body.cpf_user
                 var nm_userBase = req.body.name_user
                 var username = nm_userBase.replace(' ', '').toLowerCase() + cpf_userBase.split(".")[0] + cpf_userBase.split(".")[1];
-                query = 'INSERT INTO tbl_account (name_user, username, email, cpf_user, password, img_user, verify_id) VALUES (?,?,?,?,?,?,?)';
+                query = 'INSERT INTO tbl_account (name_user, username, email, cpf_user, password, img_user, verify_id, status) VALUES (?,?,?,?,?,?,?,?)';
                 var results = await mysql.execute(query, [ EncryptDep.Encrypto(req.body.name_user), EncryptDep.Encrypto(username), EncryptDep.Encrypto(req.body.email),
-                    EncryptDep.Encrypto(req.body.cpf_user), hash, EncryptDep.Encrypto(IMG_USER), idVerifyEMail])
+                    EncryptDep.Encrypto(req.body.cpf_user), hash, EncryptDep.Encrypto(IMG_USER), idVerifyEMail, 1])
 
                 this.UpdateUserNameIntern(results.insertId, nm_userBase.replace(' ', '').toLowerCase())
 
