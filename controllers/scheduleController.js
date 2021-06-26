@@ -100,8 +100,8 @@ exports.CreateSchedule = async (req, res, next) => {
                         nm_veterinary = result_selectVet[i].id_user
                 }
             }
-            date_schedule.replace('-', '/')
-            var insert_schedule = await mysql.execute(`INSERT INTO tbl_schedules(date_schedule, time_schedule, cd_animal, cd_veterinary, payment_type, description, service_type, delivery, status, id_user) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?) `, [ EncryptDep.Encrypto(date_schedule), EncryptDep.Encrypto(time_schedule), cd_animal, nm_veterinary, payment, EncryptDep.Encrypto(description), service_type, delivery, status, id_user ])
+            
+            var insert_schedule = await mysql.execute(`INSERT INTO tbl_schedules(date_schedule, time_schedule, cd_animal, cd_veterinary, payment_type, description, service_type, delivery, status, id_user) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?) `, [ EncryptDep.Encrypto(date_schedule.replace('-', '/')), EncryptDep.Encrypto(time_schedule), cd_animal, nm_veterinary, payment, EncryptDep.Encrypto(description), service_type, delivery, status, id_user ])
             const response = {
                 message: 'Scheduled performed successfully',
                 cd_schedule: insert_schedule.insertId
