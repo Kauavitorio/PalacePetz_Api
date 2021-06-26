@@ -2,6 +2,7 @@ const mysql = require('../mysql')
 const EncryptDep = require('./encryption')
 const Server = require('../ServerInfo') 
 const badWords = require('./badWords')
+const BadWords = require('../controllers/badWords')
 const bcrypt = require('bcrypt');
 const ServerDetails = require('../ServerInfo'); 
 const { response } = require('express');
