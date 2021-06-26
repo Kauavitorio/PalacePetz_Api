@@ -415,7 +415,7 @@ exports.GetAllCustomer = async (req, res, next) => {
     try {
         ServerDetails.showRequestId()
         var id_employee = req.params.id_employee
-        var result_Check = await mysql.execute('SELECT user_type FROM tbl_account WHERE id_user = ?;', id_employee)
+        var result_Check = await mysql.execute('SELECT user_type FROM tbl_account WHERE id_user = ? ORDER BY RAND();', id_employee)
         if(result_Check.length > 0){
             var user_type = result_Check[0].user_type
             if(user_type == 1 || user_type == 3){
