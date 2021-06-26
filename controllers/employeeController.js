@@ -428,7 +428,8 @@ exports.GetAllCustomer = async (req, res, next) => {
                             email: EncryptDep.Decrypt(account.email),
                             cpf_user: EncryptDep.Decrypt(account.cpf_user),
                             phone_user: EncryptDep.Decrypt(account.phone_user),
-                            user_type: parseInt(account.user_type)
+                            user_type: parseInt(account.user_type),
+                            status: parseInt(user_type.status)
                         }
                     })
                     }
@@ -491,6 +492,7 @@ exports.UpdateCustomerProfile = async (req, res, next) => {
         return res.status(500).send( { error: error } )
     }
 }
+
 //  Method for Desable Customer
 exports.DisableCustomerProfile = async (req, res, next) => {
     try{
@@ -509,6 +511,37 @@ exports.DisableCustomerProfile = async (req, res, next) => {
                     else{
                         await mysql.execute('UPDATE tbl_account SET status = 0 WHERE id_user = ?;', req.body.id_user)
                         return res.status(200).send( { message: 'User has been successfully disabled' } )
+                    }
+                }else
+                    return res.status(404).send( { message: 'User not registered' } )
+            }else
+                return res.status(401).send({message: 'You can not disable customers'})
+        }else
+            return res.status(401).send({message: 'You can not disable customers'})
+    }catch(error){
+        ServerDetails.RegisterServerError("Update Profile", error.toString());
+        return res.status(500).send( { error: error } )
+    }
+}
+
+//  Method for Enable Customer
+exports.EnableCustomerProfile = async (req, res, next) => {
+    try{
+        ServerDetails.showRequestId()
+        var id_employee = req.body.id_employee
+        var result_Check = await mysql.execute('SELECT user_type FROM tbl_account WHERE id_user = ?;', id_employee)
+        if(result_Check.length > 0){
+            var user_type = result_Check[0].user_type
+            if(user_type == 1 || user_type == 3){
+                var queryUser = `SELECT * FROM tbl_account WHERE id_user = ?;`
+                var result = await mysql.execute(queryUser, req.body.id_user)
+                if(result.length > 0){
+                    var user_type_disable = result[0].user_type
+                    if(user_type_disable == 3 )
+                        return res.status(401).send({message: 'You can not disable customers'})
+                    else{
+                        await mysql.execute('UPDATE tbl_account SET status = 1 WHERE id_user = ?;', req.body.id_user)
+                        return res.status(200).send( { message: 'User has been successfully enabled' } )
                     }
                 }else
                     return res.status(404).send( { message: 'User not registered' } )

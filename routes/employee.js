@@ -18,6 +18,12 @@ router.delete('/delete/product/:id_employee/:cd_prod', employeeController.Delete
 //  Get All Customer
 router.get('/customer/list/:id_employee', employeeController.GetAllCustomer)
 
+//  Disable Customer
+router.post('/customer/disable/', employeeController.DisableCustomerProfile)
+
+//  Enable Customer
+router.post('/customer/enable/', employeeController.EnableCustomerProfile)
+
 // -----  Manager Actions -------
 
 //  Route to register an employee
