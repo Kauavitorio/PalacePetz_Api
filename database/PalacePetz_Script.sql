@@ -263,7 +263,6 @@ update tbl_versionMobile set versionName = "1.5.1", versionCode = 19 where cd_ve
 select * from tbl_versionMobile;
 
 -- Selects
-update tbl_account set status  = 0 where id_user = 34;
 select * from tbl_account;
 select * from tbl_employers;
 select * from tbl_schedules;

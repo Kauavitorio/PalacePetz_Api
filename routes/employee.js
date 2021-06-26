@@ -24,6 +24,12 @@ router.post('/customer/disable/', employeeController.DisableCustomerProfile)
 //  Enable Customer
 router.post('/customer/enable/', employeeController.EnableCustomerProfile)
 
+//  Method to get a customer
+router.get('/custumer/get/:id_user', employeeController.GetAUserInfo)
+
+//  Method to edit a customer
+router.patch('/custumer/edit/', employeeController.UpdateCustomerProfile)
+
 // -----  Manager Actions -------
 
 //  Route to register an employee

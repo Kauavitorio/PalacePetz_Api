@@ -3,7 +3,8 @@ const EncryptDep = require('./encryption')
 const Server = require('../ServerInfo') 
 const badWords = require('./badWords')
 const bcrypt = require('bcrypt');
-const ServerDetails = require('../ServerInfo') 
+const ServerDetails = require('../ServerInfo'); 
+const { response } = require('express');
 const _IMG_DEFAULT = 'https://www.kauavitorio.com/host-itens/Default_Profile_Image_palacepetz.png';
 
 //  Method to get information about self
@@ -24,6 +25,29 @@ exports.GetEmployeeInformation = async (req, res, next) => {
     } catch (error) {
         Server.RegisterServerError("Get Employee Information", error.toString());
         return res.status(500).send({ error: error})
+    }
+}
+
+exports.GetAUserInfo = async (req, res, next) => {
+    try {
+        var result = await mysql.execute('SELECT * FROM tbl_account WHERE id_user = ?', req.params.id_user)
+        const response = {
+            id_user: result[0].id_user,
+            name_user: EncryptDep.Decrypt(result[0].name_user),
+            email: EncryptDep.Decrypt(result[0].email),
+            cpf_user: EncryptDep.Decrypt(result[0].cpf_user),
+            address_user: EncryptDep.Decrypt(result[0].address_user),
+            complement: EncryptDep.Decrypt(result[0].complement),
+            zipcode: EncryptDep.Decrypt(result[0].zipcode),
+            phone_user: EncryptDep.Decrypt(result[0].phone_user),
+            birth_date: EncryptDep.Decrypt(result[0].birth_date),
+            user_type: result[0].user_type,
+            img_user: EncryptDep.Decrypt(result[0].img_user),
+            status: result[0].status
+        }
+        return res.status(200).send(response)
+    } catch (error) {
+        
     }
 }
 
@@ -519,7 +543,7 @@ exports.DisableCustomerProfile = async (req, res, next) => {
         }else
             return res.status(401).send({message: 'You can not disable customers'})
     }catch(error){
-        ServerDetails.RegisterServerError("Update Profile", error.toString());
+        ServerDetails.RegisterServerError("Disable Profile", error.toString());
         return res.status(500).send( { error: error } )
     }
 }
@@ -550,7 +574,7 @@ exports.EnableCustomerProfile = async (req, res, next) => {
         }else
             return res.status(401).send({message: 'You can not disable customers'})
     }catch(error){
-        ServerDetails.RegisterServerError("Update Profile", error.toString());
+        ServerDetails.RegisterServerError("Enable Profile", error.toString());
         return res.status(500).send( { error: error } )
     }
 }
