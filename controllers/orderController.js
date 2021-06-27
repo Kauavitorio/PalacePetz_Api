@@ -108,7 +108,7 @@ exports.FinishOrder = async (req, res, next) => {
         var sub_total = req.body.sub_total
         var totalPrice = req.body.totalPrice
         var order_date = ServerDetails.GetDate()
-        var status = "Aguardando aprovação"
+        var status = "Aguardando Aprovação"
         var deliveryTime = 45
         var procentDiscount;
 
@@ -161,11 +161,11 @@ exports.FinishOrder = async (req, res, next) => {
             return res.status(401).send({ message: "User not exist" });
         }
     /*
-    Aguardando aprovação
-    Preparando produto
+    Aguardando Aprovação
+    Preparando Produto
     A caminho
     Entregue
-    Concluido
+    Concluído
     */
     } catch (error) {
         ServerDetails.RegisterServerError("Finish Order", error.toString());

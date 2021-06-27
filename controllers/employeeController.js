@@ -751,11 +751,30 @@ exports.UpdateOrderStatus = async (req, res, next) => {
     try {
         ServerDetails.showRequestId()
         var id_employee = req.params.id_employee
+        var newstatus = req.body.status
+        var newdelivery = 45;
         var result_Check = await mysql.execute('SELECT user_type FROM tbl_account WHERE id_user = ?;', id_employee)
         if(result_Check.length > 0){
             var user_type = result_Check[0].user_type
             if(user_type == 1 || user_type == 3){
-                await mysql.execute('UPDATE tbl_orders set status = ? WHERE cd_order = ? and id_user = ?', [EncryptDep.Encrypto(req.body.status), req.body.cd_order, req.body.id_user ])
+                switch(newstatus){
+                    case 'Aguardando Aprovação':
+                        newdelivery = 45;
+                        break;
+                        case 'Preparando Produto':
+                            newdelivery = 35;
+                            break;
+                            case 'A caminho':
+                                newdelivery = 10;
+                                break;
+                                case 'Entregue':
+                                    newdelivery = 0;
+                                    break;
+                                    case 'Concluído':
+                                        newdelivery = 0;
+                                        break;
+                }
+                await mysql.execute('UPDATE tbl_orders set status = ?, deliveryTime = ? WHERE cd_order = ? and id_user = ?', [EncryptDep.Encrypto(newstatus), newdelivery, req.body.cd_order, req.body.id_user ])
                 return res.status(200).send({ message: 'Order updated' })
             }else
                 return res.status(401).send({message: 'You can not see customers'})
