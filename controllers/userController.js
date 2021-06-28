@@ -606,6 +606,6 @@ function Generate_verify_id_for_user(length) {
     return id;
 }
 
-function Block_User(id_user){
+async function Block_User(id_user){
     await mysql.execute('UPDATE tbl_account SET status = 0 WHERE id_user = ?;', id_user)
 }
