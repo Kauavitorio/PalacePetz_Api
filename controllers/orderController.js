@@ -49,6 +49,53 @@ exports.GetAllOrders = async (req, res, next) => {
     }
 }
 
+//  Method to show to user your order detials
+exports.GetOrderDetails = async (req, res, next) => {
+    try {
+        var id_user = req.params.id_user
+        var cd_order = req.params.cd_order
+        var result = await mysql.execute(`select 
+		order_user.cd_order,
+		order_user.id_user,
+		order_user.discount,
+		order_user.coupom,
+		order_user.sub_total,
+		order_user.totalPrice,
+		order_user.date_order,
+		order_user.cd_card,
+		order_user.status,
+		order_user.deliveryTime,
+		card.number_card
+        from tbl_orders  as order_user inner join tbl_cards as card
+        on card.cd_card = order_user.cd_card WHERE order_user.id_user = ? and order_user.cd_order = ?;`, cd_order);
+        if(result.length > 0){
+            const response = {
+                Search: result.map(orders => {
+                    return {
+                        cd_order: parseInt(orders.cd_order),
+                        id_user: parseInt(orders.id_user),
+                        discount: EncryptDep.Decrypt(orders.discount),
+                        coupom: EncryptDep.Decrypt(orders.coupom),
+                        sub_total: EncryptDep.Decrypt(orders.sub_total),
+                        totalPrice: EncryptDep.Decrypt(orders.totalPrice),
+                        product_amount: 0,
+                        date_order: EncryptDep.Decrypt(orders.date_order),
+                        cd_card: parseInt(orders.cd_card),
+                        status: EncryptDep.Decrypt(orders.status),
+                        deliveryTime: orders.deliveryTime,
+                        payment: EncryptDep.Decrypt(orders.number_card)
+                    }
+                })
+                }
+            return res.status(200).send(response)
+        }else
+            return res.status(404).send( { message: 'No orders for this user' } )
+    } catch (error) {
+        ServerDetails.RegisterServerError("Get Order", error.toString());
+        return res.status(500).send({ error: error})
+    }
+}
+
 //  Method to show to user your last orders
 exports.GetLastOrders = async (req, res, next) => {
     try {
