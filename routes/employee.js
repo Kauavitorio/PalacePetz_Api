@@ -45,6 +45,9 @@ router.get('/order/get/details/:id_employee/:cd_order', employeeController.GetOr
 //  Method to update order
 router.patch('/order/update/:id_employee', employeeController.UpdateOrderStatus)
 
+//  Method to get Schedule Details
+router.get('/schedule/info/:id_employee/:cd_schedule', employeeController.GetSheduleDetails)
+
 // -----  Manager Actions -------
 
 //  Route to register an employee

@@ -737,9 +737,9 @@ exports.GetOrdersDetails = async (req, res, next) => {
                     }
                 return res.status(200).send(response)
             }else
-                return res.status(401).send({message: 'You can not see customers'})
+                return res.status(401).send({message: 'You can not get order details'})
         }else
-            return res.status(401).send({message: 'You can not see customers'})
+            return res.status(401).send({message: 'You can not get order details'})
     } catch (error) {
         Server.RegisterServerError("Get Orders Details", error.toString());
         return res.status(500).send({ error: error})
@@ -782,6 +782,51 @@ exports.UpdateOrderStatus = async (req, res, next) => {
             return res.status(401).send({message: 'You can not see customers'})
     } catch (error) {
         Server.RegisterServerError("Update Orders", error.toString());
+        return res.status(500).send({ error: error})
+    }
+}
+
+//  Method to get Schedule Details
+exports.GetSheduleDetails = async (req, res, next) => {
+    try {
+        ServerDetails.showRequestId()
+        var id_employee = req.params.id_employee
+        var result_Check = await mysql.execute('SELECT user_type FROM tbl_account WHERE id_user = ?;', id_employee)
+        if(result_Check.length > 0){
+            var user_type = result_Check[0].user_type
+            if(user_type > 0){
+                var result = await mysql.execute(`select 
+                schedules.*,
+                veterinary.name_user as nm_veterinary,
+                pet.nm_animal
+                from tbl_schedules as schedules inner join tbl_pets as pet on pet.cd_animal = schedules.cd_animal
+                LEFT join tbl_account as veterinary on CASE WHEN schedules.service_type = 1 THEN veterinary.id_user = schedules.cd_veterinary END
+                WHERE schedules.cd_schedule = ?;`, req.params.cd_schedule)
+                const response = {
+                    Search: result.map(order => {
+                        return {
+                            cd_schedule: parseInt(schedules.cd_schedule),
+                            id_user: parseInt(schedules.id_user),
+                            date_schedule: EncryptDep.Decrypt(schedules.date_schedule),
+                            time_schedule: EncryptDep.Decrypt(schedules.time_schedule),
+                            cd_animal: parseInt(schedules.cd_animal),
+                            cd_veterinary: parseInt(schedules.cd_veterinary),
+                            description: EncryptDep.Decrypt(schedules.description),
+                            nm_veterinary: EncryptDep.Decrypt(schedules.nm_veterinary),
+                            nm_animal: EncryptDep.Decrypt(schedules.nm_animal),
+                            service_type: parseInt(schedules.service_type),
+                            delivery: parseInt(schedules.delivery),
+                            status: parseInt(schedules.status)
+                        }
+                    })
+                    }
+                return res.status(200).send(response)
+            }else
+                return res.status(401).send({message: 'You can not get order details'})
+        }else
+            return res.status(401).send({message: 'You can not get order details'})
+    } catch (error) {
+        Server.RegisterServerError("Get Schedule Details", error.toString());
         return res.status(500).send({ error: error})
     }
 }
