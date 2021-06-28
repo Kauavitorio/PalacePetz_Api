@@ -81,6 +81,9 @@ exports.Login = async (req, res, next) => {
                 if(Userlist.length > 0){
                     const result = await mysql.execute('SELECT * FROM tbl_account WHERE id_user = ?', id_user)
                     if(result.length > 0){
+                        var nm_verify_bad = EncryptDep.Decrypt(result[0].name_user);
+                        if(BadWords.VerifyUsername(nm_verify_bad))
+                            Block_User(result[0].id_user)
                     const match = await bcrypt.compareSync(password, result[0].password);
                     if(match){
                         var verify_id = result[0].verify_id
@@ -131,6 +134,10 @@ exports.Login = async (req, res, next) => {
                 if(Userlist.length > 0){
                     const result = await mysql.execute('SELECT * FROM tbl_account WHERE id_user = ?', id_user)
                     if(result.length > 0){
+                        var nm_verify_bad = EncryptDep.Decrypt(result[0].name_user);
+                        if(BadWords.VerifyUsername(nm_verify_bad))
+                            Block_User(result[0].id_user)
+                            
                     const match = await bcrypt.compareSync(password, result[0].password);
                     if(match){
                         var verify_id = result[0].verify_id
@@ -607,5 +614,9 @@ function Generate_verify_id_for_user(length) {
 }
 
 async function Block_User(id_user){
+    console.log("-------------------------------------")
+    console.log("  --- ⛔️ Block User ⛔️ ---")
+    console.log(`--- For ${id_user} ---`)
+    console.log("-------------------------------------\n")
     await mysql.execute('UPDATE tbl_account SET status = 0 WHERE id_user = ?;', id_user)
 }
