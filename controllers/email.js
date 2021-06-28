@@ -212,8 +212,8 @@ exports.SendScheduleConfirmation = ($recipient, $nm_user, $user_id, $service_typ
     readHTMLFile(__dirname + '/templates/schedule_confirmation.html', function(err, html) {
         var template = handlebars.compile(html);
         var replacements = {
-            time_schedule: $time_schedule,
-            date_schedule: $date_schedule,
+            time_schedule: $date_schedule,
+            date_schedule: $time_schedule,
             service_type: service_type,
             recipient: $recipient,
             nm_user: $nm_user,
