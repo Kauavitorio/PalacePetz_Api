@@ -67,7 +67,7 @@ exports.GetOrderDetails = async (req, res, next) => {
 		order_user.deliveryTime,
 		card.number_card
         from tbl_orders  as order_user inner join tbl_cards as card
-        on card.cd_card = order_user.cd_card WHERE order_user.id_user = ? and order_user.cd_order = ?;`, cd_order);
+        on card.cd_card = order_user.cd_card WHERE order_user.id_user = ? and order_user.cd_order = ?;`, [id_user, cd_order]);
         if(result.length > 0){
             const response = {
                 Search: result.map(orders => {
