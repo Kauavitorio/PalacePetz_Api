@@ -9,7 +9,8 @@ exports.GetMobileVersion = async (req, res, next) => {
             return res.status(200).send({
                 cd_version: result[0].cd_version,
                 versionName: result[0].versionName,
-                versionCode: result[0].versionCode
+                versionCode: result[0].versionCode,
+                dev_alert: parseInt(result[0].dev_alert)
             })
         }else{
             return res.status(204).send({ message: 'No version on database' })
