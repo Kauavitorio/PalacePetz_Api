@@ -273,6 +273,8 @@ select * from tbl_category;
 select * from tbl_pets;
 select * from tbl_shoppingCart;
 select * from tbl_orders_items;
+delete from tbl_orders_items where cd_order = 25864;
+delete from tbl_orders where cd_order = 25864;
 select * from tbl_orders;
 select * from tbl_cards;
 select * from tbl_discounts;

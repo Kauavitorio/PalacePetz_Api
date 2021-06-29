@@ -830,3 +830,20 @@ exports.GetSheduleDetails = async (req, res, next) => {
         return res.status(500).send({ error: error})
     }
 }
+
+//  Method to update a product
+exports.UpdateProductAmount = async (req, res, next) => {
+    try {
+        ServerDetails.showRequestId()
+        var cd_prod = req.params.cd_prod
+        var result_search = await mysql.execute('SELECT * FROM tbl_products WHERE cd_prod = ?', cd_prod)
+        if(result_search.length > 0){
+            await mysql.execute('UPDATE tbl_products set amount = ? WHERE cd_prod = ?', [ req.params.amount, cd_prod ])
+            return res.status(200).send({ message: 'OK' })
+        }else
+            return res.status(204).send({ message: 'Product not found' })
+    } catch (error) {
+        Server.RegisterServerError("Update Product", error.toString());
+        return res.status(500).send({ error: error})
+    }
+}
