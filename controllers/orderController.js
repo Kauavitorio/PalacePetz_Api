@@ -131,7 +131,10 @@ exports.FinishOrder = async (req, res, next) => {
             user_zipcode = EncryptDep.Decrypt(result_first_info[0].zipcode)
 
             //  Get Number Card
+            console.log(id_user)
+            console.log(cd_card)
             var result_card = await mysql.execute('SELECT number_card FROM tbl_cards WHERE id_user = ? and cd_card = ?;', [id_user, cd_card])
+            console.log(result_card)
             number_card = EncryptDep.Decrypt(result_card[0].number_card)
 
             /* Get products cart */ 
