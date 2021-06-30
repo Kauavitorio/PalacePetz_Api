@@ -117,7 +117,6 @@ create table tbl_category(
 
 --	Table for Cards
 drop table tbl_cards;
-SELECT * FROM tbl_cards WHERE id_user = ?;
 create table tbl_cards(
     cd_card int primary key auto_increment,
     id_user int not null, FOREIGN KEY (id_user) REFERENCES tbl_account (id_user), 
@@ -152,6 +151,7 @@ create table tbl_orders(
     totalPrice varchar(600) not null,
     sub_total varchar(600) not null,
     cd_card int not null,
+    number_card varchar(600) not null,
     status varchar(600) not null,
     deliveryTime int default 45 not null
 )DEFAULT CHARACTER SET utf8  DEFAULT COLLATE utf8_general_ci;
@@ -273,8 +273,6 @@ select * from tbl_category;
 select * from tbl_pets;
 select * from tbl_shoppingCart;
 select * from tbl_orders_items;
-delete from tbl_orders_items where cd_order = 25864;
-delete from tbl_orders where cd_order = 25864;
 select * from tbl_orders;
 select * from tbl_cards;
 select * from tbl_discounts;

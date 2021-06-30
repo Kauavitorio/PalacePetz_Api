@@ -7,20 +7,7 @@ const Emails = require('./email')
 exports.GetAllOrders = async (req, res, next) => {
     try {
         var id_user = req.params.id_user
-        var result = await mysql.execute(`select 
-		order_user.cd_order,
-		order_user.id_user,
-		order_user.discount,
-		order_user.coupom,
-		order_user.sub_total,
-		order_user.totalPrice,
-		order_user.date_order,
-		order_user.cd_card,
-		order_user.status,
-		order_user.deliveryTime,
-		card.number_card
-        from tbl_orders  as order_user inner join tbl_cards as card
-        on card.cd_card = order_user.cd_card WHERE order_user.id_user = ?;`, id_user);
+        var result = await mysql.execute(`select * from tbl_orders where id_user = ?;`, id_user);
         if(result.length > 0){
             const response = {
                 Search: result.map(orders => {
@@ -54,20 +41,7 @@ exports.GetOrderDetails = async (req, res, next) => {
     try {
         var id_user = req.params.id_user
         var cd_order = req.params.cd_order
-        var result = await mysql.execute(`select 
-		order_user.cd_order,
-		order_user.id_user,
-		order_user.discount,
-		order_user.coupom,
-		order_user.sub_total,
-		order_user.totalPrice,
-		order_user.date_order,
-		order_user.cd_card,
-		order_user.status,
-		order_user.deliveryTime,
-		card.number_card
-        from tbl_orders  as order_user inner join tbl_cards as card
-        on card.cd_card = order_user.cd_card WHERE order_user.id_user = ? and order_user.cd_order = ?;`, [id_user, cd_order]);
+        var result = await mysql.execute(`select * from tbl_orders where id_user = ? and cd_order = ?;`, [id_user, cd_order]);
         if(result.length > 0){
             const response = {
                 Search: result.map(orders => {
@@ -100,20 +74,7 @@ exports.GetOrderDetails = async (req, res, next) => {
 exports.GetLastOrders = async (req, res, next) => {
     try {
         var id_user = req.params.id_user
-        var result = await mysql.execute(`select 
-		order_user.cd_order,
-		order_user.id_user,
-		order_user.discount,
-		order_user.coupom,
-		order_user.sub_total,
-		order_user.totalPrice,
-		order_user.date_order,
-		order_user.cd_card,
-		order_user.status,
-		order_user.deliveryTime,
-		card.number_card
-        from tbl_orders  as order_user inner join tbl_cards as card
-        on card.cd_card = order_user.cd_card WHERE order_user.id_user = ? order by cd_order desc
+        var result = await mysql.execute(`select * from tbl_orders where id_user = ? order by cd_order desc
         limit 1;`, id_user);
         if(result.length > 0){
             const response = {
@@ -156,6 +117,7 @@ exports.FinishOrder = async (req, res, next) => {
         var totalPrice = req.body.totalPrice
         var order_date = ServerDetails.GetDate()
         var status = "Aguardando Aprovação"
+        var number_card;
         var deliveryTime = 45
         var procentDiscount;
 
@@ -167,6 +129,10 @@ exports.FinishOrder = async (req, res, next) => {
             user_email = EncryptDep.Decrypt(result_first_info[0].email)
             complement = EncryptDep.Decrypt(result_first_info[0].complement)
             user_zipcode = EncryptDep.Decrypt(result_first_info[0].zipcode)
+
+            //  Get Number Card
+            var result_card = await mysql.execute('SELECT number_card FROM tbl_cards WHERE id_user = ?;', id_user)
+            number_card = EncryptDep.Decrypt(result_card[0].number_card)
 
             /* Get products cart */ 
             var cd_products_cart = []
@@ -186,8 +152,8 @@ exports.FinishOrder = async (req, res, next) => {
 
             /* Insert Order */
             var insert_order = await mysql.execute(`INSERT INTO tbl_orders (id_user, discount, coupom, sub_total,
-                totalPrice, date_order, cd_card, status, deliveryTime) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-                [id_user, EncryptDep.Encrypto(discount), EncryptDep.Encrypto(coupom), EncryptDep.Encrypto(sub_total), EncryptDep.Encrypto(totalPrice), EncryptDep.Encrypto(order_date), cd_card, EncryptDep.Encrypto(status), deliveryTime])
+                totalPrice, date_order, cd_card, number_card, status, deliveryTime) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+                [id_user, EncryptDep.Encrypto(discount), EncryptDep.Encrypto(coupom), EncryptDep.Encrypto(sub_total), EncryptDep.Encrypto(totalPrice), EncryptDep.Encrypto(order_date), cd_card, EncryptDep.Encrypto(number_card), EncryptDep.Encrypto(status), deliveryTime])
 
             var order_id = insert_order.insertId
             for(let i = 0; i < cd_products_cart.length; i++){
