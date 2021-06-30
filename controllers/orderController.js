@@ -131,10 +131,7 @@ exports.FinishOrder = async (req, res, next) => {
             user_zipcode = EncryptDep.Decrypt(result_first_info[0].zipcode)
 
             //  Get Number Card
-            console.log(id_user)
-            console.log(cd_card)
             var result_card = await mysql.execute('SELECT number_card FROM tbl_cards WHERE id_user = ? and cd_card = ?;', [id_user, cd_card])
-            console.log(result_card)
             number_card = EncryptDep.Decrypt(result_card[0].number_card)
 
             /* Get products cart */ 
@@ -155,7 +152,7 @@ exports.FinishOrder = async (req, res, next) => {
 
             /* Insert Order */
             var insert_order = await mysql.execute(`INSERT INTO tbl_orders (id_user, discount, coupom, sub_total,
-                totalPrice, date_order, cd_card, number_card, status, deliveryTime) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+                totalPrice, date_order, cd_card, number_card, status, deliveryTime) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
                 [id_user, EncryptDep.Encrypto(discount), EncryptDep.Encrypto(coupom), EncryptDep.Encrypto(sub_total), EncryptDep.Encrypto(totalPrice), EncryptDep.Encrypto(order_date), cd_card, EncryptDep.Encrypto(number_card), EncryptDep.Encrypto(status), deliveryTime])
 
             var order_id = insert_order.insertId
